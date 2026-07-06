@@ -13,9 +13,11 @@ Scope: Buffle Audio Align v0.3.0 source, landing page, local release artifacts, 
 - Staged bundle metadata reports `CFBundleShortVersionString` and `CFBundleVersion` as `0.3.0`.
 - `dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip` contains no `.DS_Store` or AppleDouble `._*` entries.
 - GitHub release `v0.3.0` exists and includes the `.pkg` installer plus bundles archive.
-- Public landing page serves the v0.3.0 copy and release links.
+- GitHub release `v0.2.0` exists and includes the `.pkg` installer plus bundles archive.
+- Public landing page serves the v0.3.0 copy, release links, screenshot proof, and Buy Me a Coffee support CTAs.
 - Cloudflare Pages configuration is present in `wrangler.toml` and points to `landing/`.
-- Cloudflare Tunnel is serving only the local `landing/` directory through the local static server.
+- Cloudflare Pages production is live at `https://buffleaudio-align.pages.dev/`.
+- Cloudflare Tunnel can serve only the local `landing/` directory through the local static server for previews.
 
 ## Commands Run
 
@@ -31,6 +33,7 @@ codesign --verify --deep --strict --verbose=2 "dist/stage/Buffle Audio Align.com
 pkgutil --check-signature dist/BuffleAudioAlign-0.3.0-macOS.pkg
 unzip -l dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip | rg '/\\._|\\.DS_Store'
 gh release view v0.3.0 --repo iamknow0ne/buffleaudio_align --json url,tagName,name,assets
+gh release view v0.2.0 --repo iamknow0ne/buffleaudio_align --json url,tagName,name,assets
 npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --branch=main
 ```
 
@@ -40,7 +43,7 @@ npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --bran
 - Local ignored `dist/` still contains older v0.2.0 artifacts alongside v0.3.0 artifacts. They are not tracked, but cleaning the local distribution folder before each release would reduce operator confusion.
 - JUCE is still resolved from `/Users/hostin/vibecoding/waveform-visualizer/JUCE`; pinning or vendoring JUCE remains the biggest reproducibility improvement.
 - Legacy Projucer/Xcode naming still exists in generated project structure. CMake remains canonical.
-- Cloudflare Pages deployment requires `CLOUDFLARE_API_TOKEN` in this non-interactive session. The Pages deploy attempt stopped before upload because no token was present.
+- Cloudflare Pages project names allow lowercase letters and dashes; `buffleaudio.align.pages.dev` is not a valid Pages project hostname because the project segment contains a dot.
 
 ## Fresh Screenshots
 

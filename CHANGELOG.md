@@ -9,6 +9,12 @@
 
 ## Unreleased
 
+- Added Buy Me a Coffee support CTAs to the landing page.
+- Refreshed live landing and GitHub release screenshots for v0.3.0.
+- Expanded README, release inventory, deployment notes, and healthcheck documentation.
+
+## Earlier modernization work
+
 - Reframed the product as `Buffle Audio Align`, a vocal-stack alignment and articulation cleanup plugin.
 - Replaced the generated `Hello World` editor with a modern Guide/Dub monitoring cockpit.
 - Added APVTS-backed parameters for Tightness, Naturalness, Consonant Level, Manual Nudge, Preview Level, Guide Blend, and Stereo Focus.

@@ -1,8 +1,30 @@
 # Buffle Audio Align
 
+> Fast vocal stack cleanup: find the timing offset, nudge the double, tame the consonants.
+
 Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articulation cleanup. Put it on a Dub or backing-vocal track, feed or monitor a Guide vocal, estimate the timing relationship, then tighten the Dub while preserving the small performance details that make stacked vocals feel alive.
 
-Current build target: macOS Standalone, VST3, and AU.
+Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
+
+## Links
+
+- Landing page: https://buffleaudio-align.pages.dev/
+- Latest release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0
+- All releases: https://github.com/iamknow0ne/buffleaudio_align/releases
+- Support development: https://buymeacoffee.com/hostin.tech
+- Build notes: [docs/build.md](docs/build.md)
+- Deployment notes: [docs/deployment.md](docs/deployment.md)
+- Release inventory: [docs/releases.md](docs/releases.md)
+- Healthcheck: [docs/healthcheck-2026-07-06.md](docs/healthcheck-2026-07-06.md)
+- Roadmap: [ROADMAP.md](ROADMAP.md)
+
+## Screenshots
+
+Latest v0.3.0 captures from the live Pages deployment and GitHub release:
+
+![Buffle Audio Align landing page](landing/assets/screenshots/landing-v0.3.0.jpg)
+
+![Buffle Audio Align GitHub release](landing/assets/screenshots/github-release-v0.3.0.jpg)
 
 ## What Works Now
 
@@ -15,7 +37,7 @@ Current build target: macOS Standalone, VST3, and AU.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, and manual nudge timing.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
-- Static landing page in `landing/`, designed to be exposed without serving the whole repository.
+- Static landing page in `landing/`, deployed to Cloudflare Pages and safe to expose without serving the full repository.
 
 ## Product Shape
 
@@ -27,10 +49,6 @@ The v0.3.0 direction is intentionally narrow:
 4. Preview or apply a manual/automatic nudge.
 5. Add a lightweight consonant cleanup pass.
 6. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
-
-Tagline:
-
-> Fast vocal stack cleanup: find the timing offset, nudge the double, tame the consonants.
 
 ## Build
 
@@ -69,19 +87,13 @@ The staged bundles are ad-hoc signed for local verification. The package is not 
 
 ## Landing Page
 
-Production Pages URL:
+Cloudflare Pages production URL:
 
 ```text
 https://buffleaudio-align.pages.dev/
 ```
 
-Support link:
-
-```text
-https://buymeacoffee.com/hostin.tech
-```
-
-Serve only the landing page folder:
+Serve only the landing page folder locally:
 
 ```bash
 scripts/serve_landing.sh
@@ -93,31 +105,35 @@ Then open:
 http://127.0.0.1:8088
 ```
 
-If that port is already busy, choose another one:
+If that port is already busy:
 
 ```bash
 PORT=8099 scripts/serve_landing.sh
 ```
 
-This is the folder to expose with `cloudflared` when available.
+Expose only the landing folder through a quick Cloudflare Tunnel:
 
 ```bash
 scripts/expose_landing_cloudflared.sh
 ```
 
-## Screenshots
-
-Updated v0.3.0 captures:
-
-- [Landing page](landing/assets/screenshots/landing-v0.3.0.jpg)
-- [GitHub release page](landing/assets/screenshots/github-release-v0.3.0.jpg)
-
-## GitHub Release
-
-After `gh auth login -h github.com` and once a GitHub repository is configured:
+Deploy the landing folder to Cloudflare Pages:
 
 ```bash
-GITHUB_REPO=owner/name scripts/publish_github_release.sh
+npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --branch=main
+```
+
+## GitHub Releases
+
+Both public preview releases are published on GitHub:
+
+- `v0.3.0`: installer plus macOS bundle archive.
+- `v0.2.0`: installer plus macOS bundle archive.
+
+To publish a future release after building:
+
+```bash
+GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_github_release.sh
 ```
 
 ## Source Layout
@@ -138,17 +154,17 @@ landing/
   index.html
   styles.css
   assets/
+
+scripts/
+  build_and_package_macos.sh
+  expose_landing_cloudflared.sh
+  publish_github_release.sh
+  serve_landing.sh
 ```
 
-## Roadmap
+## Known Gaps
 
-Next highest-value work:
-
-- Add a real capture buffer for Guide/Dub material.
-- Move offset analysis to a background job over captured audio.
-- Add preview/original A/B.
-- Implement `Consonant Tamer Lite`.
-- Add Developer ID signing and notarization.
-- Pin or vendor JUCE for reproducible builds.
-
-See `ROADMAP.md` for the full plan and `docs/build.md` for build details.
+- Developer ID signing and notarization are still needed before broader distribution.
+- JUCE should be pinned or vendored for fully reproducible builds.
+- The legacy generated Xcode project should be regenerated if it becomes part of the supported build path.
+- The current alignment path is nudge/analysis-first; full DTW/warping remains a future milestone.
