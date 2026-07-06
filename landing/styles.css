@@ -384,6 +384,39 @@ h3 {
   line-height: 1.6;
 }
 
+.proof {
+  border-top: 1px solid var(--border);
+}
+
+.screenshot-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 36px;
+}
+
+.screenshot-grid a {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  overflow: hidden;
+}
+
+.screenshot-grid img {
+  aspect-ratio: 16 / 10;
+  display: block;
+  object-fit: cover;
+  object-position: top;
+  width: 100%;
+}
+
+.screenshot-grid span {
+  color: var(--ink);
+  font-weight: 900;
+  padding: 14px 16px 16px;
+}
+
 .download {
   background: var(--header);
   border-top: 1px solid var(--border);
@@ -425,6 +458,7 @@ h3 {
   .split,
   .steps,
   .release-grid,
+  .screenshot-grid,
   .download-grid {
     grid-template-columns: 1fr;
   }

@@ -93,6 +93,13 @@ This is the folder to expose with `cloudflared` when available.
 scripts/expose_landing_cloudflared.sh
 ```
 
+## Screenshots
+
+Updated v0.3.0 captures:
+
+- [Landing page](landing/assets/screenshots/landing-v0.3.0.jpg)
+- [GitHub release page](landing/assets/screenshots/github-release-v0.3.0.jpg)
+
 ## GitHub Release
 
 After `gh auth login -h github.com` and once a GitHub repository is configured:
