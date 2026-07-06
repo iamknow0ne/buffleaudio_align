@@ -75,6 +75,12 @@ Production Pages URL:
 https://buffleaudio-align.pages.dev/
 ```
 
+Support link:
+
+```text
+https://buymeacoffee.com/hostin.tech
+```
+
 Serve only the landing page folder:
 
 ```bash

@@ -162,6 +162,12 @@ h3 {
   color: var(--ink);
 }
 
+.button.coffee {
+  background: #211915;
+  border-color: rgba(255, 179, 92, 0.38);
+  color: var(--orange);
+}
+
 .plugin-shell {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -417,6 +423,53 @@ h3 {
   padding: 14px 16px 16px;
 }
 
+.support {
+  align-items: center;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 42px;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+}
+
+.support-copy p:last-child {
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 22px 0 0;
+  max-width: 720px;
+}
+
+.support-card {
+  background:
+    linear-gradient(135deg, rgba(255, 179, 92, 0.16), rgba(77, 208, 196, 0.08)),
+    var(--panel);
+  border: 1px solid rgba(255, 179, 92, 0.38);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  min-height: 220px;
+  padding: 26px;
+}
+
+.support-card span {
+  color: var(--orange);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.support-card strong {
+  color: var(--ink);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.95;
+}
+
+.support-card em {
+  align-self: end;
+  color: var(--muted);
+  font-style: normal;
+  font-weight: 800;
+}
+
 .download {
   background: var(--header);
   border-top: 1px solid var(--border);
@@ -459,6 +512,7 @@ h3 {
   .steps,
   .release-grid,
   .screenshot-grid,
+  .support,
   .download-grid {
     grid-template-columns: 1fr;
   }
