@@ -14,6 +14,8 @@ constexpr auto auditionId = "audition";
 constexpr auto guideBlendId = "guideBlend";
 constexpr auto stereoFocusId = "stereoFocus";
 constexpr auto maxNudgeMs = 120.0f;
+constexpr auto reliableOffsetConfidence = 0.45f;
+constexpr auto usableSignalFloor = 0.025f;
 
 float normaliseDb (float db)
 {
@@ -297,9 +299,16 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
 
     buffle::align::TimingOffsetEstimator estimator;
     const auto offset = estimator.estimate (guideEnvelope, dubEnvelope, 24, analysisHopMs.load());
-    snapshot.estimatedOffsetMs = offset.milliseconds;
     snapshot.offsetConfidence = offset.confidence;
-    snapshot.suggestedNudgeMs = offset.milliseconds < 0.0f ? std::abs (offset.milliseconds) : 0.0f;
+    snapshot.hasReliableOffset = offset.confidence >= reliableOffsetConfidence
+                              && snapshot.guideRms >= usableSignalFloor
+                              && snapshot.dubRms >= usableSignalFloor;
+
+    if (snapshot.hasReliableOffset)
+    {
+        snapshot.estimatedOffsetMs = offset.milliseconds;
+        snapshot.suggestedNudgeMs = offset.milliseconds < 0.0f ? std::abs (offset.milliseconds) : 0.0f;
+    }
 
     return snapshot;
 }
@@ -311,15 +320,17 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto snapshot = getAlignmentSnapshot();
 
-    return "Guide/Dub monitor ready - Tightness "
+    return juce::String (snapshot.hasReliableOffset ? "Guide/Dub monitor locked - " : "Guide/Dub monitor listening - ")
+        + "Tightness "
         + juce::String (static_cast<int> (tightness * 100.0f))
         + "%, consonants "
         + juce::String (static_cast<int> (consonantLevel * 100.0f))
         + "%, nudge "
         + juce::String (nudgeMs, 1)
-        + " ms, suggested "
-        + juce::String (snapshot.suggestedNudgeMs, 1)
-        + " ms";
+        + " ms"
+        + (snapshot.hasReliableOffset
+            ? ", suggested " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
+            : ", waiting for usable Guide/Dub confidence");
 }
 
 BufflePlugAnalyzerAudioProcessor::AudioProcessorValueTreeState::ParameterLayout

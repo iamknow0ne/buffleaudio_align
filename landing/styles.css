@@ -274,6 +274,24 @@ h3 {
   gap: 12px;
 }
 
+.format-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 26px;
+}
+
+.format-strip span {
+  padding: 8px 10px;
+  border: 1px solid rgba(247, 242, 232, 0.13);
+  border-radius: 999px;
+  background: rgba(4, 8, 9, 0.5);
+  color: var(--soft);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
 .button {
   position: relative;
   min-height: 50px;
@@ -528,6 +546,14 @@ h3 {
   filter: saturate(0.98) contrast(1.04);
 }
 
+.app-proof figcaption {
+  padding: 16px 18px 18px;
+  border-top: 1px solid rgba(247, 242, 232, 0.1);
+  color: var(--soft);
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
 .workflow-section {
   border-top: 1px solid var(--line);
   background:
@@ -706,6 +732,46 @@ h3 {
   color: var(--soft);
   font-size: 1.08rem;
   line-height: 1.45;
+}
+
+.v1-section {
+  padding: clamp(72px, 9vw, 118px) clamp(20px, 6vw, 76px);
+  border-top: 1px solid var(--line);
+  background:
+    radial-gradient(circle at 74% 22%, rgba(240, 174, 67, 0.12), transparent 26rem),
+    rgba(5, 8, 8, 0.78);
+}
+
+.v1-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.v1-grid div {
+  min-height: 126px;
+  padding: 20px;
+  background:
+    linear-gradient(135deg, rgba(47, 214, 199, 0.08), transparent 44%),
+    var(--panel-strong);
+}
+
+.v1-grid span {
+  display: block;
+  margin-bottom: 28px;
+  color: var(--amber);
+  font-size: 0.74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.v1-grid strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1.18rem;
+  line-height: 1.18;
 }
 
 .release-section {
@@ -933,6 +999,7 @@ h3 {
   }
 
   .module-grid,
+  .v1-grid,
   .release-grid,
   .download-section {
     display: grid;

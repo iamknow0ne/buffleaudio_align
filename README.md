@@ -18,15 +18,23 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Healthcheck: [docs/healthcheck-2026-07-06.md](docs/healthcheck-2026-07-06.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
-## Screenshots
+## Screenshot
 
-Latest v0.3.0 captures from the live Pages deployment and GitHub release:
+Current v0.3.0 Standalone app capture:
 
 ![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-v0.3.0.png)
 
-![Buffle Audio Align landing page](landing/assets/screenshots/landing-v0.3.0.jpg)
+## Try It In 5 Minutes
 
-![Buffle Audio Align GitHub release](landing/assets/screenshots/github-release-v0.3.0.jpg)
+1. Install or unzip the latest macOS preview from the GitHub release.
+2. Open the Standalone app, or insert the VST3/AU on a Dub/double/backing-vocal track.
+3. Route the Guide vocal into the sidechain when your DAW supports it.
+4. Play the phrase and watch Guide/Dub confidence lock.
+5. Read the signed offset and suggested safe nudge.
+6. Use manual `Nudge`, or the confidence-gated Apply Nudge workflow in the app UI.
+7. Compare feel before committing or printing the result in your DAW.
+
+Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
 
 ## What Works Now
 
@@ -43,14 +51,36 @@ Latest v0.3.0 captures from the live Pages deployment and GitHub release:
 
 ## Product Shape
 
-The v0.3.0 direction is intentionally narrow:
+Buffle Audio Align is positioned as a timing decision surface for vocal doubles, not a black-box warper. The v0.3.x lane focuses on:
 
 1. Monitor or capture Guide and Dub.
 2. Extract energy/onset envelopes.
 3. Estimate a global timing offset.
-4. Preview or apply a manual/automatic nudge.
-5. Add a lightweight consonant cleanup pass.
-6. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+4. Gate suggestions by confidence so weak signals do not produce fake certainty.
+5. Preview or apply a safe nudge.
+6. Add vocal-stack-specific consonant cleanup.
+7. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+
+## V1 Direction
+
+The V1 wedge is transparent stack cleanup: **safe nudge + trust meter + consonant control**.
+
+Differentiating V1 feature candidates:
+
+- Trust Meter Alignment: explain Guide/Dub level, offset, confidence, and source state.
+- One-Click Safe Nudge: apply only confidence-gated suggested movement.
+- Consonant Tamer Lite: reduce flammed consonants without flattening vowels.
+- Removed Material Audition: listen to what cleanup changes.
+- Naturalness Guardrail: warn when timing correction risks sterile doubles.
+- Guide Fallback Intelligence: make routing problems visible and actionable.
+- Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
+- Stack Spread Governor: preserve controlled width across doubles/harmonies.
+- Breath Preservation Mask: protect breaths and expressive attacks.
+- Vowel-Only Warp Preview: future micro-warping that avoids consonant smearing.
+- Harmony-Aware Tightness: looser defaults for harmony stacks than unison doubles.
+- Exportable Alignment Report: phrase offset, confidence, and correction summary.
+
+See [ROADMAP.md](ROADMAP.md) for milestones, risks, and verification gates.
 
 ## Build
 

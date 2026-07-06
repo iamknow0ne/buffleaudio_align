@@ -37,6 +37,7 @@ private:
     void loadBrandAssets();
     void showAboutBox();
     void showTransientStatus (const juce::String& message);
+    void applySuggestedNudge();
 
     static juce::Image recolourForDarkTheme (const juce::Image& source, juce::Colour tint);
 
@@ -49,12 +50,16 @@ private:
     juce::Slider consonantSlider;
     juce::Slider nudgeSlider;
     juce::Slider auditionSlider;
+    juce::Slider guideBlendSlider;
+    juce::Slider stereoFocusSlider;
 
     juce::Label tightnessLabel;
     juce::Label naturalnessLabel;
     juce::Label consonantLabel;
     juce::Label nudgeLabel;
     juce::Label auditionLabel;
+    juce::Label guideBlendLabel;
+    juce::Label stereoFocusLabel;
     juce::Label statusLabel;
 
     std::unique_ptr<SliderAttachment> tightnessAttachment;
@@ -62,10 +67,13 @@ private:
     std::unique_ptr<SliderAttachment> consonantAttachment;
     std::unique_ptr<SliderAttachment> nudgeAttachment;
     std::unique_ptr<SliderAttachment> auditionAttachment;
+    std::unique_ptr<SliderAttachment> guideBlendAttachment;
+    std::unique_ptr<SliderAttachment> stereoFocusAttachment;
 
     juce::TextButton captureButton { "Capture" };
     juce::TextButton analyzeButton { "Analyze" };
-    juce::TextButton alignButton { "Align" };
+    juce::TextButton alignButton { "Preview" };
+    juce::TextButton applySuggestedButton { "Apply Nudge" };
 
     juce::Image buffleAudioLogo;
     juce::Rectangle<int> brandLogoBounds;

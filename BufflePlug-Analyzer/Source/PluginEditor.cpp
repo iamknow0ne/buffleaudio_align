@@ -21,7 +21,7 @@ const auto warningColour = juce::Colour (0xffffd166);
 
 juce::Rectangle<int> removeRail (juce::Rectangle<int>& bounds)
 {
-    return bounds.removeFromLeft (150).reduced (22, 8);
+    return bounds.removeFromLeft (168).reduced (22, 8);
 }
 
 void drawRoundRect (juce::Graphics& g, juce::Rectangle<float> bounds, juce::Colour fill, juce::Colour stroke)
@@ -162,16 +162,26 @@ public:
         readouts.removeFromLeft (gap);
         drawReadoutPill (g, readouts.removeFromLeft (pillWidth), "DUB", asPercent (snapshot.dubRms), dubColour);
         readouts.removeFromLeft (gap);
-        drawReadoutPill (g, readouts.removeFromLeft (pillWidth), "OFFSET", asSignedMs (snapshot.estimatedOffsetMs), alignedColour);
+        drawReadoutPill (g,
+                         readouts.removeFromLeft (pillWidth),
+                         "OFFSET",
+                         snapshot.hasReliableOffset ? asSignedMs (snapshot.estimatedOffsetMs) : "-- ms",
+                         alignedColour);
         readouts.removeFromLeft (gap);
-        drawReadoutPill (g, readouts, "SUGGEST", juce::String (snapshot.suggestedNudgeMs, 1) + " ms", warningColour);
+        drawReadoutPill (g,
+                         readouts,
+                         "SUGGEST",
+                         snapshot.hasReliableOffset ? juce::String (snapshot.suggestedNudgeMs, 1) + " ms" : "LISTEN",
+                         warningColour);
 
         content.removeFromTop (8);
         auto nudgeLine = content.removeFromTop (18);
         g.setColour (muted.withAlpha (0.86f));
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
-        g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - suggested safe nudge "
-                        + juce::String (snapshot.suggestedNudgeMs, 1) + " ms",
+        g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - "
+                        + (snapshot.hasReliableOffset
+                            ? "suggested safe nudge " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
+                            : "waiting for reliable Guide/Dub confidence"),
                     nudgeLine,
                     juce::Justification::centredLeft);
         content.removeFromTop (8);
@@ -310,8 +320,18 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      "Preview",
                      "Output level for the alignment preview path.",
                      true);
+    configureSlider (guideBlendSlider,
+                     guideBlendLabel,
+                     "Guide Blend",
+                     "Monitor a little Guide against the Dub while checking the timing relationship.",
+                     true);
+    configureSlider (stereoFocusSlider,
+                     stereoFocusLabel,
+                     "Stereo Focus",
+                     "Preview how tightly doubled layers should hold the stereo image.",
+                     true);
 
-    for (auto* button : { &captureButton, &analyzeButton, &alignButton })
+    for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton })
     {
         addAndMakeVisible (*button);
         button->setColour (juce::TextButton::buttonColourId, panelLight);
@@ -324,9 +344,11 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     captureButton.setTooltip ("Prepare the Guide/Dub capture pass.");
     analyzeButton.setTooltip ("Estimate timing confidence from the current monitoring window.");
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
+    applySuggestedButton.setTooltip ("Apply the current confidence-gated suggested nudge to the Nudge control.");
     captureButton.onClick = [this] { showTransientStatus ("Capture pass armed - route Guide sidechain, then play the phrase."); };
     analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
     alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
+    applySuggestedButton.onClick = [this] { applySuggestedNudge(); };
 
     addAndMakeVisible (statusLabel);
     statusLabel.setColour (juce::Label::textColourId, muted);
@@ -339,10 +361,12 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     consonantAttachment = std::make_unique<SliderAttachment> (state, "consonantLevel", consonantSlider);
     nudgeAttachment = std::make_unique<SliderAttachment> (state, "nudge", nudgeSlider);
     auditionAttachment = std::make_unique<SliderAttachment> (state, "audition", auditionSlider);
+    guideBlendAttachment = std::make_unique<SliderAttachment> (state, "guideBlend", guideBlendSlider);
+    stereoFocusAttachment = std::make_unique<SliderAttachment> (state, "stereoFocus", stereoFocusSlider);
 
     setResizable (true, true);
-    setResizeLimits (760, 620, 1180, 760);
-    setSize (980, 620);
+    setResizeLimits (820, 680, 1220, 820);
+    setSize (1040, 700);
     startTimerHz (24);
 }
 
@@ -372,11 +396,11 @@ void BufflePlugAnalyzerAudioProcessorEditor::paint (juce::Graphics& g)
     g.drawText ("Control Room", controls.removeFromTop (42).reduced (16, 0), juce::Justification::centredLeft);
 
     auto controlRows = controls.reduced (16, 12);
-    for (int i = 0; i < 5; ++i)
+    for (int i = 0; i < 7; ++i)
     {
-        auto row = controlRows.removeFromTop (76);
+        auto row = controlRows.removeFromTop (62);
         drawRoundRect (g, row.toFloat(), juce::Colour (0xff111116), juce::Colour (0xff202028));
-        controlRows.removeFromTop (8);
+        controlRows.removeFromTop (7);
     }
 }
 
@@ -386,16 +410,18 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     auto headerArea = bounds.removeFromTop (76).reduced (28, 18);
     juce::ignoreUnused (headerArea);
 
-    auto rail = bounds.removeFromLeft (150).reduced (22, 8);
-    auto railButton = rail.removeFromBottom (118);
+    auto rail = bounds.removeFromLeft (168).reduced (22, 8);
+    auto railButton = rail.removeFromBottom (160);
     captureButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
     analyzeButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
     alignButton.setBounds (railButton.removeFromTop (32));
+    railButton.removeFromTop (10);
+    applySuggestedButton.setBounds (railButton.removeFromTop (32));
 
     auto controls = bounds.removeFromRight (238).reduced (24, 62);
-    const auto sliderHeight = 76;
+    const auto sliderHeight = 62;
 
     auto placeSlider = [&controls] (juce::Slider& slider, juce::Label& label)
     {
@@ -410,6 +436,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     placeSlider (consonantSlider, consonantLabel);
     placeSlider (nudgeSlider, nudgeLabel);
     placeSlider (auditionSlider, auditionLabel);
+    placeSlider (guideBlendSlider, guideBlendLabel);
+    placeSlider (stereoFocusSlider, stereoFocusLabel);
 
     statusLabel.setBounds (bounds.removeFromBottom (38).reduced (18, 0));
     alignmentView->setBounds (bounds.reduced (8, 10));
@@ -475,7 +503,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
 {
     drawRoundRect (g, area.toFloat(), panel, border);
 
-    const char* steps[] = { "Capture", "Analyze", "Align", "Clean", "Print" };
+    const char* steps[] = { "Route", "Listen", "Preview", "Tame", "Print" };
     auto row = area.reduced (14, 18);
 
     for (int i = 0; i < 5; ++i)
@@ -590,6 +618,31 @@ void BufflePlugAnalyzerAudioProcessorEditor::showTransientStatus (const juce::St
     transientStatus = message;
     transientStatusFrames = 96;
     statusLabel.setText (transientStatus, juce::dontSendNotification);
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
+{
+    const auto snapshot = audioProcessor.getAlignmentSnapshot();
+
+    if (! snapshot.hasReliableOffset)
+    {
+        showTransientStatus ("Apply Nudge unavailable - keep playing until Guide/Dub confidence locks.");
+        return;
+    }
+
+    if (snapshot.suggestedNudgeMs <= 0.05f)
+    {
+        showTransientStatus ("No positive delay nudge needed - keep the current Dub timing or use manual Nudge.");
+        return;
+    }
+
+    if (auto* parameter = audioProcessor.getValueTreeState().getParameter ("nudge"))
+    {
+        parameter->beginChangeGesture();
+        parameter->setValueNotifyingHost (parameter->convertTo0to1 (snapshot.suggestedNudgeMs));
+        parameter->endChangeGesture();
+        showTransientStatus ("Applied suggested nudge: " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms.");
+    }
 }
 
 juce::Image BufflePlugAnalyzerAudioProcessorEditor::recolourForDarkTheme (const juce::Image& source,

@@ -73,6 +73,11 @@ pkgbuild \
   --install-location "/" \
   "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 
+ditto -c -k --norsrc --noextattr --noqtn \
+  "${STAGE_DIR}" \
+  "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"
+
 echo "Built artifacts:"
 find "${STAGE_DIR}" -mindepth 1 -maxdepth 1 -print
 echo "Installer: ${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
+echo "Bundle archive: ${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"

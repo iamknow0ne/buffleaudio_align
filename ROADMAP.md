@@ -1,106 +1,120 @@
-# Buffle Audio - Align Roadmap
+# Buffle Audio Align V1 Roadmap
 
-This roadmap reflects the refreshed direction for the project after the first modernization pass. The old plan was ambitious and directionally useful, but the codebase is still early, so the next milestones focus on making a trustworthy vocal-stack cleanup tool before adding full offline warping, ARA, or MIDI groove features.
+V1 should not chase a full VocAlign/Revoice/Melodyne clone. The sharper wedge is a producer-controlled vocal-stack cleanup tool that makes timing decisions visible, preserves feel, and reduces doubled consonant clutter.
 
-## Milestone 0 - Project Foundation
+## Current State
 
-Status: mostly complete. The remaining foundation work is release metadata/signing and deeper host validation.
+Status: `v0.3.0` developer preview.
 
-- Replace the starter JUCE editor with the Buffle Audio - Align cockpit. Done.
-- Add persistent parameters with stable IDs. Done.
-- Add state save/restore. Done.
-- Show live Guide/Dub levels and a match-confidence surface. Done.
-- Add optional Guide sidechain bus and audible manual nudge delay. Done.
-- Document the current dependency blocker and architecture direction. Done.
+Done:
 
-## Milestone 1 - Build Reproducibility
+- Buffle Audio branded JUCE editor with About panel.
+- Persistent APVTS parameters and state save/restore.
+- Optional Guide sidechain bus plus Dub main input.
+- Live Guide/Dub level history, signed offset estimate, confidence, and suggested nudge.
+- Confidence-gated display so weak signals no longer show fake offset certainty.
+- Manual nudge delay in a standalone DSP module.
+- CMake build for Standalone, VST3, AU, and DSP tests.
+- macOS package and bundle archive generation.
+- Cloudflare Pages landing page.
 
-Status: partially complete. The new CMake path builds locally with the JUCE checkout at `/Users/hostin/vibecoding/waveform-visualizer/JUCE`.
+Not V1-ready yet:
 
-- Add CMake build for Standalone, VST3, and AU. Done.
-- Add macOS packaging script for `.app`, `.vst3`, `.component`, and `.pkg`. Done.
-- Pin JUCE in the repo or keep documenting `JUCE_PATH`.
-- Remove hardcoded `/Users/hostin/Downloads/JUCE/modules` paths. Done in the `.jucer`; generated Xcode files still need regeneration if they are used.
-- Keep VST3, AU, and Standalone targets.
-- Set real plugin identity: manufacturer, bundle ID, plugin code, version, and website.
-- Add Developer ID signing and notarization before public distribution.
+- Suggested nudge is still positive-delay-first; early/late compensation needs a fuller dual-path design.
+- Consonant Tamer is named in the UI but not implemented as DSP yet.
+- Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
+- Installer is not Developer ID signed or notarized.
+- No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
-## Milestone 2 - Align Prep v0.2
+## V1 Differentiators
 
-Goal: create the first usable vocal-stack cleanup workflow.
+These are the target features that make Align meaningfully different from generic alignment tools:
 
-- Add Guide/Dub capture or sidechain monitoring.
-- Extract RMS/onset envelopes from each source. Initial standalone DSP module and tests added.
-- Estimate a global timing offset with cross-correlation. Initial history-based estimator added.
-- Display suggested nudge in milliseconds. Initial UI readout added.
-- Let the user apply or preview manual nudge/tightness. Manual nudge delay is implemented; automatic apply remains.
-- Keep audio-thread work allocation-free and move analysis to a background job.
+1. **Trust Meter Alignment**: show source state, Guide/Dub levels, offset direction, confidence, and why the recommendation is safe or unavailable.
+2. **One-Click Safe Nudge**: apply suggested nudge only when confidence and signal floors are credible.
+3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
+4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
+5. **Removed Material Audition**: solo the timing/consonant material being reduced.
+6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals.
+7. **Guide Fallback Intelligence**: explain missing/weak sidechain routing instead of producing misleading numbers.
+8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
+9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals.
+10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup.
+11. **Vowel-Only Micro-Warp Preview**: future constrained warping that stretches vowels while locking consonants.
+12. **Harmony-Aware Tightness Presets**: `Double Tight`, `Choir Natural`, `Rap Stack`, `ADR Loose`.
+13. **Exportable Alignment Report**: phrase offset, confidence, nudge, and correction amount for session handoff.
 
-## Milestone 3 - Consonant Tamer Lite
+## Milestone A - Reliable Nudge Product
 
-Goal: deliver the first differentiated feature.
+Goal: make the current analysis/nudge workflow trustworthy enough for daily testing.
 
-- Detect likely consonant regions with transient/high-frequency/envelope heuristics.
-- Add fade-safe attenuation controlled by `Consonant Level`.
-- Add an audition mode for removed/attenuated material.
-- Preserve breaths and strong attacks unless the user explicitly tightens cleanup.
+- Keep all offset and suggested-nudge UI gated by confidence.
+- Add one-click safe nudge to the editor.
+- Add clear states: route, listen, confidence locked, no usable guide, no positive delay nudge needed.
+- Add tests for confidence gating, silence, weak signal, and offset sign.
+- Document DAW sidechain setup and unsigned preview safety.
+- Verify Standalone build, DSP tests, and current package generation.
 
-## Milestone 4 - Testable DSP Core
+Exit criteria:
 
-Goal: move alignment math into isolated C++ modules.
+- Weak/silent input never displays a bogus numeric recommendation.
+- A reliable negative offset can set `Manual Nudge` through the UI.
+- README and landing explain the exact producer loop.
 
-Recommended modules:
+## Milestone B - Consonant Tamer Lite
 
-- `AudioClip`
-- `CaptureBuffer`
-- `EnvelopeFeatureExtractor`
-- `TimingOffsetEstimator`
-- `DtwAligner`
-- `WarpMap`
-- `AlignmentPreviewRenderer`
-- `AlignmentEngine`
+Goal: deliver the first vocal-stack-specific differentiator.
 
-Initial tests:
+- Add transient/high-frequency consonant feature extraction.
+- Add fade-safe Dub attenuation controlled by `Consonant Tamer`.
+- Add removed-material audition mode.
+- Add breath/attack preservation heuristics.
+- Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries.
 
-- Silence produces zero/non-NaN envelope.
-- Impulse lands in expected analysis frame.
-- Equal sequences produce a diagonal DTW path.
-- Shifted synthetic clicks recover the known offset.
-- Tightness `0` is identity, `1` is full warp, `0.5` is bounded interpolation.
+Exit criteria:
 
-## Milestone 5 - Full Alignment Engine
+- Consonant cleanup is audible, controllable, and does not smear sustained vowels.
+- Tests prove silence and non-consonant sustained material remain stable.
 
-Goal: replace nudge-only cleanup with constrained offline time warping.
+## Milestone C - Workflow Productization
 
-- Implement constrained DTW with a Sakoe-Chiba-style band and slope limits.
-- Convert DTW paths into smoothed monotonic warp maps.
-- Render an aligned preview with interpolation first.
-- Evaluate Rubber Band, PSOLA, or another stretcher only after the warp map is proven.
-- Preserve consonants and transients during stretch where possible.
+Goal: make Align feel like a practical DAW tool rather than a meter.
 
-## Milestone 6 - DAW Workflow
+- Make the workflow rail stateful: Route, Listen, Preview, Tame, Print.
+- Add phrase health cards and error states.
+- Add A/B controls: Original, Aligned, Difference/Removed.
+- Add stack role presets.
+- Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
 
-Goal: make the plugin practical in real sessions.
+Exit criteria:
 
-- Add sidechain Guide input or a clear two-pass capture workflow.
-- Add preview/original A/B.
-- Add region status and error states.
-- Add export/print strategy.
-- Evaluate ARA only after the non-ARA workflow is useful.
+- A new producer can route, analyze, preview, and print without reading build docs.
+- Docs include a tester feedback checklist.
 
-## Milestone 7 - Groove Mode
+## Milestone D - V1 Release Candidate
 
-Goal: explore the creative MIDI/slice idea after alignment is credible.
+Goal: ship a clean, supportable macOS V1.
 
-- Segment vowels/consonants more robustly.
-- Add MIDI-triggered slice playback.
-- Add root note and slice map controls.
-- Explore vowel quantization to MIDI as an experimental feature.
+- Pin or vendor JUCE, or provide a reproducible bootstrap.
+- Fix package payload hygiene so `.pkg` contains no `.DS_Store` or AppleDouble `._*` files.
+- Add Developer ID Application and Installer signing.
+- Notarize and staple installer.
+- Run install smoke on a clean macOS account.
+- Run AU validation and at least one VST3 host load test.
+- Publish GitHub release with SHA256 checksums.
+- Update landing, README, changelog, docs, screenshots, and release notes.
 
-## Deferred Until Proven Needed
+Exit criteria:
 
-- ML phoneme recognition.
-- ARA.
-- AAX.
-- Real-time live alignment.
-- Rubber Band integration in proprietary builds without a commercial license.
+- GitHub V1 release artifacts are freshly built, signed/notarized where possible, checksummed, and documented.
+- Landing and README match the shipped behavior.
+
+## Post-V1
+
+- Constrained DTW and monotonic warp maps.
+- Vowel-only micro-warp preview renderer.
+- ARA evaluation.
+- AAX and CLAP evaluation.
+- ML phoneme detection.
+- MIDI/slice groove mode.
+- Commercial time-stretch licensing decisions.

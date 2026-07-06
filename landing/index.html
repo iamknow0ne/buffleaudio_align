@@ -43,7 +43,13 @@
             <span>alignment</span>
             <span>with feel.</span>
           </h1>
-          <p class="lede">Buffle Audio Align listens to the Guide and Dub relationship, estimates timing offset, then gives you a confident nudge before the performance gets flattened.</p>
+          <p class="lede">Route the Guide, play the Dub, wait for confidence, then preview a safe nudge before the performance gets flattened.</p>
+          <div class="format-strip" aria-label="Built for">
+            <span>Doubles</span>
+            <span>Stacks</span>
+            <span>Backing vocals</span>
+            <span>Unsigned macOS preview</span>
+          </div>
           <div class="hero-actions">
             <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download v0.3.0</a>
             <a class="button" href="#signal">See the signal path</a>
@@ -104,11 +110,12 @@
       <section id="signal" class="signal-section" aria-labelledby="signal-title">
         <div class="section-head">
           <p class="eyebrow">signal-first interface</p>
-          <h2 id="signal-title">The app is a timing decision surface, not a screenshot gallery.</h2>
-          <p>One real capture is enough: the rest of the landing explains what Align helps you decide while you are producing.</p>
+          <h2 id="signal-title">A timing decision surface for vocal doubles.</h2>
+          <p>Guide on sidechain, Dub on the main input, offset in milliseconds, and confidence before any nudge becomes actionable.</p>
         </div>
         <figure class="app-proof">
           <img src="assets/screenshots/standalone-app-v0.3.0.png" alt="Buffle Audio Align standalone app showing Guide/Dub timing readouts">
+          <figcaption>Guide/Dub monitor, signed offset, confidence, and safe nudge preview in one cockpit.</figcaption>
         </figure>
       </section>
 
@@ -156,6 +163,22 @@
           <div><span>now</span><strong>Envelope features, signed offset, realtime-safe nudge delay, CTest coverage.</strong></div>
           <div><span>next</span><strong>Captured analysis buffers, original/preview A/B, clearer DAW workflow states.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, consonant attenuation, offline preview rendering.</strong></div>
+        </div>
+      </section>
+
+      <section class="v1-section" aria-labelledby="v1-title">
+        <div class="section-head">
+          <p class="eyebrow">road to v1</p>
+          <h2 id="v1-title">Transparent stack cleanup, not a black-box warper.</h2>
+          <p>V1 is focused on safe nudge, trust meter alignment, and vocal-stack-specific consonant control before heavier offline warping.</p>
+        </div>
+        <div class="v1-grid">
+          <div><span>01</span><strong>Trust Meter Alignment</strong></div>
+          <div><span>02</span><strong>One-Click Safe Nudge</strong></div>
+          <div><span>03</span><strong>Consonant Collision Detector</strong></div>
+          <div><span>04</span><strong>Removed Material Audition</strong></div>
+          <div><span>05</span><strong>Naturalness Guardrail</strong></div>
+          <div><span>06</span><strong>Phrase Health Report</strong></div>
         </div>
       </section>
 

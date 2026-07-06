@@ -1,17 +1,21 @@
 # Changelog
 
+## Unreleased
+
+- Added confidence gating so weak or silent Guide/Dub signals no longer show bogus numeric offset/suggested nudge certainty.
+- Added an `Apply Nudge` workflow action that only applies a suggestion when the confidence gate is reliable.
+- Exposed the existing `Guide Blend` and `Stereo Focus` parameters in the Control Room UI.
+- Expanded the editor size/layout to fit the extra controls and prevent workflow rail label clipping.
+- Rebuilt the V1 roadmap around transparent safe nudge, trust-meter alignment, and vocal-stack consonant control.
+- Updated README with a producer quick-start, preview-build safety note, and V1 differentiator list.
+- Updated the landing page with concrete producer workflow copy and a Road to V1 section.
+
 ## v0.3.0
 
 - Polished the landing page with v0.3.0 release CTAs, a dedicated release section, and a clearer product preview.
 - Refined the plugin timing panel with a v0.3 preview badge and manual-versus-suggested nudge context.
 - Bumped CMake, packaging scripts, release scripts, docs, and landing copy to `0.3.0`.
 - Prepared the macOS Standalone, VST3, AU, installer, and bundle archive release lane for GitHub.
-
-## Unreleased
-
-- Added Buy Me a Coffee support CTAs to the landing page.
-- Refreshed live landing and GitHub release screenshots for v0.3.0.
-- Expanded README, release inventory, deployment notes, and healthcheck documentation.
 
 ## Earlier modernization work
 

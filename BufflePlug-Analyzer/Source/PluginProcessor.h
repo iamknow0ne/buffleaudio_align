@@ -68,6 +68,7 @@ public:
         float offsetConfidence = 0.0f;
         int latencyMs = 0;
         bool guideFromSidechain = false;
+        bool hasReliableOffset = false;
     };
 
     AlignmentSnapshot getAlignmentSnapshot() const;

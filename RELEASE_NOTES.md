@@ -2,6 +2,14 @@
 
 Developer preview for macOS Standalone, VST3, and AU.
 
+## Current Unreleased Polish
+
+- Confidence-gated offset and suggested nudge display.
+- `Apply Nudge` workflow action for reliable suggestions.
+- Visible `Guide Blend` and `Stereo Focus` controls.
+- V1 roadmap reframed around trust-meter alignment, safe nudge, and consonant cleanup.
+- Landing and README updated with the producer workflow and Road to V1 story.
+
 ## Highlights
 
 - Polished Buffle Audio Align editor with Guide/Dub monitoring and a clearer v0.3 preview state.
