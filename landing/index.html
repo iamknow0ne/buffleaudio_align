@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align v0.3.0 is a vocal-stack alignment and articulation cleanup plugin for macOS, VST3, AU, and Standalone.">
+    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, suggested nudge preview, VST3, AU, and Standalone.">
     <title>Buffle Audio Align v0.3.0</title>
     <link rel="icon" href="assets/buffleaudio-logo.png">
     <link rel="stylesheet" href="styles.css">
@@ -12,159 +12,157 @@
     <header class="topbar" aria-label="Buffle Audio Align">
       <a class="brand" href="#top" aria-label="Buffle Audio Align home">
         <img src="assets/buffleaudio-logo.png" alt="Buffle Audio">
+        <span>Align</span>
       </a>
       <nav aria-label="Primary">
+        <a href="#app">App</a>
         <a href="#workflow">Workflow</a>
-        <a href="#engine">Engine</a>
         <a href="#release">Release</a>
-        <a href="#proof">Proof</a>
-        <a href="#support">Support</a>
         <a href="#download">Download</a>
+        <a href="#support">Support</a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
+        <div class="hero-bg" aria-hidden="true"></div>
+        <div class="hero-inner">
           <p class="eyebrow">Buffle Audio</p>
-          <h1 id="hero-title">Align</h1>
-          <p class="release-pill">v0.3.0 developer preview - macOS Standalone, VST3, AU</p>
-          <p class="lede">Fast vocal stack cleanup: find the timing offset, nudge the double, tame the consonants.</p>
-          <div class="actions">
-            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Get v0.3.0</a>
-            <a class="button secondary" href="#workflow">See the workflow</a>
+          <h1 id="hero-title">Align vocal stacks without flattening the performance.</h1>
+          <p class="lede">Guide/Dub timing analysis, signed offset confidence, and a delay-safe nudge preview for doubles, stacks, and backing vocals.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download v0.3.0</a>
+            <a class="button secondary" href="#app">View the app</a>
             <a class="button coffee" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
           </div>
-        </div>
-
-        <div class="plugin-shell" aria-label="Buffle Audio Align interface preview">
-          <div class="plugin-head">
-            <img src="assets/buffleaudio-logo.png" alt="">
-            <span>Guide: Sidechain - 87%</span>
-          </div>
-          <div class="meter-row">
-            <div><b>GUIDE</b><span>78%</span></div>
-            <div><b>DUB</b><span>71%</span></div>
-            <div><b>OFFSET</b><span>-12.5 ms</span></div>
-            <div><b>SUGGEST</b><span>12.5 ms</span></div>
-          </div>
-          <div class="confidence"><span></span><b>Offset confidence 87% - locked</b></div>
-          <div class="lanes">
-            <div class="lane guide"><strong>Guide</strong><i></i></div>
-            <div class="lane dub"><strong>Dub</strong><i></i></div>
-          </div>
+          <dl class="hero-facts" aria-label="Release facts">
+            <div>
+              <dt>Build</dt>
+              <dd>Standalone / VST3 / AU</dd>
+            </div>
+            <div>
+              <dt>Core</dt>
+              <dd>Offset + nudge DSP</dd>
+            </div>
+            <div>
+              <dt>State</dt>
+              <dd>Developer preview</dd>
+            </div>
+          </dl>
         </div>
       </section>
 
-      <section id="workflow" class="section">
-        <div class="section-title">
+      <section id="app" class="section app-showcase">
+        <div class="section-kicker">
+          <p class="eyebrow">The App</p>
+          <h2>One cockpit for the timing decision that matters.</h2>
+          <p>Align keeps the producer focused on the Guide/Dub relationship: signal state, estimated offset, confidence, and the nudge to audition before committing to heavier alignment work.</p>
+        </div>
+        <figure class="app-frame">
+          <img src="assets/screenshots/standalone-app-v0.3.0.png" alt="Buffle Audio Align standalone app showing Guide/Dub timing readouts and control room sliders">
+        </figure>
+      </section>
+
+      <section id="workflow" class="section workflow">
+        <div class="section-kicker">
           <p class="eyebrow">Workflow</p>
           <h2>Built for doubles, stacks, and backing vocals.</h2>
         </div>
-        <div class="steps">
+        <div class="workflow-grid">
           <article>
             <span>01</span>
-            <h3>Monitor</h3>
-            <p>Feed the Guide vocal through sidechain or use the Dub fallback while setting up.</p>
+            <h3>Route</h3>
+            <p>Place Align on the Dub and feed the Guide through sidechain, or use fallback monitoring while setting up.</p>
           </article>
           <article>
             <span>02</span>
-            <h3>Analyze</h3>
-            <p>Extract energy and onset cues, then estimate a global Guide/Dub offset.</p>
+            <h3>Measure</h3>
+            <p>Envelope and onset cues drive the first global offset estimate with visible confidence feedback.</p>
           </article>
           <article>
             <span>03</span>
             <h3>Nudge</h3>
-            <p>Preview a manual or suggested delay-safe nudge before heavier alignment exists.</p>
+            <p>Preview a manual or suggested delay-safe move in milliseconds before printing or deeper editing.</p>
           </article>
           <article>
             <span>04</span>
-            <h3>Clean</h3>
-            <p>Consonant Tamer Lite is the next differentiator: soften doubled consonants without killing feel.</p>
+            <h3>Refine</h3>
+            <p>The roadmap moves next toward capture buffers, A/B preview, and Consonant Tamer Lite.</p>
           </article>
         </div>
       </section>
 
-      <section id="engine" class="section split">
+      <section class="section engine">
         <div>
-          <p class="eyebrow">Engine</p>
-          <h2>A practical DSP core before the big warping promises.</h2>
+          <p class="eyebrow">DSP</p>
+          <h2>Testable alignment parts before big warping promises.</h2>
         </div>
-        <div class="engine-list">
-          <p><strong>Now:</strong> envelope extraction, global offset estimation, realtime-safe nudge delay, and CTest coverage.</p>
-          <p><strong>Next:</strong> capture buffers, background analysis, preview/original A/B, and consonant attenuation.</p>
-          <p><strong>Later:</strong> constrained DTW, warp maps, offline preview rendering, ARA evaluation, and MIDI groove experiments.</p>
+        <div class="engine-stack">
+          <p><strong>Now</strong> envelope extraction, signed global offset estimation, realtime-safe nudge delay, and CTest coverage.</p>
+          <p><strong>Next</strong> captured analysis, preview/original A/B, consonant attenuation, and clearer DAW workflow states.</p>
+          <p><strong>Later</strong> constrained DTW, warp maps, offline preview rendering, ARA evaluation, and groove experiments.</p>
         </div>
       </section>
 
       <section id="release" class="section release">
-        <div class="section-title">
+        <div class="section-kicker">
           <p class="eyebrow">v0.3.0</p>
-          <h2>A cleaner preview release with the product surface tightened up.</h2>
+          <h2>A cleaner preview release with real macOS artifacts.</h2>
+          <p>The release ships the Standalone app, VST3, AU, installer package, and zipped staged bundles from the CMake path.</p>
         </div>
-        <div class="release-grid">
-          <article>
-            <span>DSP</span>
-            <h3>Testable alignment core</h3>
-            <p>Envelope extraction, signed global offset, confidence scoring, and a realtime-safe nudge delay now live in a standalone library.</p>
-          </article>
-          <article>
-            <span>UX</span>
-            <h3>Guide/Dub cockpit</h3>
-            <p>The plugin focuses on the decision a producer needs next: what the offset is, how confident it is, and what nudge to preview.</p>
-          </article>
-          <article>
-            <span>Release</span>
-            <h3>Installer and bundles</h3>
-            <p>The macOS package stages the Standalone app, VST3, and AU from the same CMake build path used by the test lane.</p>
-          </article>
+        <div class="release-list">
+          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
+            <span>Installer</span>
+            <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
+          </a>
+          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
+            <span>Bundles</span>
+            <strong>Standalone, VST3, AU</strong>
+          </a>
+          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases">
+            <span>Archive</span>
+            <strong>v0.2.0 and v0.3.0 releases</strong>
+          </a>
         </div>
       </section>
 
-      <section id="proof" class="section proof">
-        <div class="section-title">
-          <p class="eyebrow">Release Proof</p>
-          <h2>Fresh captures from the public landing and GitHub release.</h2>
+      <section class="section gallery">
+        <div class="section-kicker">
+          <p class="eyebrow">Screens</p>
+          <h2>Current public build and release surfaces.</h2>
         </div>
-        <div class="screenshot-grid">
-          <a href="assets/screenshots/standalone-app-v0.3.0.png" aria-label="Open standalone app screenshot">
-            <img src="assets/screenshots/standalone-app-v0.3.0.png" alt="Buffle Audio Align v0.3.0 standalone app screenshot">
+        <div class="gallery-grid">
+          <a href="assets/screenshots/standalone-app-v0.3.0.png">
+            <img src="assets/screenshots/standalone-app-v0.3.0.png" alt="Buffle Audio Align standalone app screenshot">
             <span>Standalone app</span>
           </a>
-          <a href="assets/screenshots/landing-v0.3.0.jpg" aria-label="Open landing page screenshot">
-            <img src="assets/screenshots/landing-v0.3.0.jpg" alt="Buffle Audio Align v0.3.0 landing page screenshot">
-            <span>Landing page</span>
-          </a>
-          <a href="assets/screenshots/github-release-v0.3.0.jpg" aria-label="Open GitHub release screenshot">
-            <img src="assets/screenshots/github-release-v0.3.0.jpg" alt="Buffle Audio Align v0.3.0 GitHub release screenshot">
+          <a href="assets/screenshots/github-release-v0.3.0.jpg">
+            <img src="assets/screenshots/github-release-v0.3.0.jpg" alt="GitHub release screenshot">
             <span>GitHub release</span>
           </a>
         </div>
       </section>
 
+      <section id="download" class="download">
+        <div>
+          <p class="eyebrow">Download</p>
+          <h2>macOS developer preview.</h2>
+          <p>The bundles are ad-hoc signed for local verification. Public distribution still needs Developer ID signing and notarization.</p>
+        </div>
+        <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Open GitHub release</a>
+      </section>
+
       <section id="support" class="section support">
         <div class="support-copy">
           <p class="eyebrow">Support</p>
-          <h2>Help push Align from preview into a serious vocal workflow.</h2>
-          <p>Every coffee helps fund testing time, signing/notarization, DAW compatibility passes, and the next DSP milestones.</p>
+          <h2>Help move Align from preview to a serious vocal workflow.</h2>
+          <p>Support funds signing, notarization, DAW compatibility passes, and the next DSP milestones.</p>
         </div>
         <a class="support-card" href="https://buymeacoffee.com/hostin.tech" aria-label="Support Buffle Audio Align on Buy Me a Coffee">
           <span>Buy Me a Coffee</span>
           <strong>hostin.tech</strong>
           <em>Support development</em>
         </a>
-      </section>
-
-      <section id="download" class="download">
-        <p class="eyebrow">Developer Preview v0.3.0</p>
-        <h2>macOS Standalone, VST3, AU, and local installer.</h2>
-        <p>The current package is built locally and ad-hoc signed for verification. Public release still needs Developer ID signing and notarization.</p>
-        <div class="download-grid">
-          <div><span>Standalone</span><b>Buffle Audio Align.app</b></div>
-          <div><span>Plugin</span><b>VST3 + AU</b></div>
-          <div><span>Installer</span><b>BuffleAudioAlign-0.3.0-macOS.pkg</b></div>
-        </div>
-        <a class="button primary download-button" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Open GitHub release</a>
       </section>
     </main>
   </body>
