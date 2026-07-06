@@ -1,21 +1,21 @@
-# Buffle Audio Align 0.2.0
+# Buffle Audio Align 0.3.0
 
-Developer preview for macOS.
+Developer preview for macOS Standalone, VST3, and AU.
 
 ## Highlights
 
-- Branded Buffle Audio Align editor with Guide/Dub monitoring.
+- Polished Buffle Audio Align editor with Guide/Dub monitoring and a clearer v0.3 preview state.
 - Optional Guide sidechain with Dub fallback indication.
-- Manual nudge delay preview.
+- Manual nudge delay preview with manual-versus-suggested nudge context.
 - Initial signed offset estimate, offset confidence, and suggested nudge readouts.
 - Standalone DSP library with CTest coverage for envelope extraction, offset estimation, and nudge timing.
-- macOS Standalone, VST3, AU, and local `.pkg` installer.
-- Static landing page under `landing/`.
+- macOS Standalone, VST3, AU, local `.pkg` installer, and zipped staged bundles.
+- Polished static landing page under `landing/`, designed to be exposed without serving the full repository.
 
 ## Artifacts
 
-- `BuffleAudioAlign-0.2.0-macOS.pkg`
-- `BuffleAudioAlign-0.2.0-macOS-bundles.zip`
+- `BuffleAudioAlign-0.3.0-macOS.pkg`
+- `BuffleAudioAlign-0.3.0-macOS-bundles.zip`
 
 ## Notes
 

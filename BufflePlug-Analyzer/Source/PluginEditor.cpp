@@ -101,11 +101,11 @@ public:
 
         g.setColour (ink);
         g.setFont (juce::FontOptions (17.0f, juce::Font::bold));
-        g.drawText ("Buffle Audio - Align", area.removeFromTop (24), juce::Justification::centred);
+        g.drawText ("Buffle Audio Align", area.removeFromTop (24), juce::Justification::centred);
 
         g.setColour (brandAccent);
         g.setFont (juce::FontOptions (12.5f, juce::Font::bold));
-        g.drawText ("v0.2.0 development build", area.removeFromTop (19), juce::Justification::centred);
+        g.drawText ("v0.3.0 development build", area.removeFromTop (19), juce::Justification::centred);
 
         g.setColour (muted.withAlpha (0.9f));
         g.setFont (juce::FontOptions (12.0f));
@@ -145,6 +145,12 @@ public:
         auto title = content.removeFromTop (28);
         auto snapshot = processor.getAlignmentSnapshot();
 
+        auto badge = title.removeFromRight (92).reduced (0, 3);
+        drawRoundRect (g, badge.toFloat(), juce::Colour (0xff142320), brandAccent.withAlpha (0.34f));
+        g.setColour (brandAccent);
+        g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
+        g.drawText ("v0.3 PREVIEW", badge, juce::Justification::centred);
+
         g.setColour (ink);
         g.setFont (juce::FontOptions (18.5f, juce::Font::bold));
         g.drawText ("Guide / Dub Timing", title, juce::Justification::centredLeft);
@@ -160,7 +166,15 @@ public:
         readouts.removeFromLeft (gap);
         drawReadoutPill (g, readouts, "SUGGEST", juce::String (snapshot.suggestedNudgeMs, 1) + " ms", warningColour);
 
-        content.removeFromTop (12);
+        content.removeFromTop (8);
+        auto nudgeLine = content.removeFromTop (18);
+        g.setColour (muted.withAlpha (0.86f));
+        g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
+        g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - suggested safe nudge "
+                        + juce::String (snapshot.suggestedNudgeMs, 1) + " ms",
+                    nudgeLine,
+                    juce::Justification::centredLeft);
+        content.removeFromTop (8);
 
         drawConfidence (g, content.removeFromTop (34), snapshot.offsetConfidence);
         content.removeFromTop (12);

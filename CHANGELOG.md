@@ -1,5 +1,12 @@
 # Changelog
 
+## v0.3.0
+
+- Polished the landing page with v0.3.0 release CTAs, a dedicated release section, and a clearer product preview.
+- Refined the plugin timing panel with a v0.3 preview badge and manual-versus-suggested nudge context.
+- Bumped CMake, packaging scripts, release scripts, docs, and landing copy to `0.3.0`.
+- Prepared the macOS Standalone, VST3, AU, installer, and bundle archive release lane for GitHub.
+
 ## Unreleased
 
 - Reframed the product as `Buffle Audio Align`, a vocal-stack alignment and articulation cleanup plugin.
@@ -11,7 +18,7 @@
 - Documented the current build blocker: generated Xcode files still point to a missing local JUCE modules path.
 - Added a modern CMake build using the local JUCE checkout at `/Users/hostin/vibecoding/waveform-visualizer/JUCE`.
 - Built Debug and Release Standalone, VST3, and AU targets successfully.
-- Added `scripts/build_and_package_macos.sh` to stage bundles and create `dist/BuffleAudioAlign-0.2.0-macOS.pkg`.
+- Added `scripts/build_and_package_macos.sh` to stage bundles and create `dist/BuffleAudioAlign-0.3.0-macOS.pkg`.
 - Verified staged `.app`, `.vst3`, and `.component` bundles with ad-hoc codesigning.
 - Added optional `Guide` sidechain bus support while treating the main input as `Dub`.
 - Made `Manual Nudge` audible with a preallocated realtime-safe delay buffer.

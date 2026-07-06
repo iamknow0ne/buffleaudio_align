@@ -8,7 +8,7 @@ DIST_DIR="${ROOT_DIR}/dist"
 STAGE_DIR="${DIST_DIR}/stage"
 PKGROOT_DIR="${DIST_DIR}/pkgroot"
 JUCE_PATH="${JUCE_PATH:-/Users/hostin/vibecoding/waveform-visualizer/JUCE}"
-VERSION="0.2.0"
+VERSION="0.3.0"
 PKG_ID="com.buffleaudio.align"
 
 cmake -S "${ROOT_DIR}" -B "${BUILD_DIR}" \

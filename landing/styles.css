@@ -54,8 +54,10 @@ a {
 
 .brand img {
   display: block;
+  filter: invert(1) brightness(1.6) contrast(0.92);
   height: 38px;
   object-fit: contain;
+  opacity: 0.88;
   width: 142px;
 }
 
@@ -76,8 +78,8 @@ nav a:hover {
   display: grid;
   gap: clamp(28px, 6vw, 88px);
   grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
-  min-height: calc(100vh - 76px);
-  padding: clamp(48px, 8vw, 96px) 5vw;
+  min-height: clamp(620px, calc(100vh - 132px), 780px);
+  padding: clamp(40px, 6vw, 76px) 5vw;
 }
 
 .eyebrow {
@@ -118,6 +120,18 @@ h3 {
   font-size: clamp(1.12rem, 2vw, 1.45rem);
   line-height: 1.55;
   max-width: 680px;
+}
+
+.release-pill {
+  border: 1px solid rgba(77, 208, 196, 0.34);
+  border-radius: 8px;
+  color: var(--green);
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 900;
+  margin: 0 0 22px;
+  padding: 9px 12px;
+  text-transform: uppercase;
 }
 
 .actions {
@@ -170,8 +184,10 @@ h3 {
 }
 
 .plugin-head img {
+  filter: invert(1) brightness(1.45) contrast(0.92);
   height: 32px;
   object-fit: contain;
+  opacity: 0.74;
   width: 124px;
 }
 
@@ -228,7 +244,7 @@ h3 {
   display: block;
   height: 100%;
   opacity: 0.72;
-  width: 82%;
+  width: 87%;
 }
 
 .confidence b {
@@ -335,6 +351,39 @@ h3 {
   color: var(--ink);
 }
 
+.release {
+  border-top: 1px solid var(--border);
+}
+
+.release-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 36px;
+}
+
+.release-grid article {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-height: 230px;
+  padding: 22px;
+}
+
+.release-grid span {
+  color: var(--yellow);
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 900;
+  margin-bottom: 34px;
+  text-transform: uppercase;
+}
+
+.release-grid p {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .download {
   background: var(--header);
   border-top: 1px solid var(--border);
@@ -358,6 +407,10 @@ h3 {
   font-size: 1rem;
 }
 
+.download-button {
+  margin-top: 24px;
+}
+
 @media (max-width: 920px) {
   .topbar {
     align-items: flex-start;
@@ -371,6 +424,7 @@ h3 {
   .hero,
   .split,
   .steps,
+  .release-grid,
   .download-grid {
     grid-template-columns: 1fr;
   }
@@ -402,5 +456,14 @@ h3 {
   .plugin-head {
     align-items: flex-start;
     gap: 14px;
+  }
+
+  .plugin-shell {
+    padding: 14px;
+  }
+
+  .lane {
+    min-height: 104px;
+    padding: 14px;
   }
 }

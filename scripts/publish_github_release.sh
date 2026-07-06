@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="${VERSION:-0.2.0}"
+VERSION="${VERSION:-0.3.0}"
 TAG="${TAG:-v${VERSION}}"
 TITLE="${TITLE:-Buffle Audio Align ${VERSION}}"
 PKG="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-macOS.pkg"

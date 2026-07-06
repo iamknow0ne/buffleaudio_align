@@ -61,7 +61,7 @@ Outputs:
 dist/stage/Buffle Audio Align.app
 dist/stage/Buffle Audio Align.vst3
 dist/stage/Buffle Audio Align.component
-dist/BuffleAudioAlign-0.2.0-macOS.pkg
+dist/BuffleAudioAlign-0.3.0-macOS.pkg
 ```
 
 The bundles are ad-hoc signed for local verification. The package is not Developer ID Installer signed or notarized.

@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align is a vocal-stack alignment and articulation cleanup plugin for macOS, VST3, AU, and Standalone.">
-    <title>Buffle Audio Align</title>
+    <meta name="description" content="Buffle Audio Align v0.3.0 is a vocal-stack alignment and articulation cleanup plugin for macOS, VST3, AU, and Standalone.">
+    <title>Buffle Audio Align v0.3.0</title>
+    <link rel="icon" href="assets/buffleaudio-logo.png">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -15,6 +16,7 @@
       <nav aria-label="Primary">
         <a href="#workflow">Workflow</a>
         <a href="#engine">Engine</a>
+        <a href="#release">Release</a>
         <a href="#download">Download</a>
       </nav>
     </header>
@@ -24,9 +26,10 @@
         <div class="hero-copy">
           <p class="eyebrow">Buffle Audio</p>
           <h1 id="hero-title">Align</h1>
+          <p class="release-pill">v0.3.0 developer preview - macOS Standalone, VST3, AU</p>
           <p class="lede">Fast vocal stack cleanup: find the timing offset, nudge the double, tame the consonants.</p>
           <div class="actions">
-            <a class="button primary" href="#download">Get the macOS build</a>
+            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Get v0.3.0</a>
             <a class="button secondary" href="#workflow">See the workflow</a>
           </div>
         </div>
@@ -34,15 +37,15 @@
         <div class="plugin-shell" aria-label="Buffle Audio Align interface preview">
           <div class="plugin-head">
             <img src="assets/buffleaudio-logo.png" alt="">
-            <span>Guide: Sidechain - 82%</span>
+            <span>Guide: Sidechain - 87%</span>
           </div>
           <div class="meter-row">
-            <div><b>GUIDE</b><span>74%</span></div>
-            <div><b>DUB</b><span>69%</span></div>
-            <div><b>OFFSET</b><span>+15.0 ms</span></div>
-            <div><b>SUGGEST</b><span>0.0 ms</span></div>
+            <div><b>GUIDE</b><span>78%</span></div>
+            <div><b>DUB</b><span>71%</span></div>
+            <div><b>OFFSET</b><span>-12.5 ms</span></div>
+            <div><b>SUGGEST</b><span>12.5 ms</span></div>
           </div>
-          <div class="confidence"><span></span><b>Offset confidence 82%</b></div>
+          <div class="confidence"><span></span><b>Offset confidence 87% - locked</b></div>
           <div class="lanes">
             <div class="lane guide"><strong>Guide</strong><i></i></div>
             <div class="lane dub"><strong>Dub</strong><i></i></div>
@@ -91,15 +94,40 @@
         </div>
       </section>
 
+      <section id="release" class="section release">
+        <div class="section-title">
+          <p class="eyebrow">v0.3.0</p>
+          <h2>A cleaner preview release with the product surface tightened up.</h2>
+        </div>
+        <div class="release-grid">
+          <article>
+            <span>DSP</span>
+            <h3>Testable alignment core</h3>
+            <p>Envelope extraction, signed global offset, confidence scoring, and a realtime-safe nudge delay now live in a standalone library.</p>
+          </article>
+          <article>
+            <span>UX</span>
+            <h3>Guide/Dub cockpit</h3>
+            <p>The plugin focuses on the decision a producer needs next: what the offset is, how confident it is, and what nudge to preview.</p>
+          </article>
+          <article>
+            <span>Release</span>
+            <h3>Installer and bundles</h3>
+            <p>The macOS package stages the Standalone app, VST3, and AU from the same CMake build path used by the test lane.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="download" class="download">
-        <p class="eyebrow">Developer Preview</p>
+        <p class="eyebrow">Developer Preview v0.3.0</p>
         <h2>macOS Standalone, VST3, AU, and local installer.</h2>
         <p>The current package is built locally and ad-hoc signed for verification. Public release still needs Developer ID signing and notarization.</p>
         <div class="download-grid">
           <div><span>Standalone</span><b>Buffle Audio Align.app</b></div>
           <div><span>Plugin</span><b>VST3 + AU</b></div>
-          <div><span>Installer</span><b>BuffleAudioAlign-0.2.0-macOS.pkg</b></div>
+          <div><span>Installer</span><b>BuffleAudioAlign-0.3.0-macOS.pkg</b></div>
         </div>
+        <a class="button primary download-button" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Open GitHub release</a>
       </section>
     </main>
   </body>

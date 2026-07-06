@@ -19,7 +19,7 @@ Current build target: macOS Standalone, VST3, and AU.
 
 ## Product Shape
 
-The v0.2 direction is intentionally narrow:
+The v0.3.0 direction is intentionally narrow:
 
 1. Monitor or capture Guide and Dub.
 2. Extract energy/onset envelopes.
@@ -63,7 +63,7 @@ Outputs:
 - `dist/stage/Buffle Audio Align.app`
 - `dist/stage/Buffle Audio Align.vst3`
 - `dist/stage/Buffle Audio Align.component`
-- `dist/BuffleAudioAlign-0.2.0-macOS.pkg`
+- `dist/BuffleAudioAlign-0.3.0-macOS.pkg`
 
 The staged bundles are ad-hoc signed for local verification. The package is not Developer ID Installer signed or notarized yet.
 
@@ -79,6 +79,12 @@ Then open:
 
 ```text
 http://127.0.0.1:8088
+```
+
+If that port is already busy, choose another one:
+
+```bash
+PORT=8099 scripts/serve_landing.sh
 ```
 
 This is the folder to expose with `cloudflared` when available.
