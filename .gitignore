@@ -16,6 +16,7 @@ dist/
 # Dependency directories
 deps/
 vendor/
+.wrangler/
 
 # Logs and databases
 *.log

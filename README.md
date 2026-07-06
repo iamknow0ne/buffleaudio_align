@@ -69,6 +69,12 @@ The staged bundles are ad-hoc signed for local verification. The package is not 
 
 ## Landing Page
 
+Production Pages URL:
+
+```text
+https://buffleaudio-align.pages.dev/
+```
+
 Serve only the landing page folder:
 
 ```bash
