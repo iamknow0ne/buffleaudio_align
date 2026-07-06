@@ -1,0 +1,45 @@
+# Compiled object files
+*.o
+*.obj
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Build directories
+build/
+cmake-build-*
+CMakeFiles/
+dist/
+
+# Dependency directories
+deps/
+vendor/
+
+# Logs and databases
+*.log
+*.sqlite
+
+# User-specific files
+*.swp
+*.swo
+
+# IDE files
+.vscode/
+.idea/
+
+# Environment files
+.env
+.env.*
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+
+# Output of the build
+bin/

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Buffle Audio Align is a vocal-stack alignment and articulation cleanup plugin for macOS, VST3, AU, and Standalone.">
+    <title>Buffle Audio Align</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="topbar" aria-label="Buffle Audio Align">
+      <a class="brand" href="#top" aria-label="Buffle Audio Align home">
+        <img src="assets/buffleaudio-logo.png" alt="Buffle Audio">
+      </a>
+      <nav aria-label="Primary">
+        <a href="#workflow">Workflow</a>
+        <a href="#engine">Engine</a>
+        <a href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Buffle Audio</p>
+          <h1 id="hero-title">Align</h1>
+          <p class="lede">Fast vocal stack cleanup: find the timing offset, nudge the double, tame the consonants.</p>
+          <div class="actions">
+            <a class="button primary" href="#download">Get the macOS build</a>
+            <a class="button secondary" href="#workflow">See the workflow</a>
+          </div>
+        </div>
+
+        <div class="plugin-shell" aria-label="Buffle Audio Align interface preview">
+          <div class="plugin-head">
+            <img src="assets/buffleaudio-logo.png" alt="">
+            <span>Guide: Sidechain - 82%</span>
+          </div>
+          <div class="meter-row">
+            <div><b>GUIDE</b><span>74%</span></div>
+            <div><b>DUB</b><span>69%</span></div>
+            <div><b>OFFSET</b><span>+15.0 ms</span></div>
+            <div><b>SUGGEST</b><span>0.0 ms</span></div>
+          </div>
+          <div class="confidence"><span></span><b>Offset confidence 82%</b></div>
+          <div class="lanes">
+            <div class="lane guide"><strong>Guide</strong><i></i></div>
+            <div class="lane dub"><strong>Dub</strong><i></i></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="workflow" class="section">
+        <div class="section-title">
+          <p class="eyebrow">Workflow</p>
+          <h2>Built for doubles, stacks, and backing vocals.</h2>
+        </div>
+        <div class="steps">
+          <article>
+            <span>01</span>
+            <h3>Monitor</h3>
+            <p>Feed the Guide vocal through sidechain or use the Dub fallback while setting up.</p>
+          </article>
+          <article>
+            <span>02</span>
+            <h3>Analyze</h3>
+            <p>Extract energy and onset cues, then estimate a global Guide/Dub offset.</p>
+          </article>
+          <article>
+            <span>03</span>
+            <h3>Nudge</h3>
+            <p>Preview a manual or suggested delay-safe nudge before heavier alignment exists.</p>
+          </article>
+          <article>
+            <span>04</span>
+            <h3>Clean</h3>
+            <p>Consonant Tamer Lite is the next differentiator: soften doubled consonants without killing feel.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="engine" class="section split">
+        <div>
+          <p class="eyebrow">Engine</p>
+          <h2>A practical DSP core before the big warping promises.</h2>
+        </div>
+        <div class="engine-list">
+          <p><strong>Now:</strong> envelope extraction, global offset estimation, realtime-safe nudge delay, and CTest coverage.</p>
+          <p><strong>Next:</strong> capture buffers, background analysis, preview/original A/B, and consonant attenuation.</p>
+          <p><strong>Later:</strong> constrained DTW, warp maps, offline preview rendering, ARA evaluation, and MIDI groove experiments.</p>
+        </div>
+      </section>
+
+      <section id="download" class="download">
+        <p class="eyebrow">Developer Preview</p>
+        <h2>macOS Standalone, VST3, AU, and local installer.</h2>
+        <p>The current package is built locally and ad-hoc signed for verification. Public release still needs Developer ID signing and notarization.</p>
+        <div class="download-grid">
+          <div><span>Standalone</span><b>Buffle Audio Align.app</b></div>
+          <div><span>Plugin</span><b>VST3 + AU</b></div>
+          <div><span>Installer</span><b>BuffleAudioAlign-0.2.0-macOS.pkg</b></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
