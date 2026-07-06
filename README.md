@@ -22,6 +22,8 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 
 Latest v0.3.0 captures from the live Pages deployment and GitHub release:
 
+![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-v0.3.0.png)
+
 ![Buffle Audio Align landing page](landing/assets/screenshots/landing-v0.3.0.jpg)
 
 ![Buffle Audio Align GitHub release](landing/assets/screenshots/github-release-v0.3.0.jpg)

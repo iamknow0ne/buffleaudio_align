@@ -47,5 +47,6 @@ npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --bran
 
 ## Fresh Screenshots
 
+- Standalone app: `landing/assets/screenshots/standalone-app-v0.3.0.png`
 - Landing page: `landing/assets/screenshots/landing-v0.3.0.jpg`
 - GitHub release page: `landing/assets/screenshots/github-release-v0.3.0.jpg`
