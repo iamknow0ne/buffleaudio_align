@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, explainable Trust Meter reason codes, confidence-aware bidirectional nudge, Naturalness Guardrail, Stack Role presets, A/B preview, Tamer-only audition, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
+    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence-aware nudge decisions, Consonant Tamer Lite, Stack Role presets, A/B audition, and copyable session reports.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
     <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
     <meta property="og:image" content="/assets/screenshots/landing-hero-v0.3.0.jpg">
@@ -45,18 +45,18 @@
         <div class="hero-vignette" aria-hidden="true"></div>
 
         <div class="hero-content">
-          <p class="eyebrow">Buffle Audio / macOS developer preview</p>
+          <p class="eyebrow">Buffle Audio / vocal stack alignment</p>
           <h1 id="hero-title">
             <span>Buffle Audio</span>
             <span>Align</span>
           </h1>
-          <p class="hero-copy">Preview timing moves for doubles, ADR, and backing vocals against a guide while keeping the small imperfections that make a stack feel human.</p>
+          <p class="hero-copy">Align vocal doubles, ADR lines, and backing stacks against a guide without turning the performance into a grid. Hear the timing move, tame loose consonants, and keep the human edge.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download packaged preview</a>
+            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download for macOS</a>
             <a class="button" href="#workflow">See workflow</a>
             <a class="button support" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
           </div>
-          <p class="release-note">Public download is v0.3.0. Current main has post-v0.3 V1 polish with local AU validation evidence; VST3/pluginval, DAW matrix, signing, and notarization remain open.</p>
+          <p class="release-note">Latest packaged build: v0.3.0 for macOS Standalone, AU, and VST3. Use the bundle download for the cleanest install path.</p>
         </div>
 
         <aside class="hero-console" aria-label="Live alignment preview">
@@ -112,29 +112,29 @@
         <div class="section-copy">
           <p class="eyebrow">one job, done clearly</p>
           <h2 id="product-title">Line up the stack while keeping the performance alive.</h2>
-          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition full preview changes or only the consonants reduced by the tamer.</p>
+          <p>Put Align on the dub or backing vocal, route the lead as the Guide when your host supports it, and read a signed offset with confidence instead of guessing whether the double is early or late.</p>
         </div>
         <figure class="app-frame">
           <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, delay-safe nudge, A/B preview, and Consonant Tamer controls.">
-          <figcaption>Current source preview showing the Guide/Dub timing surface, confidence readout, role presets, A/B modes, and Consonant Tamer controls.</figcaption>
+          <figcaption>The Align surface: Guide/Dub timing, confidence, role presets, A/B modes, Naturalness Guardrail, and Consonant Tamer controls.</figcaption>
         </figure>
       </section>
 
       <section id="workflow" class="workflow-section" aria-labelledby="workflow-title">
         <div class="section-copy">
           <p class="eyebrow">studio flow</p>
-          <h2 id="workflow-title">Four controls that match the way vocal stacks are made.</h2>
+          <h2 id="workflow-title">A studio workflow for doubles, harmonies, rap stacks, and ADR.</h2>
         </div>
         <div class="workflow-grid">
           <article style="--accent: var(--teal)">
             <span>01</span>
             <h3>Pick the role</h3>
-            <p>Double Tight, Choir Natural, Rap Stack, and ADR Loose set the starting feel before manual tuning. Some stereo controls are still preview shaping while deeper DSP lands.</p>
+            <p>Double Tight, Choir Natural, Rap Stack, and ADR Loose set musical starting points for tightness, naturalness, consonant control, guide blend, and stereo focus.</p>
           </article>
           <article style="--accent: var(--amber)">
             <span>02</span>
             <h3>Trust the read</h3>
-            <p>The Trust Meter names the reason: route the Guide, raise a quiet lane, keep listening for confidence, or apply a safe Delay/Advance Dub move.</p>
+            <p>The Trust Meter names what Align hears: missing Guide, quiet lanes, unstable timing, locked timing, or a safe early/late Dub correction.</p>
           </article>
           <article style="--accent: var(--coral)">
             <span>03</span>
@@ -144,42 +144,42 @@
           <article style="--accent: var(--green)">
             <span>04</span>
             <h3>Keep it human</h3>
-            <p>Naturalness Guardrail flags risky cleanup before print, while Consonant Tamer Lite softens unmatched Dub attacks without flattening the vowel body.</p>
+            <p>Naturalness Guardrail flags risky cleanup, while Consonant Tamer Lite softens unmatched Dub attacks without flattening the vowel body.</p>
           </article>
         </div>
       </section>
 
       <section id="engine" class="engine-section" aria-labelledby="engine-title">
         <div class="section-copy">
-          <p class="eyebrow">engine state</p>
-          <h2 id="engine-title">A transparent preview engine, not a black-box warper.</h2>
-          <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, bundle archive, rough installer package, and release assets are all part of the current workflow.</p>
+          <p class="eyebrow">inside the plugin</p>
+          <h2 id="engine-title">A transparent alignment tool, not a black-box warper.</h2>
+          <p>Align focuses on the decisions producers actually make during vocal comp and stack cleanup: listen, trust the read, nudge carefully, tame clutter, and print only when the move still feels musical.</p>
         </div>
         <div class="engine-list">
-          <div><span>current main</span><strong>Signed offset, Trust Meter reason codes, bidirectional Apply Nudge, Naturalness Guardrail, Stack Role presets, All Diff, Tamer-only audition, Changed meters, Consonant Tamer Lite, Copy Report.</strong></div>
-          <div><span>v1 focus</span><strong>Phrase workflow, naturalness guardrails, golden audio checks, DAW validation, signing, notarization.</strong></div>
-          <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
+          <div><span>timing</span><strong>Signed Guide/Dub offset, confidence-gated suggestions, manual nudge, and delay-safe early/late correction in supported hosts.</strong></div>
+          <div><span>tone</span><strong>Consonant Tamer Lite, Naturalness Guardrail, changed-material meter, All Diff audition, and Tamer-only audition.</strong></div>
+          <div><span>session</span><strong>Stack Role presets, phrase-health states, Next Best Move guidance, and Copy Report for sharing the current alignment read.</strong></div>
         </div>
       </section>
 
       <section id="release" class="release-section" aria-labelledby="release-title">
         <div>
-          <p class="eyebrow">release</p>
-          <h2 id="release-title">Get the current macOS preview.</h2>
-          <p>Download the macOS developer preview from GitHub Releases. The bundle zip is the cleanest testing path today; the installer package is available for local preview only and is not Developer ID notarized yet. Local AU validation has passed for the current source artifact, while VST3/pluginval and DAW matrix evidence remain open.</p>
+          <p class="eyebrow">download</p>
+          <h2 id="release-title">Get Align for macOS.</h2>
+          <p>The latest packaged build includes the Standalone app plus AU and VST3 plugin formats. Start with the bundle zip for manual installation. The package installer is included as a convenience preview for testers who want to try the guided install path.</p>
         </div>
         <div class="release-actions">
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
-            <span>bundles</span>
+            <span>recommended</span>
             <strong>Standalone, VST3, AU</strong>
           </a>
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
-            <span>rough installer</span>
-            <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
+            <span>installer</span>
+            <strong>macOS package preview</strong>
           </a>
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/blob/main/docs/v1-tester-guide.md">
-            <span>tester guide</span>
-            <strong>Install, smoke test, send feedback</strong>
+            <span>guide</span>
+            <strong>Install and route a Guide</strong>
           </a>
         </div>
       </section>
@@ -187,13 +187,13 @@
       <section id="support" class="support-section" aria-labelledby="support-title">
         <div>
           <p class="eyebrow">support</p>
-          <h2 id="support-title">Fund the boring parts that make plugins shippable.</h2>
-          <p>Signing, host compatibility passes, audio examples, and V1 polish all take time. Support helps move Align from preview to a serious daily tool.</p>
+          <h2 id="support-title">Help keep Buffle Audio tools independent.</h2>
+          <p>If Align saves you a session, supports a vocal workflow you care about, or you want more Buffle Audio tools in this lane, you can support the project directly.</p>
         </div>
         <a class="coffee-card" href="https://buymeacoffee.com/hostin.tech" aria-label="Support Buffle Audio Align on Buy Me a Coffee">
           <span>Buy Me a Coffee</span>
           <strong>hostin.tech</strong>
-          <em>support development</em>
+          <em>support Buffle Audio</em>
         </a>
       </section>
     </main>
