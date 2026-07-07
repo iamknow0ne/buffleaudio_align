@@ -55,6 +55,7 @@ BufflePlugAnalyzerAudioProcessor::BufflePlugAnalyzerAudioProcessor()
      , parameters (*this, nullptr, "BuffleAlignState", createParameterLayout())
 {
     tightnessParam = parameters.getRawParameterValue (tightnessId);
+    naturalnessParam = parameters.getRawParameterValue (naturalnessId);
     consonantLevelParam = parameters.getRawParameterValue (consonantLevelId);
     nudgeParam = parameters.getRawParameterValue (nudgeId);
     auditionParam = parameters.getRawParameterValue (auditionId);
@@ -143,6 +144,7 @@ void BufflePlugAnalyzerAudioProcessor::prepareToPlay (double sampleRate, int sam
     currentSampleRate = sampleRate > 0.0 ? sampleRate : 44100.0;
     const auto maxDelaySamples = static_cast<int> (std::ceil (currentSampleRate * (maxNudgeMs / 1000.0f))) + 1;
     nudgeDelay.prepare (juce::jmax (1, getTotalNumOutputChannels()), maxDelaySamples);
+    consonantTamer.prepare (currentSampleRate, juce::jmax (1, getTotalNumOutputChannels()));
     historyWriteIndex.store (0);
     lastGuideRms.store (0.0f);
     lastDubRms.store (0.0f);
@@ -228,11 +230,14 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
 
     const auto auditionGain = auditionParam != nullptr ? auditionParam->load() : 1.0f;
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
+    const auto consonantAmount = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
+    const auto naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.5f;
     const auto delaySamples = juce::jlimit (0,
                                             nudgeDelay.getMaxDelaySamples() - 1,
                                             static_cast<int> (std::round (std::abs (nudgeMs) * currentSampleRate / 1000.0)));
 
     nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), delaySamples);
+    consonantTamer.process (dubBuffer, hasGuideSidechain ? &guideBuffer : nullptr, consonantAmount, naturalness);
 
     buffer.applyGain (auditionGain);
 }
@@ -323,7 +328,7 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
     return juce::String (snapshot.hasReliableOffset ? "Guide/Dub monitor locked - " : "Guide/Dub monitor listening - ")
         + "Tightness "
         + juce::String (static_cast<int> (tightness * 100.0f))
-        + "%, consonants "
+        + "%, tamer "
         + juce::String (static_cast<int> (consonantLevel * 100.0f))
         + "%, nudge "
         + juce::String (nudgeMs, 1)

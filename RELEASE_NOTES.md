@@ -4,6 +4,9 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Current Unreleased Polish
 
+- Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts.
+- Phrase-health strip, stateful workflow rail, and disabled Apply Nudge state until a safe suggestion exists.
+- CTest coverage for the consonant-tamer preview slice.
 - Confidence-gated offset and suggested nudge display.
 - `Apply Nudge` workflow action for reliable suggestions.
 - Visible `Guide Blend` and `Stereo Focus` controls.

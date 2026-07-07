@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added experimental `ConsonantTamer` DSP for reducing unmatched Dub consonant bursts while preserving sustained vowels and Guide-matched attacks.
+- Added CTest coverage for Consonant Tamer identity, silence, Dub-only burst reduction, sustained vowel stability, and Guide-matched attack preservation.
+- Added a phrase-health strip, stateful workflow rail, and disabled `Apply Nudge` state until the confidence-gated suggestion is actionable.
 - Added confidence gating so weak or silent Guide/Dub signals no longer show bogus numeric offset/suggested nudge certainty.
 - Added an `Apply Nudge` workflow action that only applies a suggestion when the confidence gate is reliable.
 - Exposed the existing `Guide Blend` and `Stereo Focus` parameters in the Control Room UI.

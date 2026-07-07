@@ -5,6 +5,7 @@
 
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/juce_audio_utils.h>
+#include "DSP/ConsonantTamer.h"
 #include "DSP/ManualNudgeDelay.h"
 
 //==============================================================================
@@ -90,12 +91,14 @@ private:
     std::atomic<bool> guideSidechainActive { false };
 
     std::atomic<float>* tightnessParam = nullptr;
+    std::atomic<float>* naturalnessParam = nullptr;
     std::atomic<float>* consonantLevelParam = nullptr;
     std::atomic<float>* nudgeParam = nullptr;
     std::atomic<float>* auditionParam = nullptr;
 
     double currentSampleRate = 44100.0;
     buffle::align::ManualNudgeDelay nudgeDelay;
+    buffle::align::ConsonantTamer consonantTamer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufflePlugAnalyzerAudioProcessor)
 };

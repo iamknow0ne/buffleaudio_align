@@ -14,6 +14,8 @@ Done:
 - Live Guide/Dub level history, signed offset estimate, confidence, and suggested nudge.
 - Confidence-gated display so weak signals no longer show fake offset certainty.
 - Manual nudge delay in a standalone DSP module.
+- Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
+- Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
 - Cloudflare Pages landing page.
@@ -21,8 +23,9 @@ Done:
 Not V1-ready yet:
 
 - Suggested nudge is still positive-delay-first; early/late compensation needs a fuller dual-path design.
-- Consonant Tamer is named in the UI but not implemented as DSP yet.
+- Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
+- Removed-material audition, A/B modes, and stack role presets are not implemented yet.
 - Installer is not Developer ID signed or notarized.
 - No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
@@ -66,10 +69,10 @@ Exit criteria:
 Goal: deliver the first vocal-stack-specific differentiator.
 
 - Add transient/high-frequency consonant feature extraction.
-- Add fade-safe Dub attenuation controlled by `Consonant Tamer`.
+- Add fade-safe Dub attenuation controlled by `Consonant Tamer`. **Initial realtime slice implemented.**
 - Add removed-material audition mode.
 - Add breath/attack preservation heuristics.
-- Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries.
+- Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries. **Core burst/silence/sustain/Guide-match tests implemented.**
 
 Exit criteria:
 

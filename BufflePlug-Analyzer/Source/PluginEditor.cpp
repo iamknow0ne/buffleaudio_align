@@ -42,6 +42,37 @@ juce::String asSignedMs (float value)
     return (value > 0.0f ? "+" : "") + juce::String (value, 1) + " ms";
 }
 
+juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    if (! snapshot.guideFromSidechain)
+        return "Route Guide sidechain";
+
+    if (snapshot.guideRms < 0.025f)
+        return "Guide too quiet";
+
+    if (snapshot.dubRms < 0.025f)
+        return "Dub too quiet";
+
+    if (! snapshot.hasReliableOffset)
+        return "Listening for confidence";
+
+    if (snapshot.suggestedNudgeMs <= 0.05f)
+        return "Locked - no delay needed";
+
+    return "Safe nudge ready";
+}
+
+juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    if (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f)
+        return alignedColour;
+
+    if (snapshot.hasReliableOffset)
+        return brandAccent;
+
+    return warningColour;
+}
+
 void drawReadoutPill (juce::Graphics& g,
                       juce::Rectangle<int> area,
                       const juce::String& label,
@@ -70,6 +101,23 @@ void drawHorizontalMeter (juce::Graphics& g, juce::Rectangle<int> area, float va
     fill.setWidth (fill.getWidth() * juce::jlimit (0.0f, 1.0f, value));
     g.setColour (accent.withAlpha (0.88f));
     g.fillRoundedRectangle (fill, 3.0f);
+}
+
+void drawPhraseHealthStrip (juce::Graphics& g,
+                            juce::Rectangle<int> area,
+                            const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    const auto colour = phraseHealthColour (snapshot);
+    drawRoundRect (g, area.toFloat(), juce::Colour (0xff12181d), colour.withAlpha (0.3f));
+
+    auto text = area.reduced (12, 0);
+    g.setColour (colour);
+    g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+    g.drawText ("PHRASE HEALTH", text.removeFromLeft (116), juce::Justification::centredLeft);
+
+    g.setColour (ink);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText (describePhraseHealth (snapshot), text, juce::Justification::centredLeft);
 }
 
 class AboutComponent final : public juce::Component
@@ -175,6 +223,9 @@ public:
                          warningColour);
 
         content.removeFromTop (8);
+        drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
+        content.removeFromTop (8);
+
         auto nudgeLine = content.removeFromTop (18);
         g.setColour (muted.withAlpha (0.86f));
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
@@ -307,8 +358,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      true);
     configureSlider (consonantSlider,
                      consonantLabel,
-                     "Consonants",
-                     "How strongly consonant transients should be softened during cleanup.",
+                     "Consonant Tamer",
+                     "How strongly unmatched Dub consonant transients should be softened while Guide-matched attacks stay intact.",
                      true);
     configureSlider (nudgeSlider,
                      nudgeLabel,
@@ -317,8 +368,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      false);
     configureSlider (auditionSlider,
                      auditionLabel,
-                     "Preview",
-                     "Output level for the alignment preview path.",
+                     "Preview Level",
+                     "Monitoring level for the alignment preview path.",
                      true);
     configureSlider (guideBlendSlider,
                      guideBlendLabel,
@@ -345,6 +396,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     analyzeButton.setTooltip ("Estimate timing confidence from the current monitoring window.");
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
     applySuggestedButton.setTooltip ("Apply the current confidence-gated suggested nudge to the Nudge control.");
+    applySuggestedButton.setEnabled (false);
     captureButton.onClick = [this] { showTransientStatus ("Capture pass armed - route Guide sidechain, then play the phrase."); };
     analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
     alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
@@ -445,6 +497,9 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
 
 void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
 {
+    const auto snapshot = audioProcessor.getAlignmentSnapshot();
+    applySuggestedButton.setEnabled (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f);
+
     if (transientStatusFrames > 0)
     {
         --transientStatusFrames;
@@ -504,14 +559,19 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
     drawRoundRect (g, area.toFloat(), panel, border);
 
     const char* steps[] = { "Route", "Listen", "Preview", "Tame", "Print" };
+    const auto snapshot = audioProcessor.getAlignmentSnapshot();
+    const auto currentStep = ! snapshot.guideFromSidechain ? 0
+                           : ! snapshot.hasReliableOffset ? 1
+                           : snapshot.suggestedNudgeMs > 0.05f ? 2
+                           : 3;
     auto row = area.reduced (14, 18);
 
     for (int i = 0; i < 5; ++i)
     {
         auto stepArea = row.removeFromTop (34);
         auto number = stepArea.removeFromLeft (26).withSizeKeepingCentre (22, 22);
-        const auto isCurrent = i == 2;
-        const auto isDone = i < 2;
+        const auto isCurrent = i == currentStep;
+        const auto isDone = i < currentStep;
 
         if (i < 4)
         {
@@ -529,14 +589,14 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
         g.drawText (juce::String (i + 1), number, juce::Justification::centred);
 
-        if (i == 2)
+        if (isCurrent)
         {
             g.setColour (alignedColour.withAlpha (0.14f));
             g.fillRoundedRectangle (stepArea.toFloat(), 6.0f);
         }
 
-        g.setColour (i < 3 ? ink : muted);
-        g.setFont (juce::FontOptions (13.5f, i == 2 ? juce::Font::bold : juce::Font::plain));
+        g.setColour (isDone || isCurrent ? ink : muted);
+        g.setFont (juce::FontOptions (13.5f, isCurrent ? juce::Font::bold : juce::Font::plain));
         g.drawText (steps[i], stepArea.reduced (8, 0), juce::Justification::centredLeft);
         row.removeFromTop (10);
     }
@@ -575,13 +635,11 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawHeader (juce::Graphics& g, juce
 
     auto chip = area.removeFromRight (320).withSizeKeepingCentre (300, 28);
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
-    const auto sourceColour = snapshot.guideFromSidechain ? alignedColour : warningColour;
+    const auto sourceColour = phraseHealthColour (snapshot);
     drawRoundRect (g, chip.toFloat(), juce::Colour (0xff1d2731), sourceColour.withAlpha (0.35f));
     g.setColour (sourceColour);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText ((snapshot.guideFromSidechain ? "Guide: Sidechain" : "Guide: Dub fallback")
-                    + juce::String (" - ")
-                    + asPercent (snapshot.offsetConfidence),
+    g.drawText (describePhraseHealth (snapshot) + juce::String (" - ") + asPercent (snapshot.offsetConfidence),
                 chip,
                 juce::Justification::centred);
 }

@@ -1,3 +1,4 @@
+#include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/TimingOffsetEstimator.h"
@@ -106,6 +107,93 @@ void testManualNudgeDelaysImpulse()
     assert (buffer.getSample (0, 2) == 0.0f);
     assert (buffer.getSample (0, 3) == 1.0f);
 }
+
+void testConsonantTamerAmountZeroIsIdentity()
+{
+    juce::AudioBuffer<float> buffer (1, 128);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        buffer.setSample (0, sample, sample == 24 ? 1.0f : 0.08f);
+
+    auto original = buffer;
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 1);
+    tamer.process (buffer, nullptr, 0.0f, 0.5f);
+
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        assert (buffer.getSample (0, sample) == original.getSample (0, sample));
+}
+
+void testConsonantTamerSilenceStaysSilent()
+{
+    juce::AudioBuffer<float> buffer (2, 128);
+    buffer.clear();
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 2);
+    tamer.process (buffer, nullptr, 1.0f, 0.35f);
+
+    for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
+        for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+            assert (buffer.getSample (channel, sample) == 0.0f);
+}
+
+void testConsonantTamerReducesDubOnlyBurst()
+{
+    juce::AudioBuffer<float> buffer (1, 4096);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        buffer.setSample (0, sample, 0.06f);
+
+    buffer.setSample (0, 48, 1.0f);
+    buffer.setSample (0, 49, -0.8f);
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 1);
+    tamer.process (buffer, nullptr, 1.0f, 0.2f);
+
+    assert (std::abs (buffer.getSample (0, 48)) < 0.92f);
+    assert (std::abs (buffer.getSample (0, 3000) - 0.06f) < 0.006f);
+}
+
+void testConsonantTamerPreservesSustainedVowel()
+{
+    juce::AudioBuffer<float> buffer (1, 4096);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        buffer.setSample (0, sample, 0.12f * std::sin (static_cast<float> (sample) * 0.03f));
+
+    auto before = buffer.getRMSLevel (0, 2048, 1024);
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 1);
+    tamer.process (buffer, nullptr, 1.0f, 0.85f);
+
+    auto after = buffer.getRMSLevel (0, 2048, 1024);
+    assert (std::abs (juce::Decibels::gainToDecibels (after / before)) < 0.5f);
+}
+
+void testConsonantTamerPreservesGuideMatchedAttack()
+{
+    juce::AudioBuffer<float> dubOnly (1, 256);
+    juce::AudioBuffer<float> matchedDub (1, 256);
+    juce::AudioBuffer<float> guide (1, 256);
+    dubOnly.clear();
+    matchedDub.clear();
+    guide.clear();
+
+    dubOnly.setSample (0, 48, 1.0f);
+    matchedDub.setSample (0, 48, 1.0f);
+    guide.setSample (0, 48, 1.0f);
+
+    buffle::align::ConsonantTamer dubOnlyTamer;
+    dubOnlyTamer.prepare (44100.0, 1);
+    dubOnlyTamer.process (dubOnly, nullptr, 1.0f, 0.2f);
+
+    buffle::align::ConsonantTamer matchedTamer;
+    matchedTamer.prepare (44100.0, 1);
+    matchedTamer.process (matchedDub, &guide, 1.0f, 0.2f);
+
+    assert (matchedDub.getSample (0, 48) > dubOnly.getSample (0, 48));
+}
 }
 
 int main()
@@ -117,6 +205,11 @@ int main()
     testSilenceOffsetHasLowConfidence();
     testManualNudgeZeroDelayIsIdentity();
     testManualNudgeDelaysImpulse();
+    testConsonantTamerAmountZeroIsIdentity();
+    testConsonantTamerSilenceStaysSilent();
+    testConsonantTamerReducesDubOnlyBurst();
+    testConsonantTamerPreservesSustainedVowel();
+    testConsonantTamerPreservesGuideMatchedAttack();
 
     std::cout << "Buffle Align DSP tests passed\n";
     return 0;
