@@ -3,86 +3,79 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence, Stack Role presets, A/B preview, and experimental Consonant Tamer Lite.">
+    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence-aware nudge, Stack Role presets, A/B preview, and Consonant Tamer Lite.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
-    <meta property="og:description" content="Guide/Dub timing, role-aware stack presets, confidence-gated safe nudge, A/B preview, and consonant-tamer cleanup.">
+    <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
     <meta property="og:image" content="/assets/screenshots/standalone-app-stack-roles-v0.3.0.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#050707">
-    <title>Buffle Audio Align v0.3.0</title>
+    <title>Buffle Audio Align | Vocal Alignment With Feel</title>
     <link rel="icon" href="assets/buffleaudio-logo.png">
     <link rel="preload" href="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" as="image">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
-    <div class="signal-field" aria-hidden="true">
-      <span></span>
-      <span></span>
-      <span></span>
+    <div class="boot" aria-hidden="true">
+      <span>Buffle Audio Align</span>
+      <i></i>
     </div>
+
+    <canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas>
 
     <header class="site-header" aria-label="Buffle Audio Align">
       <a class="brand" href="#top" aria-label="Buffle Audio Align home">
-        <img src="assets/buffleaudio-logo.png" alt="Buffle Audio">
-        <span>Align</span>
+        <img src="assets/buffleaudio-logo.png" alt="">
+        <span>Buffle Audio</span>
+        <strong>Align</strong>
       </a>
       <nav class="nav" aria-label="Primary">
-        <a href="#signal">Signal</a>
         <a href="#workflow">Workflow</a>
+        <a href="#engine">Engine</a>
         <a href="#release">Release</a>
-        <a href="#download">Download</a>
         <a href="#support">Support</a>
       </nav>
     </header>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <p class="eyebrow">hostin.tech audio lab / v0.3.0</p>
+        <div class="hero-media" aria-hidden="true">
+          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="">
+        </div>
+        <div class="hero-vignette" aria-hidden="true"></div>
+
+        <div class="hero-content">
+          <p class="eyebrow">hostin.tech audio lab / macOS preview</p>
           <h1 id="hero-title">
-            <span>Vocal</span>
-            <span>alignment</span>
-            <span>with feel.</span>
+            <span>Buffle Audio</span>
+            <span>Align</span>
           </h1>
-          <p class="lede">Choose the stack role, route the Guide, play the Dub, wait for confidence, then A/B Original, Aligned, and Difference while taming unmatched consonant clutter.</p>
-          <div class="format-strip" aria-label="Built for">
-            <span>Doubles</span>
-            <span>Stacks</span>
-            <span>Backing vocals</span>
-            <span>Consonant Tamer Lite</span>
-            <span>Stack Role presets</span>
-            <span>Original / Aligned / Difference</span>
-            <span>Unsigned macOS preview</span>
-          </div>
-          <div class="hero-actions">
+          <p class="hero-copy">A vocal-stack timing surface for producers who want doubles to lock without sanding the humanity out of the take.</p>
+          <div class="hero-actions" aria-label="Primary actions">
             <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download v0.3.0</a>
-            <a class="button" href="#signal">See the signal path</a>
-            <a class="button coffee" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
+            <a class="button" href="#workflow">See workflow</a>
+            <a class="button support" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
           </div>
         </div>
 
-        <aside class="alignment-console" aria-label="Alignment signal console">
+        <aside class="hero-console" aria-label="Live alignment preview">
           <div class="console-top">
-            <span>Guide / Dub monitor</span>
+            <span>guide / dub</span>
             <b>armed</b>
           </div>
-          <div class="offset-readout">
-            <div>
-              <span>offset</span>
-              <strong>-12.5 ms</strong>
-            </div>
-            <div>
-              <span>suggest</span>
-              <strong>+12.5 ms</strong>
-            </div>
+          <div class="offset">
+            <span>safe nudge</span>
+            <strong>+12.5 ms</strong>
           </div>
           <div class="confidence" aria-hidden="true">
             <i></i>
             <span>confidence 87%</span>
           </div>
-          <div class="lane-stack" aria-hidden="true">
-            <div class="lane guide"><span>Guide</span><i></i></div>
-            <div class="lane dub"><span>Dub</span><i></i></div>
-            <div class="lane nudge"><span>Nudge</span><i></i></div>
+          <div class="console-wave" aria-hidden="true">
+            <svg viewBox="0 0 420 116">
+              <path d="M0 58 C30 20 56 96 90 54 S150 62 178 38 S232 80 266 52 S324 22 356 64 S392 76 420 42"></path>
+              <path d="M0 72 C42 54 70 82 108 70 S162 46 196 76 S250 92 286 60 S346 28 374 56 S402 76 420 62"></path>
+            </svg>
           </div>
         </aside>
       </section>
@@ -91,11 +84,9 @@
         <div>
           <span>sidechain guide</span>
           <span>dub timing</span>
-          <span>signed offset</span>
-          <span>confidence</span>
-          <span>nudge preview</span>
-          <span>a/b difference</span>
+          <span>safe nudge</span>
           <span>stack roles</span>
+          <span>a/b difference</span>
           <span>consonant tamer</span>
           <span>vst3</span>
           <span>au</span>
@@ -104,11 +95,9 @@
         <div aria-hidden="true">
           <span>sidechain guide</span>
           <span>dub timing</span>
-          <span>signed offset</span>
-          <span>confidence</span>
-          <span>nudge preview</span>
-          <span>a/b difference</span>
+          <span>safe nudge</span>
           <span>stack roles</span>
+          <span>a/b difference</span>
           <span>consonant tamer</span>
           <span>vst3</span>
           <span>au</span>
@@ -116,119 +105,85 @@
         </div>
       </section>
 
-      <section id="signal" class="signal-section" aria-labelledby="signal-title">
-        <div class="section-head">
-          <p class="eyebrow">signal-first interface</p>
-          <h2 id="signal-title">A timing decision surface for vocal doubles.</h2>
-          <p>Guide on sidechain, Dub on the main input, offset in milliseconds, phrase health, and confidence before any nudge becomes actionable.</p>
+      <section class="product-section" aria-labelledby="product-title">
+        <div class="section-copy">
+          <p class="eyebrow">one job, done clearly</p>
+          <h2 id="product-title">Line up the stack while keeping the performance alive.</h2>
+          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition exactly what changed before committing to a nudge.</p>
         </div>
-        <figure class="app-proof">
-          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Guide/Dub timing readouts">
-          <figcaption>Stack Role, Guide/Dub monitor, phrase health, signed offset, safe nudge, A/B preview, and Consonant Tamer in one cockpit.</figcaption>
+        <figure class="app-frame">
+          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, safe nudge, A/B preview, and Consonant Tamer controls.">
+          <figcaption>Current v0.3.0 standalone app. The public preview is unsigned and intended for local macOS testing.</figcaption>
         </figure>
       </section>
 
       <section id="workflow" class="workflow-section" aria-labelledby="workflow-title">
-        <div class="section-head">
-          <p class="eyebrow">workflow</p>
-          <h2 id="workflow-title">Four moves, one vocal stack.</h2>
+        <div class="section-copy">
+          <p class="eyebrow">studio flow</p>
+          <h2 id="workflow-title">Four controls that match the way vocal stacks are made.</h2>
         </div>
-        <div class="module-grid">
-          <article class="module-card" style="--accent: var(--teal)">
+        <div class="workflow-grid">
+          <article style="--accent: var(--teal)">
             <span>01</span>
             <h3>Pick the role</h3>
-            <p>Start from Double Tight, Choir Natural, Rap Stack, or ADR Loose before touching manual controls.</p>
-            <div class="mini lanes" aria-hidden="true"><i></i><i></i><i></i></div>
+            <p>Double Tight, Choir Natural, Rap Stack, and ADR Loose set the starting feel before manual tuning.</p>
           </article>
-          <article class="module-card" style="--accent: var(--amber)">
+          <article style="--accent: var(--amber)">
             <span>02</span>
-            <h3>Read the offset</h3>
-            <p>Envelope and onset cues produce a signed global timing estimate you can reason about.</p>
-            <div class="mini meter" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+            <h3>Trust the read</h3>
+            <p>Phrase health and confidence keep the nudge button honest when the material is too short or noisy.</p>
           </article>
-          <article class="module-card" style="--accent: var(--coral)">
+          <article style="--accent: var(--coral)">
             <span>03</span>
-            <h3>A/B the move</h3>
-            <p>Switch Original, Aligned, and Difference to hear the dry Dub, processed path, or changed material.</p>
-            <div class="mini nudge" aria-hidden="true"><i></i><i></i></div>
+            <h3>A/B the change</h3>
+            <p>Original, Aligned, and Difference modes make the timing move audible without guesswork.</p>
           </article>
-          <article class="module-card" style="--accent: var(--green)">
+          <article style="--accent: var(--green)">
             <span>04</span>
-            <h3>Tame consonants</h3>
-            <p>Experimental transient cleanup softens unmatched Dub attacks while preserving sustained vowel feel.</p>
-            <div class="mini wave" aria-hidden="true">
-              <svg viewBox="0 0 260 86"><path d="M4 45 C34 18 54 69 86 43 S137 50 166 29 S222 72 256 39"></path></svg>
-            </div>
+            <h3>Clean the edges</h3>
+            <p>Consonant Tamer Lite softens unmatched Dub attacks while preserving the vowel body.</p>
           </article>
         </div>
       </section>
 
-      <section class="engine-section" aria-labelledby="engine-title">
-        <div>
-          <p class="eyebrow">engine</p>
-          <h2 id="engine-title">Small DSP pieces you can test.</h2>
+      <section id="engine" class="engine-section" aria-labelledby="engine-title">
+        <div class="section-copy">
+          <p class="eyebrow">engine state</p>
+          <h2 id="engine-title">Transparent DSP, tested in small pieces.</h2>
+          <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, installer package, and release assets are all part of the current workflow.</p>
         </div>
-        <div class="engine-rack">
-          <div><span>now</span><strong>Envelope features, Stack Role presets, signed offset, safe nudge, A/B Difference, Consonant Tamer Lite, CTest coverage.</strong></div>
-          <div><span>next</span><strong>Captured analysis buffers, richer removed-material metering, clearer phrase-state capture, deeper stereo behavior.</strong></div>
-          <div><span>later</span><strong>Constrained DTW, warp maps, offline preview rendering, ARA/AAX evaluation.</strong></div>
-        </div>
-      </section>
-
-      <section class="v1-section" aria-labelledby="v1-title">
-        <div class="section-head">
-          <p class="eyebrow">road to v1</p>
-          <h2 id="v1-title">Transparent stack cleanup, not a black-box warper.</h2>
-          <p>V1 is focused on making the current Stack Role, safe-nudge, A/B preview, and Consonant Tamer loop trustworthy before heavier offline warping.</p>
-        </div>
-        <div class="v1-grid">
-          <div><span>01</span><strong>Trust Meter Alignment</strong></div>
-          <div><span>02</span><strong>One-Click Safe Nudge</strong></div>
-          <div><span>03</span><strong>Consonant Tamer Lite</strong></div>
-          <div><span>04</span><strong>Difference Audition</strong></div>
-          <div><span>05</span><strong>Stack Role Presets</strong></div>
-          <div><span>06</span><strong>Phrase Health Report</strong></div>
+        <div class="engine-list">
+          <div><span>now</span><strong>Signed offset, safe nudge, Stack Role presets, A/B Difference, Consonant Tamer Lite.</strong></div>
+          <div><span>v1 focus</span><strong>Better phrase capture, richer removed-material metering, DAW validation, signing, notarization.</strong></div>
+          <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
         </div>
       </section>
 
       <section id="release" class="release-section" aria-labelledby="release-title">
-        <div class="section-head">
+        <div>
           <p class="eyebrow">release</p>
-          <h2 id="release-title">v0.3.0 ships the real macOS artifacts.</h2>
-          <p>Standalone app, VST3, AU, local installer package, and staged bundles are available from GitHub Releases.</p>
+          <h2 id="release-title">Get the current macOS preview.</h2>
+          <p>Install the package, or download the staged standalone, VST3, and AU bundles from GitHub Releases.</p>
         </div>
-        <div class="release-grid">
-          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
+        <div class="release-actions">
+          <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
             <span>installer</span>
             <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
           </a>
-          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
+          <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
             <span>bundles</span>
             <strong>Standalone, VST3, AU</strong>
           </a>
-          <a href="https://github.com/iamknow0ne/buffleaudio_align/releases">
-            <span>archive</span>
-            <strong>All public releases</strong>
-          </a>
         </div>
-      </section>
-
-      <section id="download" class="download-section" aria-labelledby="download-title">
-        <div>
-          <p class="eyebrow">download</p>
-          <h2 id="download-title">A developer preview for macOS producers.</h2>
-          <p>The current build is useful for local verification and workflow testing. Public distribution still needs Developer ID signing and notarization.</p>
-        </div>
-        <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Open GitHub release</a>
       </section>
 
       <section id="support" class="support-section" aria-labelledby="support-title">
         <div>
           <p class="eyebrow">support</p>
-          <h2 id="support-title">Help push Align toward a serious vocal workflow.</h2>
-          <p>Support goes toward signing, DAW compatibility passes, DSP work, and the next build polish sprint.</p>
+          <h2 id="support-title">Fund the boring parts that make plugins shippable.</h2>
+          <p>Signing, host compatibility passes, audio examples, and V1 polish all take time. Support helps move Align from preview to a serious daily tool.</p>
         </div>
-        <a class="support-card" href="https://buymeacoffee.com/hostin.tech" aria-label="Support Buffle Audio Align on Buy Me a Coffee">
+        <a class="coffee-card" href="https://buymeacoffee.com/hostin.tech" aria-label="Support Buffle Audio Align on Buy Me a Coffee">
           <span>Buy Me a Coffee</span>
           <strong>hostin.tech</strong>
           <em>support development</em>
@@ -239,6 +194,51 @@
     <footer class="footer">
       <span>Buffle Audio Align by hostin.tech</span>
       <a href="https://github.com/iamknow0ne/buffleaudio_align">GitHub repository</a>
+      <a href="https://buffle-audio-landing.pages.dev/">Buffle Audio suite</a>
     </footer>
+
+    <script>
+      const canvas = document.getElementById("signal-canvas");
+      const ctx = canvas.getContext("2d");
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+      let width = 0;
+      let height = 0;
+      let raf = 0;
+
+      function resize() {
+        const scale = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = Math.floor(width * scale);
+        canvas.height = Math.floor(height * scale);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      }
+
+      function draw(time) {
+        ctx.clearRect(0, 0, width, height);
+        ctx.globalAlpha = 0.34;
+        for (let lane = 0; lane < 6; lane += 1) {
+          const y = height * (0.18 + lane * 0.12);
+          ctx.beginPath();
+          ctx.strokeStyle = lane % 2 ? "rgba(240,174,67,.38)" : "rgba(47,214,199,.42)";
+          ctx.lineWidth = lane % 2 ? 1.2 : 1.6;
+          for (let x = -40; x <= width + 40; x += 16) {
+            const phase = time * 0.0011 + lane * 0.8 + x * 0.015;
+            const amp = 10 + lane * 1.5;
+            const py = y + Math.sin(phase) * amp + Math.sin(phase * 0.47) * 8;
+            if (x === -40) ctx.moveTo(x, py);
+            else ctx.lineTo(x, py);
+          }
+          ctx.stroke();
+        }
+        if (!reduceMotion.matches) raf = requestAnimationFrame(draw);
+      }
+
+      resize();
+      window.addEventListener("resize", resize, { passive: true });
+      draw(0);
+    </script>
   </body>
 </html>
