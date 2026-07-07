@@ -15,6 +15,8 @@ struct AlignmentReportInput
     float estimatedOffsetMs = 0.0f;
     float suggestedNudgeMs = 0.0f;
     float currentNudgeMs = 0.0f;
+    float removedMaterial = 0.0f;
+    float removedPeakDelta = 0.0f;
     int previewMode = 1;
     int stackRole = 0;
     float tightness = 0.0f;

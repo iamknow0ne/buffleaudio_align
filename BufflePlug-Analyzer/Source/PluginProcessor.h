@@ -68,6 +68,8 @@ public:
         float estimatedOffsetMs = 0.0f;
         float suggestedNudgeMs = 0.0f;
         float offsetConfidence = 0.0f;
+        float removedMaterial = 0.0f;
+        float removedPeakDelta = 0.0f;
         int latencyMs = 0;
         bool guideFromSidechain = false;
         bool hasReliableOffset = false;
@@ -89,6 +91,8 @@ private:
     std::atomic<float> lastGuideRms { 0.0f };
     std::atomic<float> lastDubRms { 0.0f };
     std::atomic<float> lastMatch { 0.0f };
+    std::atomic<float> lastRemovedMaterial { 0.0f };
+    std::atomic<float> lastRemovedPeakDelta { 0.0f };
     std::atomic<float> analysisHopMs { 0.0f };
     std::atomic<bool> guideSidechainActive { false };
 

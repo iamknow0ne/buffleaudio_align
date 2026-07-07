@@ -121,6 +121,27 @@ void drawPhraseHealthStrip (juce::Graphics& g,
     g.drawText (describePhraseHealth (snapshot), text, juce::Justification::centredLeft);
 }
 
+void drawChangedMaterialStrip (juce::Graphics& g,
+                               juce::Rectangle<int> area,
+                               const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    drawRoundRect (g, area.toFloat(), juce::Colour (0xff16151a), dubColour.withAlpha (0.26f));
+
+    auto text = area.reduced (12, 0);
+    g.setColour (dubColour.brighter (0.16f));
+    g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+    g.drawText ("CHANGED", text.removeFromLeft (88), juce::Justification::centredLeft);
+
+    auto meterArea = text.removeFromRight (120).withSizeKeepingCentre (104, 8);
+    drawHorizontalMeter (g, meterArea, snapshot.removedMaterial, dubColour.brighter (0.2f));
+
+    g.setColour (ink);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText (asPercent (snapshot.removedMaterial) + " preview delta",
+                text,
+                juce::Justification::centredLeft);
+}
+
 class AboutComponent final : public juce::Component
 {
 public:
@@ -224,6 +245,8 @@ public:
                          warningColour);
 
         content.removeFromTop (8);
+        drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
+        content.removeFromTop (8);
         drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
         content.removeFromTop (8);
 
@@ -232,7 +255,7 @@ public:
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
         g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - "
                         + (snapshot.hasReliableOffset
-                            ? "suggested safe nudge " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
+                            ? "positive-delay suggestion " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms, changed " + asPercent (snapshot.removedMaterial)
                             : "waiting for reliable Guide/Dub confidence"),
                     nudgeLine,
                     juce::Justification::centredLeft);

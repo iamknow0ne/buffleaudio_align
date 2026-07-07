@@ -4,13 +4,14 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Current Unreleased Polish
 
-- Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested nudge, preview mode, stack role, and current controls.
+- Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested nudge, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
+- Initial changed-material meter for processed-vs-original preview delta, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.
 - Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
 - Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP remains V1 work.
 - Original / Aligned / Difference preview modes with persistent APVTS state.
-- Difference audition path for hearing the processed-minus-original material. Dedicated removed-material metering is still V1 work.
+- Difference audition path for hearing the processed-minus-original material. Initial changed-material metering is in place; per-feature removed-material solo remains V1 work.
 - Updated standalone screenshot showing the A/B preview controls.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts.
 - Phrase-health strip, stateful workflow rail, and disabled Apply Nudge state until a safe suggestion exists.

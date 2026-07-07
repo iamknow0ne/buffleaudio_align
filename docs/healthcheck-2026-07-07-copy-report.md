@@ -34,7 +34,7 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and exist
 ## Still Open For V1
 
 - Suggested nudge is still positive-delay-first; bidirectional early/late compensation remains open.
-- Copy Report is clipboard-only and does not yet include removed-material metering.
+- Copy Report is clipboard-only; a later slice added broad changed-material stats, while per-feature removed-material metering remains open.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.
-- Dedicated removed-material metering is still missing.
+- Dedicated per-feature removed-material metering is still missing; a later slice added the initial broad changed-material meter.
 - The `.pkg` preview artifact still needs AppleDouble payload cleanup before signing/notarization.

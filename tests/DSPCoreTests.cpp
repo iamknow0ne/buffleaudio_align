@@ -3,6 +3,7 @@
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/PreviewModeMixer.h"
+#include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
@@ -249,6 +250,68 @@ void testPreviewModeDifferenceShowsChange()
         assert (processed.getSample (0, sample) == static_cast<float> ((sample + 1) * 2));
 }
 
+void testRemovedMaterialMeterIdentityIsZero()
+{
+    juce::AudioBuffer<float> original (1, 4);
+    juce::AudioBuffer<float> processed (1, 4);
+
+    for (int sample = 0; sample < 4; ++sample)
+    {
+        original.setSample (0, sample, static_cast<float> (sample + 1) * 0.1f);
+        processed.setSample (0, sample, original.getSample (0, sample));
+    }
+
+    const auto stats = buffle::align::measureRemovedMaterial (original, processed, 1);
+    assert (stats.amount == 0.0f);
+    assert (stats.deltaRms == 0.0f);
+    assert (stats.peakDelta == 0.0f);
+}
+
+void testRemovedMaterialMeterSilenceIsSafe()
+{
+    juce::AudioBuffer<float> original (2, 16);
+    juce::AudioBuffer<float> processed (2, 16);
+    original.clear();
+    processed.clear();
+
+    const auto stats = buffle::align::measureRemovedMaterial (original, processed, 2);
+    assert (stats.amount == 0.0f);
+    assert (stats.deltaRms == 0.0f);
+    assert (stats.peakDelta == 0.0f);
+}
+
+void testRemovedMaterialMeterDetectsGainReducedTransient()
+{
+    juce::AudioBuffer<float> original (1, 8);
+    juce::AudioBuffer<float> processed (1, 8);
+    original.clear();
+    processed.clear();
+    original.setSample (0, 3, 1.0f);
+    processed.setSample (0, 3, 0.25f);
+
+    const auto stats = buffle::align::measureRemovedMaterial (original, processed, 1);
+    assert (stats.amount > 0.0f);
+    assert (std::abs (stats.peakDelta - 0.75f) < 0.001f);
+}
+
+void testRemovedMaterialMeterUsesRequestedChannels()
+{
+    juce::AudioBuffer<float> original (2, 8);
+    juce::AudioBuffer<float> processed (2, 8);
+    original.clear();
+    processed.clear();
+    original.setSample (0, 1, 1.0f);
+    processed.setSample (0, 1, 0.5f);
+    original.setSample (1, 1, 1.0f);
+    processed.setSample (1, 1, -1.0f);
+
+    const auto leftOnly = buffle::align::measureRemovedMaterial (original, processed, 1);
+    const auto stereo = buffle::align::measureRemovedMaterial (original, processed, 2);
+
+    assert (leftOnly.peakDelta < stereo.peakDelta);
+    assert (stereo.peakDelta == 1.0f);
+}
+
 void testStackRolePresetProfilesAreDistinct()
 {
     const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
@@ -278,6 +341,7 @@ void testAlignmentReportHidesUnreliableOffset()
     assert (report.find ("Phrase health: Listening for confidence") != std::string::npos);
     assert (report.find ("Estimated offset: unavailable") != std::string::npos);
     assert (report.find ("Suggested safe nudge: unavailable") != std::string::npos);
+    assert (report.find ("Changed material: 0%") != std::string::npos);
 }
 
 void testAlignmentReportCapturesSafeNudgeAndRole()
@@ -294,6 +358,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.previewMode = 2;
     input.stackRole = 3;
     input.consonantLevel = 0.86f;
+    input.removedMaterial = 0.34f;
+    input.removedPeakDelta = 0.78f;
 
     const auto report = buffle::align::buildAlignmentReport (input);
     assert (report.find ("Phrase health: Safe nudge ready") != std::string::npos);
@@ -302,6 +368,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     assert (report.find ("Preview mode: Difference") != std::string::npos);
     assert (report.find ("Stack role: Rap Stack") != std::string::npos);
     assert (report.find ("Consonant Tamer: 86%") != std::string::npos);
+    assert (report.find ("Changed material: 34%") != std::string::npos);
+    assert (report.find ("Peak changed material: 78%") != std::string::npos);
 }
 }
 
@@ -322,6 +390,10 @@ int main()
     testPreviewModeOriginalRestoresInput();
     testPreviewModeAlignedKeepsProcessed();
     testPreviewModeDifferenceShowsChange();
+    testRemovedMaterialMeterIdentityIsZero();
+    testRemovedMaterialMeterSilenceIsSafe();
+    testRemovedMaterialMeterDetectsGainReducedTransient();
+    testRemovedMaterialMeterUsesRequestedChannels();
     testStackRolePresetProfilesAreDistinct();
     testAlignmentReportHidesUnreliableOffset();
     testAlignmentReportCapturesSafeNudgeAndRole();

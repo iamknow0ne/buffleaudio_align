@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "DSP/AlignmentReport.h"
+#include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
@@ -171,6 +172,8 @@ void BufflePlugAnalyzerAudioProcessor::prepareToPlay (double sampleRate, int sam
     lastGuideRms.store (0.0f);
     lastDubRms.store (0.0f);
     lastMatch.store (0.0f);
+    lastRemovedMaterial.store (0.0f);
+    lastRemovedPeakDelta.store (0.0f);
     analysisHopMs.store (static_cast<float> (static_cast<double> (juce::jmax (1, samplesPerBlock))
                                            * 1000.0 / currentSampleRate));
     guideSidechainActive.store (false);
@@ -276,6 +279,9 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
 
     nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), delaySamples);
     consonantTamer.process (dubBuffer, hasGuideSidechain ? &guideBuffer : nullptr, consonantAmount, naturalness);
+    const auto removed = buffle::align::measureRemovedMaterial (originalDubBuffer, dubBuffer, dubBuffer.getNumChannels());
+    lastRemovedMaterial.store (removed.amount);
+    lastRemovedPeakDelta.store (removed.peakDelta);
     buffle::align::renderPreviewMode (dubBuffer, originalDubBuffer, previewMode, dubBuffer.getNumChannels());
 
     buffer.applyGain (auditionGain);
@@ -322,6 +328,8 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
     snapshot.guideRms = lastGuideRms.load();
     snapshot.dubRms = lastDubRms.load();
     snapshot.match = lastMatch.load();
+    snapshot.removedMaterial = lastRemovedMaterial.load();
+    snapshot.removedPeakDelta = lastRemovedPeakDelta.load();
     snapshot.guideFromSidechain = guideSidechainActive.load();
 
     if (nudgeParam != nullptr)
@@ -395,6 +403,8 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.estimatedOffsetMs = snapshot.estimatedOffsetMs;
     input.suggestedNudgeMs = snapshot.suggestedNudgeMs;
     input.currentNudgeMs = snapshot.nudgeMs;
+    input.removedMaterial = snapshot.removedMaterial;
+    input.removedPeakDelta = snapshot.removedPeakDelta;
     input.previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
     input.stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;

@@ -16,8 +16,9 @@ Done:
 - Manual nudge delay in a standalone DSP module.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
+- Initial changed-material meter for the processed-vs-original preview delta, with CTest coverage for silence, identity, transient reduction, and channel-aware peak delta.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested nudge, preview mode, stack role, and current controls.
+- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested nudge, changed-material amount, preview mode, stack role, and current controls.
 - Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
@@ -28,9 +29,9 @@ Not V1-ready yet:
 - Suggested nudge is still positive-delay-first; early/late compensation needs a fuller dual-path design.
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
-- Difference mode is implemented as a first removed-material audition path, but it does not yet have dedicated metering or per-feature solo controls.
+- Difference mode now has a first changed-material meter, but it does not yet have per-feature removed-material solo controls or polished over-cleaning guardrails.
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
-- Copy Report is clipboard-only and does not yet include removed-material metering or file export.
+- Copy Report is clipboard-only and includes broad changed-material stats, but does not yet include per-feature removed-material metering or file export.
 - Installer is not Developer ID signed or notarized.
 - No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
@@ -42,7 +43,7 @@ These are the target features that make Align meaningfully different from generi
 2. **One-Click Safe Nudge**: apply suggested positive-delay nudge only when confidence and signal floors are credible; extend to bidirectional early/late handling before V1.
 3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
-5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering.
+5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Initial changed-material meter implemented.**
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals.
 7. **Guide Fallback Intelligence**: explain missing/weak sidechain routing instead of producing misleading numbers.
 8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
@@ -75,7 +76,7 @@ Goal: deliver the first vocal-stack-specific differentiator.
 
 - Add transient/high-frequency consonant feature extraction.
 - Add fade-safe Dub attenuation controlled by `Consonant Tamer`. **Initial realtime slice implemented.**
-- Add removed-material audition mode. **Initial Difference preview implemented.**
+- Add removed-material audition and meter foundations. **Initial Difference preview and changed-material meter implemented.**
 - Add breath/attack preservation heuristics.
 - Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries. **Core burst/silence/sustain/Guide-match tests implemented.**
 
