@@ -316,6 +316,15 @@ private:
                              peak,
                              colour);
 
+        if (peak < 0.01f)
+        {
+            g.setColour (muted.withAlpha (0.62f));
+            g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+            g.drawText ("No " + title + " signal yet",
+                        waveform.toNearestInt().reduced (8, 0),
+                        juce::Justification::centred);
+        }
+
         for (int marker = 1; marker < 4; ++marker)
         {
             const auto x = waveform.getX() + waveform.getWidth() * static_cast<float> (marker) / 4.0f;
@@ -384,6 +393,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      true);
 
     for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton,
+                          &reportButton,
                           &originalModeButton, &alignedModeButton, &differenceModeButton })
     {
         addAndMakeVisible (*button);
@@ -394,10 +404,11 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
         button->setColour (juce::TextButton::buttonOnColourId, brandAccent);
     }
 
-    captureButton.setTooltip ("Prepare the Guide/Dub capture pass.");
-    analyzeButton.setTooltip ("Estimate timing confidence from the current monitoring window.");
+    captureButton.setTooltip ("Arm the listening pass: route Guide sidechain, then play the phrase.");
+    analyzeButton.setTooltip ("Check timing confidence from the current monitoring window.");
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
     applySuggestedButton.setTooltip ("Apply the current confidence-gated suggested nudge to the Nudge control.");
+    reportButton.setTooltip ("Copy a session handoff report with phrase health, offset, confidence, role, and current controls.");
     originalModeButton.setTooltip ("Monitor the unprocessed Dub.");
     alignedModeButton.setTooltip ("Monitor the current nudge and Consonant Tamer path.");
     differenceModeButton.setTooltip ("Monitor what the preview path changed or removed.");
@@ -406,6 +417,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
     alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
     applySuggestedButton.onClick = [this] { applySuggestedNudge(); };
+    reportButton.onClick = [this] { copyAlignmentReport(); };
     originalModeButton.onClick = [this] { setPreviewMode (0); };
     alignedModeButton.onClick = [this] { setPreviewMode (1); };
     differenceModeButton.onClick = [this] { setPreviewMode (2); };
@@ -503,7 +515,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     juce::ignoreUnused (headerArea);
 
     auto rail = bounds.removeFromLeft (168).reduced (22, 8);
-    auto railButton = rail.removeFromBottom (224);
+    auto railButton = rail.removeFromBottom (262);
     auto modeArea = railButton.removeFromTop (54);
     originalModeButton.setBounds (modeArea.removeFromTop (24));
     modeArea.removeFromTop (6);
@@ -519,6 +531,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     alignButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
     applySuggestedButton.setBounds (railButton.removeFromTop (32));
+    railButton.removeFromTop (10);
+    reportButton.setBounds (railButton.removeFromTop (32));
 
     auto controls = bounds.removeFromRight (238).reduced (24, 62);
     auto controlHeader = controls.removeFromTop (42).reduced (0, 7);
@@ -548,7 +562,10 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
 void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
 {
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
-    applySuggestedButton.setEnabled (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f);
+    const auto canApplyNudge = snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f;
+    applySuggestedButton.setEnabled (canApplyNudge);
+    applySuggestedButton.setButtonText (canApplyNudge ? "Apply +" + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
+                                                       : snapshot.hasReliableOffset ? "No Nudge" : "Waiting...");
     updatePreviewModeButtons();
     updateStackRoleBox();
 
@@ -753,6 +770,12 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
         parameter->endChangeGesture();
         showTransientStatus ("Applied suggested nudge: " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms.");
     }
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::copyAlignmentReport()
+{
+    juce::SystemClipboard::copyTextToClipboard (audioProcessor.getAlignmentReportText());
+    showTransientStatus ("Alignment report copied to clipboard.");
 }
 
 void BufflePlugAnalyzerAudioProcessorEditor::setPreviewMode (int modeIndex)

@@ -11,6 +11,25 @@ JUCE_PATH="${JUCE_PATH:-/Users/hostin/vibecoding/waveform-visualizer/JUCE}"
 VERSION="0.3.0"
 PKG_ID="com.buffleaudio.align"
 
+verify_package_payload_hygiene() {
+  local pkg="$1"
+
+  if ! command -v pkgutil >/dev/null 2>&1; then
+    echo "pkgutil is required to verify package payload hygiene." >&2
+    return 1
+  fi
+
+  local matches
+  matches="$(pkgutil --payload-files "${pkg}" | grep -E '(^|/)\._|\.DS_Store' || true)"
+
+  if [[ -n "${matches}" ]]; then
+    echo "Package payload contains AppleDouble or .DS_Store metadata:" >&2
+    echo "${matches}" >&2
+    echo "Refusing to publish a dirty installer payload. Use the bundle zip until this is clean." >&2
+    return 1
+  fi
+}
+
 cmake -S "${ROOT_DIR}" -B "${BUILD_DIR}" \
   -DCMAKE_BUILD_TYPE=Release \
   -DJUCE_PATH="${JUCE_PATH}"
@@ -72,6 +91,8 @@ pkgbuild \
   --version "${VERSION}" \
   --install-location "/" \
   "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
+
+verify_package_payload_hygiene "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 
 ditto -c -k --norsrc --noextattr --noqtn \
   "${STAGE_DIR}" \

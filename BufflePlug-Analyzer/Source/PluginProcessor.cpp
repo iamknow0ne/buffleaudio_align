@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "DSP/AlignmentReport.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
@@ -380,6 +381,33 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
         + (snapshot.hasReliableOffset
             ? ", suggested " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
             : ", waiting for usable Guide/Dub confidence");
+}
+
+juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
+{
+    const auto snapshot = getAlignmentSnapshot();
+    buffle::align::AlignmentReportInput input;
+    input.guideFromSidechain = snapshot.guideFromSidechain;
+    input.hasReliableOffset = snapshot.hasReliableOffset;
+    input.guideRms = snapshot.guideRms;
+    input.dubRms = snapshot.dubRms;
+    input.offsetConfidence = snapshot.offsetConfidence;
+    input.estimatedOffsetMs = snapshot.estimatedOffsetMs;
+    input.suggestedNudgeMs = snapshot.suggestedNudgeMs;
+    input.currentNudgeMs = snapshot.nudgeMs;
+    input.previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
+    input.stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
+    input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;
+    input.naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.0f;
+    input.consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
+
+    if (auto* value = parameters.getRawParameterValue (guideBlendId))
+        input.guideBlend = value->load();
+
+    if (auto* value = parameters.getRawParameterValue (stereoFocusId))
+        input.stereoFocus = value->load();
+
+    return juce::String (buffle::align::buildAlignmentReport (input));
 }
 
 BufflePlugAnalyzerAudioProcessor::AudioProcessorValueTreeState::ParameterLayout

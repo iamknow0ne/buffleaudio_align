@@ -74,6 +74,7 @@ public:
     };
 
     AlignmentSnapshot getAlignmentSnapshot() const;
+    juce::String getAlignmentReportText() const;
     juce::String getWorkflowStatus() const;
 
 private:

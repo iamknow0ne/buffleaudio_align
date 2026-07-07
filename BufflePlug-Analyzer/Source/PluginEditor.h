@@ -38,6 +38,7 @@ private:
     void showAboutBox();
     void showTransientStatus (const juce::String& message);
     void applySuggestedNudge();
+    void copyAlignmentReport();
     void setPreviewMode (int modeIndex);
     void updatePreviewModeButtons();
     void applyStackRolePreset (int roleIndex);
@@ -76,10 +77,11 @@ private:
     std::unique_ptr<SliderAttachment> guideBlendAttachment;
     std::unique_ptr<SliderAttachment> stereoFocusAttachment;
 
-    juce::TextButton captureButton { "Capture" };
-    juce::TextButton analyzeButton { "Analyze" };
-    juce::TextButton alignButton { "Preview" };
+    juce::TextButton captureButton { "Arm Listen" };
+    juce::TextButton analyzeButton { "Check Timing" };
+    juce::TextButton alignButton { "Preview Align" };
     juce::TextButton applySuggestedButton { "Apply Nudge" };
+    juce::TextButton reportButton { "Copy Report" };
     juce::TextButton originalModeButton { "Original" };
     juce::TextButton alignedModeButton { "Aligned" };
     juce::TextButton differenceModeButton { "Diff" };

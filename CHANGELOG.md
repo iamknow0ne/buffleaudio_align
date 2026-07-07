@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested nudge, preview mode, stack role, and current controls.
+- Added `AlignmentReport` formatter and CTest coverage for unreliable and safe-nudge report states.
+- Improved first-run UI clarity with `Arm Listen`, `Check Timing`, `Preview Align`, dynamic Apply Nudge labels, and quiet-lane hints.
 - Added user-facing `Stack Role` presets for `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose`.
 - Added `StackRolePreset` DSP profile definitions and CTest coverage for distinct role behavior.
 - Added persistent `Preview Mode` choices for Original, Aligned, and Difference monitoring.
@@ -14,9 +17,9 @@
 - Added an `Apply Nudge` workflow action that only applies a suggestion when the confidence gate is reliable.
 - Exposed the existing `Guide Blend` and `Stereo Focus` parameters in the Control Room UI.
 - Expanded the editor size/layout to fit the extra controls and prevent workflow rail label clipping.
-- Rebuilt the V1 roadmap around transparent safe nudge, trust-meter alignment, and vocal-stack consonant control.
+- Rebuilt the V1 roadmap around transparent delay-safe nudge, trust-meter alignment, and vocal-stack consonant control.
 - Updated README with a producer quick-start, preview-build safety note, and V1 differentiator list.
-- Updated the landing page with concrete producer workflow copy and a Road to V1 section.
+- Updated the landing page with concrete producer workflow copy and a compact V1 focus section.
 
 ## v0.3.0
 

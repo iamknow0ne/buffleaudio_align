@@ -63,6 +63,8 @@ These files are build outputs and are intentionally not tracked by git. GitHub R
 
 The staged bundles are ad-hoc signed for local verification. The installer packages are not Developer ID Installer signed or notarized yet.
 
+The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. If that gate fails, publish the cleaner bundle zip lane and hold the `.pkg` back until the payload is clean.
+
 Current release blockers before a broad V1 installer:
 
 - Developer ID Application and Developer ID Installer identities are not available in this local keychain.

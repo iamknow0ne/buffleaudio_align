@@ -17,6 +17,7 @@ Done:
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
+- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested nudge, preview mode, stack role, and current controls.
 - Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
@@ -29,6 +30,7 @@ Not V1-ready yet:
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
 - Difference mode is implemented as a first removed-material audition path, but it does not yet have dedicated metering or per-feature solo controls.
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
+- Copy Report is clipboard-only and does not yet include removed-material metering or file export.
 - Installer is not Developer ID signed or notarized.
 - No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
@@ -37,7 +39,7 @@ Not V1-ready yet:
 These are the target features that make Align meaningfully different from generic alignment tools:
 
 1. **Trust Meter Alignment**: show source state, Guide/Dub levels, offset direction, confidence, and why the recommendation is safe or unavailable.
-2. **One-Click Safe Nudge**: apply suggested nudge only when confidence and signal floors are credible.
+2. **One-Click Safe Nudge**: apply suggested positive-delay nudge only when confidence and signal floors are credible; extend to bidirectional early/late handling before V1.
 3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering.
@@ -48,14 +50,14 @@ These are the target features that make Align meaningfully different from generi
 10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup.
 11. **Vowel-Only Micro-Warp Preview**: future constrained warping that stretches vowels while locking consonants.
 12. **Harmony-Aware Tightness Presets**: `Double Tight`, `Choir Natural`, `Rap Stack`, `ADR Loose`. **Initial user-facing selector implemented.**
-13. **Exportable Alignment Report**: phrase offset, confidence, nudge, and correction amount for session handoff.
+13. **Exportable Alignment Report**: phrase offset, confidence, nudge, and correction amount for session handoff. **Initial clipboard report implemented.**
 
 ## Milestone A - Reliable Nudge Product
 
 Goal: make the current analysis/nudge workflow trustworthy enough for daily testing.
 
 - Keep all offset and suggested-nudge UI gated by confidence.
-- Add one-click safe nudge to the editor.
+- Add one-click positive-delay safe nudge to the editor. **Initial Apply Nudge implemented.**
 - Add clear states: route, listen, confidence locked, no usable guide, no positive delay nudge needed.
 - Add tests for confidence gating, silence, weak signal, and offset sign.
 - Document DAW sidechain setup and unsigned preview safety.
@@ -90,11 +92,12 @@ Goal: make Align feel like a practical DAW tool rather than a meter.
 - Add phrase health cards and error states.
 - Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / Difference controls implemented.**
 - Add stack role presets. **Initial Stack Role selector implemented.**
+- Add session handoff report. **Initial Copy Report clipboard summary implemented.**
 - Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
 
 Exit criteria:
 
-- A new producer can route, analyze, preview, and print without reading build docs.
+- A new producer can route, analyze, preview, and prepare a host-side print without reading build docs.
 - Docs include a tester feedback checklist.
 
 ## Milestone D - V1 Release Candidate

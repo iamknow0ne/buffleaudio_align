@@ -1,3 +1,4 @@
+#include "DSP/AlignmentReport.h"
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
@@ -263,6 +264,45 @@ void testStackRolePresetProfilesAreDistinct()
     assert (adr.tightness < manual.tightness);
     assert (adr.naturalness > manual.naturalness);
 }
+
+void testAlignmentReportHidesUnreliableOffset()
+{
+    buffle::align::AlignmentReportInput input;
+    input.guideFromSidechain = true;
+    input.guideRms = 0.62f;
+    input.dubRms = 0.58f;
+    input.offsetConfidence = 0.12f;
+    input.hasReliableOffset = false;
+
+    const auto report = buffle::align::buildAlignmentReport (input);
+    assert (report.find ("Phrase health: Listening for confidence") != std::string::npos);
+    assert (report.find ("Estimated offset: unavailable") != std::string::npos);
+    assert (report.find ("Suggested safe nudge: unavailable") != std::string::npos);
+}
+
+void testAlignmentReportCapturesSafeNudgeAndRole()
+{
+    buffle::align::AlignmentReportInput input;
+    input.guideFromSidechain = true;
+    input.hasReliableOffset = true;
+    input.guideRms = 0.64f;
+    input.dubRms = 0.61f;
+    input.offsetConfidence = 0.91f;
+    input.estimatedOffsetMs = -18.4f;
+    input.suggestedNudgeMs = 18.4f;
+    input.currentNudgeMs = 18.4f;
+    input.previewMode = 2;
+    input.stackRole = 3;
+    input.consonantLevel = 0.86f;
+
+    const auto report = buffle::align::buildAlignmentReport (input);
+    assert (report.find ("Phrase health: Safe nudge ready") != std::string::npos);
+    assert (report.find ("Estimated offset: -18.4 ms") != std::string::npos);
+    assert (report.find ("Suggested safe nudge: 18.4 ms") != std::string::npos);
+    assert (report.find ("Preview mode: Difference") != std::string::npos);
+    assert (report.find ("Stack role: Rap Stack") != std::string::npos);
+    assert (report.find ("Consonant Tamer: 86%") != std::string::npos);
+}
 }
 
 int main()
@@ -283,6 +323,8 @@ int main()
     testPreviewModeAlignedKeepsProcessed();
     testPreviewModeDifferenceShowsChange();
     testStackRolePresetProfilesAreDistinct();
+    testAlignmentReportHidesUnreliableOffset();
+    testAlignmentReportCapturesSafeNudgeAndRole();
 
     std::cout << "Buffle Align DSP tests passed\n";
     return 0;

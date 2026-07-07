@@ -9,11 +9,32 @@ PKG="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-macOS.pkg"
 STAGE="${ROOT_DIR}/dist/stage"
 ARCHIVE="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"
 
+verify_package_payload_hygiene() {
+  local pkg="$1"
+
+  if ! command -v pkgutil >/dev/null 2>&1; then
+    echo "pkgutil is required to verify package payload hygiene." >&2
+    return 1
+  fi
+
+  local matches
+  matches="$(pkgutil --payload-files "${pkg}" | grep -E '(^|/)\._|\.DS_Store' || true)"
+
+  if [[ -n "${matches}" ]]; then
+    echo "Package payload contains AppleDouble or .DS_Store metadata:" >&2
+    echo "${matches}" >&2
+    echo "Refusing to publish a dirty installer payload. Publish the clean bundle zip or rebuild a clean package first." >&2
+    return 1
+  fi
+}
+
 if [[ ! -f "${PKG}" ]]; then
   echo "Installer not found: ${PKG}" >&2
   echo "Run scripts/build_and_package_macos.sh first." >&2
   exit 1
 fi
+
+verify_package_payload_hygiene "${PKG}"
 
 if ! gh auth status >/dev/null 2>&1; then
   echo "GitHub CLI is not authenticated. Run: gh auth login -h github.com" >&2

@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence-aware nudge, Stack Role presets, A/B preview, and Consonant Tamer Lite.">
+    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, confidence-aware positive-delay nudge, Stack Role presets, A/B preview, Consonant Tamer Lite, and clipboard reports.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
     <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
     <meta property="og:image" content="/assets/screenshots/standalone-app-stack-roles-v0.3.0.png">
@@ -64,7 +64,7 @@
             <b>armed</b>
           </div>
           <div class="offset">
-            <span>safe nudge</span>
+            <span>delay-safe nudge</span>
             <strong>+12.5 ms</strong>
           </div>
           <div class="confidence" aria-hidden="true">
@@ -84,7 +84,8 @@
         <div>
           <span>sidechain guide</span>
           <span>dub timing</span>
-          <span>safe nudge</span>
+          <span>delay-safe nudge</span>
+          <span>copy report</span>
           <span>stack roles</span>
           <span>a/b difference</span>
           <span>consonant tamer</span>
@@ -95,7 +96,8 @@
         <div aria-hidden="true">
           <span>sidechain guide</span>
           <span>dub timing</span>
-          <span>safe nudge</span>
+          <span>delay-safe nudge</span>
+          <span>copy report</span>
           <span>stack roles</span>
           <span>a/b difference</span>
           <span>consonant tamer</span>
@@ -109,10 +111,10 @@
         <div class="section-copy">
           <p class="eyebrow">one job, done clearly</p>
           <h2 id="product-title">Line up the stack while keeping the performance alive.</h2>
-          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition exactly what changed before committing to a nudge.</p>
+          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition exactly what changed before trusting the move.</p>
         </div>
         <figure class="app-frame">
-          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, safe nudge, A/B preview, and Consonant Tamer controls.">
+          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, delay-safe nudge, A/B preview, and Consonant Tamer controls.">
           <figcaption>Current v0.3.0 standalone app. The public preview is unsigned and intended for local macOS testing.</figcaption>
         </figure>
       </section>
@@ -126,7 +128,7 @@
           <article style="--accent: var(--teal)">
             <span>01</span>
             <h3>Pick the role</h3>
-            <p>Double Tight, Choir Natural, Rap Stack, and ADR Loose set the starting feel before manual tuning.</p>
+            <p>Double Tight, Choir Natural, Rap Stack, and ADR Loose set the starting feel before manual tuning. Some stereo controls are still preview shaping while deeper DSP lands.</p>
           </article>
           <article style="--accent: var(--amber)">
             <span>02</span>
@@ -150,11 +152,11 @@
         <div class="section-copy">
           <p class="eyebrow">engine state</p>
           <h2 id="engine-title">Transparent DSP, tested in small pieces.</h2>
-          <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, installer package, and release assets are all part of the current workflow.</p>
+          <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, bundle archive, rough installer package, and release assets are all part of the current workflow.</p>
         </div>
         <div class="engine-list">
-          <div><span>now</span><strong>Signed offset, safe nudge, Stack Role presets, A/B Difference, Consonant Tamer Lite.</strong></div>
-          <div><span>v1 focus</span><strong>Better phrase capture, richer removed-material metering, DAW validation, signing, notarization.</strong></div>
+          <div><span>now</span><strong>Signed offset, positive-delay Apply Nudge, Stack Role presets, A/B Difference, Consonant Tamer Lite, Copy Report.</strong></div>
+          <div><span>v1 focus</span><strong>Bidirectional nudge, better phrase capture, richer removed-material metering, DAW validation, signing, notarization.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
         </div>
       </section>
@@ -163,16 +165,16 @@
         <div>
           <p class="eyebrow">release</p>
           <h2 id="release-title">Get the current macOS preview.</h2>
-          <p>Install the package, or download the staged standalone, VST3, and AU bundles from GitHub Releases.</p>
+          <p>Download the staged standalone, VST3, and AU bundles from GitHub Releases. The unsigned package is available for rough local preview testing, but the bundle zip is the cleaner lane today.</p>
         </div>
         <div class="release-actions">
-          <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
-            <span>installer</span>
-            <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
-          </a>
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
             <span>bundles</span>
             <strong>Standalone, VST3, AU</strong>
+          </a>
+          <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
+            <span>rough installer</span>
+            <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
           </a>
         </div>
       </section>
