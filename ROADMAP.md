@@ -37,7 +37,7 @@ Not V1-ready yet:
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
 - Copy Report is clipboard-only and includes broad changed-material stats, but does not yet include per-feature removed-material metering or file export.
 - Installer is not Developer ID signed or notarized.
-- No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
+- Host validation matrix exists, and local AU validation has current evidence, but DAW timing results, VST3/pluginval validation, audio demo corpus, and golden WAV regression lane remain open.
 
 ## V1 Differentiators
 
@@ -119,7 +119,7 @@ Goal: ship a clean, supportable macOS V1.
 - Add Developer ID Application and Installer signing.
 - Notarize and staple installer.
 - Run install smoke on a clean macOS account.
-- Run AU validation and at least one VST3 host load test.
+- Run AU validation and at least one VST3 host load test. **Local AU `auval -v aufx BfAl BfAu` passed for current source artifacts on July 7, 2026; VST3/pluginval remains open.**
 - Execute the host latency validation matrix in [docs/validation-host-latency.md](docs/validation-host-latency.md).
 - Publish GitHub release with SHA256 checksums.
 - Attach a completed release evidence record using [docs/release-evidence-template.md](docs/release-evidence-template.md).

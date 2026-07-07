@@ -43,7 +43,7 @@ spctl -a -vv -t install dist/BuffleAudioAlign-0.3.0-macOS.pkg
 shasum -a 256 dist/BuffleAudioAlign-0.3.0-macOS.pkg dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip
 ```
 
-V1 also needs at least one clean-account install smoke, AU validation, and a VST3 host/pluginval pass.
+V1 also needs at least one clean-account install smoke, a VST3 host/pluginval pass, and the DAW latency matrix. Local AU validation for the current source artifact passed on July 7, 2026; see [healthcheck-2026-07-07-au-validation.md](healthcheck-2026-07-07-au-validation.md).
 
 ## Publish Modes
 
@@ -109,6 +109,6 @@ Current release blockers before a broad V1 installer:
 - Developer ID Application and Developer ID Installer identities are not available in this local keychain.
 - Fresh package and archive hygiene evidence is required for each installer candidate.
 - The bundle `.zip` remains the preferred preview lane until signing, notarization, and clean-account install smoke pass.
-- AU validation, pluginval/VST3 host validation, and a clean-account install smoke still need to be run.
+- AU validation has current local evidence for commit `59dd173`; pluginval/VST3 host validation, DAW timing checks, and a clean-account install smoke still need to be run.
 
 Preview releases should be treated as GitHub prereleases until those gates pass.

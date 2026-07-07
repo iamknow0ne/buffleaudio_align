@@ -59,6 +59,18 @@ unzip -l dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip | rg '(^|/)\._|\.DS_Store
 
 The `rg` commands pass only when they print no matches.
 
+## Current Local Evidence
+
+On July 7, 2026, the staged AU component from commit `59dd173` was copied to the user Audio Units folder and validated outside the Codex sandbox with:
+
+```bash
+auval -v aufx BfAl BfAu
+```
+
+Result: `AU VALIDATION SUCCEEDED.` The run confirmed manufacturer `Buffle Audio`, AudioUnit name `Buffle Audio Align`, version `0.3.0`, published parameters, custom UI, format tests, and render tests. See [healthcheck-2026-07-07-au-validation.md](healthcheck-2026-07-07-au-validation.md).
+
+`pluginval` is not available on this machine's `PATH`, so VST3 validation remains open until pluginval is installed or an equivalent VST3 host scan/load record is captured.
+
 ## AU Validation
 
 ```bash

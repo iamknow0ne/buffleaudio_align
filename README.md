@@ -6,7 +6,7 @@ Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articula
 
 Latest packaged preview: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 
-Current source lane: post-`v0.3.0` V1-preview polish, pending fresh artifacts, host validation, signing, and notarization.
+Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artifacts, VST3/pluginval or equivalent host validation, signing, and notarization. Local AU validation has current evidence in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md).
 
 ## Links
 
@@ -29,6 +29,8 @@ Current source lane: post-`v0.3.0` V1-preview polish, pending fresh artifacts, h
 For the full standalone app UI, see [standalone-app-stack-roles-v0.3.0.png](landing/assets/screenshots/standalone-app-stack-roles-v0.3.0.png).
 
 ## Test The Preview Lane
+
+The public `v0.3.0` release is the packaged preview lane. The feature list below also includes current `main` behavior that may require a fresh local build until the next public artifact is published.
 
 1. Install or unzip the latest macOS preview from the GitHub release.
 2. Open the Standalone app, or insert the VST3/AU on a Dub/double/backing-vocal track.
@@ -137,6 +139,13 @@ cmake -S . -B build/cmake-debug \
 
 cmake --build build/cmake-debug --config Debug --parallel
 ctest --test-dir build/cmake-debug --output-on-failure
+```
+
+For a repeatable local V1 evidence pass, run:
+
+```bash
+scripts/v1_local_preflight.sh
+scripts/v1_local_preflight.sh --package
 ```
 
 ## Package
