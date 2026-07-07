@@ -15,14 +15,15 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Build notes: [docs/build.md](docs/build.md)
 - Deployment notes: [docs/deployment.md](docs/deployment.md)
 - Release inventory: [docs/releases.md](docs/releases.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-bidirectional-nudge.md](docs/healthcheck-2026-07-07-bidirectional-nudge.md)
+- V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-session-flow-polish.md](docs/healthcheck-2026-07-07-session-flow-polish.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
-## Screenshot
+## Product Preview
 
-Current v0.3.0 Standalone app capture:
+![Buffle Audio Align landing preview](landing/assets/screenshots/landing-hero-v0.3.0.jpg)
 
-![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-stack-roles-v0.3.0.png)
+For the full standalone app UI, see [standalone-app-stack-roles-v0.3.0.png](landing/assets/screenshots/standalone-app-stack-roles-v0.3.0.png).
 
 ## Try It In 5 Minutes
 
@@ -33,11 +34,13 @@ Current v0.3.0 Standalone app capture:
 5. Read the signed offset and confidence-gated suggested nudge, including whether the Dub should move earlier or later.
 6. Use manual `Nudge`, or the confidence-gated Apply Nudge workflow in the app UI.
 7. Raise `Consonant Tamer` carefully to soften unmatched Dub attacks without crushing sustained vowels.
-8. Switch `Original`, `Aligned`, and `Diff` to hear the dry Dub, processed preview, or changed material before trusting the move; the `Changed` meter shows the current processed-vs-original preview delta.
+8. Switch `Original`, `Aligned`, and `Diff` to hear the dry Dub, processed preview, or changed material before trusting the move; the `Changed Material` meter shows the current overall processed-vs-original preview change.
 9. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
 10. Use `Copy Report` to place a clipboard handoff summary of phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, role, and current controls.
 
 Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
+
+For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) and paste the app's `Copy Report` output into feedback.
 
 ## What Works Now
 
@@ -51,7 +54,8 @@ Preview build note: v0.3.0 is useful for local testing, but it is not Developer 
 - Original / Aligned / Difference preview modes for A/B trust checks.
 - Stack Role presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` apply role-aware Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus settings. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP is still V1 work.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states.
-- Initial changed-material meter for the processed-vs-original preview delta. This is the tested foundation for richer removed-material metering, not a per-feature consonant solo yet.
+- Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
+- Initial changed-material meter for the overall processed-vs-original preview change. This is the tested foundation for richer removed-material metering, not a per-feature consonant solo yet.
 - Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, changed-material metering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
@@ -69,7 +73,7 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 5. Preview or apply a confidence-gated early/late timing nudge.
 6. Add vocal-stack-specific consonant cleanup through an experimental transient tamer.
 7. A/B Original, Aligned, and Difference preview before trusting or printing the move in the host.
-8. Read a changed-material meter for the broad processed-vs-original preview delta.
+8. Read a changed-material meter for the broad processed-vs-original preview change.
 9. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
 10. Copy a clipboard alignment report for tester/session handoff.
 11. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
@@ -172,8 +176,10 @@ npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --bran
 
 Both public preview releases are published on GitHub:
 
-- `v0.3.0`: installer plus macOS bundle archive.
-- `v0.2.0`: installer plus macOS bundle archive.
+- `v0.3.0`: macOS bundle archive plus rough local `.pkg` preview.
+- `v0.2.0`: macOS bundle archive plus rough local `.pkg` preview.
+
+For current testers, prefer the bundle archive. The `.pkg` is a rough local preview artifact until Developer ID signing, notarization, and clean-account install smoke pass.
 
 To publish a future release after building:
 

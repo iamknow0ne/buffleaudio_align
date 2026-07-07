@@ -1,14 +1,15 @@
-# Buffle Audio Align 0.3.0
+# Buffle Audio Align Release Notes
 
-Developer preview for macOS Standalone, VST3, and AU.
+## Post-v0.3.0 Source Polish
 
-## Current Unreleased Polish
+These changes are in the current source tree after the public `v0.3.0` GitHub release. They should be included in the next preview release after fresh artifacts are built and verified.
 
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
+- Session-flow rail and `Next Best Move` card for tester-friendly phrase workflow guidance.
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
 - Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
-- Initial changed-material meter for processed-vs-original preview delta, with DSP tests and editor/report surfacing.
+- Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.
 - Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
 - Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP remains V1 work.
@@ -22,7 +23,11 @@ Developer preview for macOS Standalone, VST3, and AU.
 - `Apply Nudge` workflow action for reliable suggestions.
 - Visible `Guide Blend` and `Stereo Focus` controls.
 - V1 roadmap reframed around trust-meter alignment, delay-safe nudge, and consonant cleanup.
-- Landing and README updated with the producer workflow and current V1 focus.
+- Landing, README, and V1 tester guide updated with the producer workflow and current V1 focus.
+
+## v0.3.0
+
+Developer preview for macOS Standalone, VST3, and AU.
 
 ## Highlights
 
@@ -41,4 +46,4 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Notes
 
-The bundles are ad-hoc signed for local verification. The installer is not Developer ID signed or notarized yet.
+The bundle zip is the preferred preview testing path. The bundles are ad-hoc signed for local verification. The installer is not Developer ID signed or notarized yet.

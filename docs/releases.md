@@ -2,6 +2,8 @@
 
 This repo publishes macOS developer preview builds through GitHub Releases.
 
+For hands-on feedback, use the [V1 tester guide](v1-tester-guide.md). The bundle zip is the preferred preview lane today; the `.pkg` remains a rough local preview artifact until signing, notarization, and clean-account install smoke pass.
+
 ## Published Releases
 
 | Version | Status | GitHub release | Assets |
@@ -39,6 +41,26 @@ shasum -a 256 dist/BuffleAudioAlign-0.3.0-macOS.pkg dist/BuffleAudioAlign-0.3.0-
 
 V1 also needs at least one clean-account install smoke, AU validation, and a VST3 host/pluginval pass.
 
+## V1 Promotion Gates
+
+Do not call a build V1 until these gates have current evidence:
+
+- Clean `dist/` rebuild for the release candidate.
+- Debug and Release builds pass.
+- CTest passes.
+- Bundle zip contains no AppleDouble `._*` or `.DS_Store` entries.
+- `.pkg` payload contains no AppleDouble `._*` or `.DS_Store` entries.
+- Standalone, VST3, and AU bundles pass `codesign --verify --deep --strict`.
+- Developer ID Application signing is available and applied.
+- Developer ID Installer signing is available and applied.
+- Notarization succeeds and the installer is stapled.
+- `spctl` install assessment passes.
+- Clean macOS account install smoke passes.
+- AU validation passes.
+- VST3/pluginval or host scan passes.
+- DAW host matrix includes at least Logic/GarageBand AU, Reaper AU/VST3, Ableton VST3, and Standalone sanity.
+- Landing, README, release notes, screenshots, checksums, and tester guide match the shipped behavior.
+
 ## v0.3.0 Checksums
 
 ```text
@@ -63,7 +85,7 @@ These files are build outputs and are intentionally not tracked by git. GitHub R
 
 The staged bundles are ad-hoc signed for local verification. The installer packages are not Developer ID Installer signed or notarized yet.
 
-The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. If that gate fails, publish the cleaner bundle zip lane and hold the `.pkg` back until the payload is clean.
+The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. The current publish script still expects both the `.pkg` and bundle zip to exist, so a future zip-only preview publish mode is needed if the package is intentionally held back.
 
 Current release blockers before a broad V1 installer:
 

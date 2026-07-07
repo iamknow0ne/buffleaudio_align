@@ -28,7 +28,7 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and exist
 - `Copy Report` places that summary on the clipboard for session/tester handoff.
 - Tests cover unreliable report states and safe-nudge report states.
 - The workflow buttons now read `Arm Listen`, `Check Timing`, and `Preview Align`.
-- Apply Nudge now says `Waiting...`, `No Nudge`, or a signed apply value based on the current confidence state.
+- Apply Nudge now says `Need Confidence`, `No Nudge`, or an explicit signed `Delay Dub` / `Advance Dub` action based on the current confidence state.
 - Empty Guide/Dub lanes now show quiet-signal hints instead of looking broken.
 
 ## Still Open For V1

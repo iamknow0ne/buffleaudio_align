@@ -16,10 +16,11 @@ Done:
 - Bidirectional manual nudge in a standalone DSP module using fixed host latency compensation.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
-- Initial changed-material meter for the processed-vs-original preview delta, with CTest coverage for silence, identity, transient reduction, and channel-aware peak delta.
+- Initial changed-material meter for the overall processed-vs-original preview change, with CTest coverage for silence, identity, transient reduction, and channel-aware peak delta.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
 - Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
-- Phrase-health strip and stateful workflow rail in the editor.
+- Phrase-health strip, stateful workflow rail, and `Next Best Move` card in the editor.
+- V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
 - Cloudflare Pages landing page.
@@ -28,7 +29,7 @@ Not V1-ready yet:
 
 - Bidirectional nudge is implemented as fixed-latency preview compensation, but still needs DAW host validation and clearer clean-session latency testing.
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
-- Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
+- Capture/analyze/preview buttons are now framed as a session checklist, but they are not a complete captured phrase state machine.
 - Difference mode now has a first changed-material meter, but it does not yet have per-feature removed-material solo controls or polished over-cleaning guardrails.
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
 - Copy Report is clipboard-only and includes broad changed-material stats, but does not yet include per-feature removed-material metering or file export.
@@ -60,6 +61,7 @@ Goal: make the current analysis/nudge workflow trustworthy enough for daily test
 - Keep all offset and suggested-nudge UI gated by confidence.
 - Add one-click bidirectional safe nudge to the editor. **Initial signed Apply Nudge implemented.**
 - Add clear states: route, listen, confidence locked, no usable guide, no timing nudge needed.
+- Make the editor's next action visible without reading docs. **Initial `Next Best Move` card implemented.**
 - Add tests for confidence gating, silence, weak signal, and offset sign.
 - Document DAW sidechain setup and unsigned preview safety.
 - Verify Standalone build, DSP tests, and current package generation.
@@ -91,10 +93,12 @@ Goal: make Align feel like a practical DAW tool rather than a meter.
 
 - Make the workflow rail stateful: Route, Listen, Preview, Tame, Print.
 - Add phrase health cards and error states.
+- Add tester-facing session guidance in the app. **Initial session-flow rail details and `Next Best Move` card implemented.**
 - Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / Difference controls implemented.**
 - Add stack role presets. **Initial Stack Role selector implemented.**
 - Add session handoff report. **Initial Copy Report clipboard summary implemented.**
 - Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
+- Add tester guide and feedback checklist. **Initial V1 tester guide implemented.**
 
 Exit criteria:
 

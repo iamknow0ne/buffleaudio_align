@@ -2,12 +2,18 @@
 
 ## Unreleased
 
+- No additional changes beyond the current post-v0.3.0 source polish listed below.
+
+## Post-v0.3.0 source
+
 - Added latency-compensated bidirectional `Nudge Dub` support with signed early/late suggestions and CTest coverage.
+- Added a session-flow rail upgrade and `Next Best Move` card so the editor gives route/listen/apply/A-B/print guidance while testing.
 - Updated Apply Nudge, phrase health, report text, and editor copy for signed timing corrections.
+- Added a V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
 - Added clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Added `AlignmentReport` formatter and CTest coverage for unreliable and safe-nudge report states.
 - Added initial `RemovedMaterialMeter` DSP helper for processed-vs-original changed material amount, RMS delta, and peak delta, with CTest coverage.
-- Surfaced a compact `CHANGED` preview-delta meter in the editor and Copy Report.
+- Surfaced a compact `Changed Material` overall preview-change meter in the editor and Copy Report.
 - Improved first-run UI clarity with `Arm Listen`, `Check Timing`, `Preview Align`, dynamic Apply Nudge labels, and quiet-lane hints.
 - Added user-facing `Stack Role` presets for `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose`.
 - Added `StackRolePreset` DSP profile definitions and CTest coverage for distinct role behavior.

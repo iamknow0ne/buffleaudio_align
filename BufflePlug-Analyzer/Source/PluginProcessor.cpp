@@ -371,28 +371,35 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
 
 juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
 {
-    const auto tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;
-    const auto consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
-    const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
-    const auto stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     const auto snapshot = getAlignmentSnapshot();
 
-    return juce::String (snapshot.hasReliableOffset ? "Guide/Dub monitor locked - " : "Guide/Dub monitor listening - ")
+    if (! snapshot.guideFromSidechain)
+        return "Route: add the Guide sidechain, then play the phrase.";
+
+    if (snapshot.guideRms < usableSignalFloor)
+        return "Listen: Guide is too quiet for a trustworthy timing read.";
+
+    if (snapshot.dubRms < usableSignalFloor)
+        return "Listen: Dub is too quiet for nudge, tamer, or report decisions.";
+
+    if (! snapshot.hasReliableOffset)
+        return "Listen: gathering confidence before showing a timing recommendation.";
+
+    if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
+    {
+        return juce::String ("Locked: ")
+            + (snapshot.suggestedNudgeMs > 0.0f ? "Delay Dub " : "Advance Dub ")
+            + (snapshot.suggestedNudgeMs > 0.0f ? "+" : "")
+            + juce::String (snapshot.suggestedNudgeMs, 1)
+            + " ms available.";
+    }
+
+    return juce::String ("Locked: no timing nudge needed - ")
         + previewModeName (previewMode)
         + " mode, "
-        + juce::String (buffle::align::getStackRoleName (static_cast<buffle::align::StackRole> (juce::jlimit (0, 4, stackRole))))
-        + " role, "
-        + "Tightness "
-        + juce::String (static_cast<int> (tightness * 100.0f))
-        + "%, tamer "
-        + juce::String (static_cast<int> (consonantLevel * 100.0f))
-        + "%, nudge "
-        + juce::String (nudgeMs, 1)
-        + " ms"
-        + (snapshot.hasReliableOffset
-            ? ", suggested " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
-            : ", waiting for usable Guide/Dub confidence");
+        + juce::String (static_cast<int> (snapshot.removedMaterial * 100.0f))
+        + "% changed.";
 }
 
 juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const

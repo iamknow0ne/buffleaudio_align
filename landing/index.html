@@ -6,13 +6,13 @@
     <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, confidence-aware bidirectional nudge, Stack Role presets, A/B preview, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
     <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
-    <meta property="og:image" content="/assets/screenshots/standalone-app-stack-roles-v0.3.0.png">
+    <meta property="og:image" content="/assets/screenshots/landing-hero-v0.3.0.jpg">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="theme-color" content="#050707">
     <title>Buffle Audio Align | Vocal Alignment With Feel</title>
     <link rel="icon" href="assets/buffleaudio-logo.png">
-    <link rel="preload" href="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" as="image">
+    <link rel="preload" href="assets/screenshots/landing-hero-v0.3.0.jpg" as="image">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -40,17 +40,17 @@
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
         <div class="hero-media" aria-hidden="true">
-          <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="">
+          <img src="assets/screenshots/landing-hero-v0.3.0.jpg" alt="">
         </div>
         <div class="hero-vignette" aria-hidden="true"></div>
 
         <div class="hero-content">
-          <p class="eyebrow">hostin.tech audio lab / macOS preview</p>
+          <p class="eyebrow">Buffle Audio / macOS developer preview</p>
           <h1 id="hero-title">
             <span>Buffle Audio</span>
             <span>Align</span>
           </h1>
-          <p class="hero-copy">A vocal-stack timing surface for producers who want doubles to lock without sanding the humanity out of the take.</p>
+          <p class="hero-copy">Lock doubles, ADR, and backing vocals to a guide while keeping the small timing imperfections that make a stack feel human.</p>
           <div class="hero-actions" aria-label="Primary actions">
             <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download v0.3.0</a>
             <a class="button" href="#workflow">See workflow</a>
@@ -82,30 +82,20 @@
 
       <section class="marquee" aria-label="Buffle Audio Align capability loop">
         <div>
-          <span>sidechain guide</span>
-          <span>dub timing</span>
-          <span>delay-safe nudge</span>
-          <span>copy report</span>
-          <span>stack roles</span>
+          <span>guide / dub timing</span>
+          <span>confidence-gated nudge</span>
+          <span>consonant cleanup</span>
           <span>a/b difference</span>
-          <span>changed meter</span>
-          <span>consonant tamer</span>
-          <span>vst3</span>
-          <span>au</span>
-          <span>standalone</span>
+          <span>stack role presets</span>
+          <span>copy report</span>
         </div>
         <div aria-hidden="true">
-          <span>sidechain guide</span>
-          <span>dub timing</span>
-          <span>delay-safe nudge</span>
-          <span>copy report</span>
-          <span>stack roles</span>
+          <span>guide / dub timing</span>
+          <span>confidence-gated nudge</span>
+          <span>consonant cleanup</span>
           <span>a/b difference</span>
-          <span>changed meter</span>
-          <span>consonant tamer</span>
-          <span>vst3</span>
-          <span>au</span>
-          <span>standalone</span>
+          <span>stack role presets</span>
+          <span>copy report</span>
         </div>
       </section>
 
@@ -117,7 +107,7 @@
         </div>
         <figure class="app-frame">
           <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, delay-safe nudge, A/B preview, and Consonant Tamer controls.">
-          <figcaption>Current v0.3.0 standalone app. The public preview is unsigned and intended for local macOS testing.</figcaption>
+          <figcaption>v0.3.0 standalone preview showing the Guide/Dub timing surface, confidence readout, role presets, A/B modes, and Consonant Tamer controls.</figcaption>
         </figure>
       </section>
 
@@ -140,7 +130,7 @@
           <article style="--accent: var(--coral)">
             <span>03</span>
             <h3>A/B the change</h3>
-            <p>Original, Aligned, and Difference modes make the timing move audible, while the Changed meter shows the broad preview delta.</p>
+            <p>Original, Aligned, and Difference modes make the timing move audible, while the Changed Material meter shows the broad preview change.</p>
           </article>
           <article style="--accent: var(--green)">
             <span>04</span>
@@ -153,12 +143,12 @@
       <section id="engine" class="engine-section" aria-labelledby="engine-title">
         <div class="section-copy">
           <p class="eyebrow">engine state</p>
-          <h2 id="engine-title">Transparent DSP, tested in small pieces.</h2>
+          <h2 id="engine-title">A transparent preview engine, not a black-box warper.</h2>
           <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, bundle archive, rough installer package, and release assets are all part of the current workflow.</p>
         </div>
         <div class="engine-list">
           <div><span>now</span><strong>Signed offset, bidirectional Apply Nudge, Stack Role presets, A/B Difference, Changed meter, Consonant Tamer Lite, Copy Report.</strong></div>
-          <div><span>v1 focus</span><strong>Better phrase capture, per-feature removed-material solo, DAW validation, signing, notarization.</strong></div>
+          <div><span>v1 focus</span><strong>Phrase workflow, naturalness guardrails, golden audio checks, DAW validation, signing, notarization.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
         </div>
       </section>
@@ -167,7 +157,7 @@
         <div>
           <p class="eyebrow">release</p>
           <h2 id="release-title">Get the current macOS preview.</h2>
-          <p>Download the staged standalone, VST3, and AU bundles from GitHub Releases. The unsigned package is available for rough local preview testing, but the bundle zip is the cleaner lane today.</p>
+          <p>Download the macOS developer preview from GitHub Releases. The bundle zip is the cleanest testing path today; the installer package is available for local preview only and is not Developer ID notarized yet.</p>
         </div>
         <div class="release-actions">
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
@@ -177,6 +167,10 @@
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS.pkg">
             <span>rough installer</span>
             <strong>BuffleAudioAlign-0.3.0-macOS.pkg</strong>
+          </a>
+          <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/blob/main/docs/v1-tester-guide.md">
+            <span>tester guide</span>
+            <strong>Install, smoke test, send feedback</strong>
           </a>
         </div>
       </section>

@@ -54,6 +54,28 @@ juce::String describeNudgeMove (float value)
     return "No nudge";
 }
 
+juce::String describeNudgeMoveCompact (float value)
+{
+    if (value > 0.05f)
+        return "Delay " + juce::String (std::abs (value), 1);
+
+    if (value < -0.05f)
+        return "Adv " + juce::String (std::abs (value), 1);
+
+    return "No nudge";
+}
+
+juce::String describeApplyMove (float value)
+{
+    if (value > 0.05f)
+        return "Delay Dub " + asSignedMs (value);
+
+    if (value < -0.05f)
+        return "Advance Dub " + asSignedMs (value);
+
+    return "No Nudge";
+}
+
 juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
     if (! snapshot.guideFromSidechain)
@@ -78,12 +100,52 @@ juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::Align
 juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
     if (snapshot.hasReliableOffset && std::abs (snapshot.suggestedNudgeMs) > 0.05f)
-        return alignedColour;
-
-    if (snapshot.hasReliableOffset)
         return brandAccent;
 
+    if (snapshot.hasReliableOffset)
+        return alignedColour;
+
     return warningColour;
+}
+
+juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    if (! snapshot.guideFromSidechain)
+        return "Route";
+
+    if (snapshot.guideRms < 0.025f || snapshot.dubRms < 0.025f || ! snapshot.hasReliableOffset)
+        return "Listen";
+
+    if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
+        return "Apply";
+
+    if (snapshot.removedMaterial > 0.04f)
+        return "A/B";
+
+    return "Print";
+}
+
+juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    if (! snapshot.guideFromSidechain)
+        return "Route the Guide vocal into the sidechain, then play the phrase.";
+
+    if (snapshot.guideRms < 0.025f)
+        return "Raise or unmute the Guide. Align is protecting you from fake timing numbers.";
+
+    if (snapshot.dubRms < 0.025f)
+        return "Raise or unmute the Dub before trusting nudge, tamer, or report output.";
+
+    if (! snapshot.hasReliableOffset)
+        return "Keep playback rolling until confidence locks, or widen the phrase selection.";
+
+    if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
+        return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then compare Aligned and Difference.";
+
+    if (snapshot.removedMaterial > 0.04f)
+        return "Timing is locked. Use Difference to judge whether cleanup is changing too much.";
+
+    return "Copy Report for the session notes, or adjust Stack Role for this layer.";
 }
 
 void drawReadoutPill (juce::Graphics& g,
@@ -142,16 +204,39 @@ void drawChangedMaterialStrip (juce::Graphics& g,
     auto text = area.reduced (12, 0);
     g.setColour (dubColour.brighter (0.16f));
     g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
-    g.drawText ("CHANGED", text.removeFromLeft (88), juce::Justification::centredLeft);
+    g.drawText ("CHANGED MATERIAL", text.removeFromLeft (142), juce::Justification::centredLeft);
 
     auto meterArea = text.removeFromRight (120).withSizeKeepingCentre (104, 8);
     drawHorizontalMeter (g, meterArea, snapshot.removedMaterial, dubColour.brighter (0.2f));
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (asPercent (snapshot.removedMaterial) + " preview delta",
+    g.drawText (asPercent (snapshot.removedMaterial) + " overall preview change",
                 text,
                 juce::Justification::centredLeft);
+}
+
+void drawNextActionCard (juce::Graphics& g,
+                         juce::Rectangle<int> area,
+                         const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    const auto accent = phraseHealthColour (snapshot);
+    drawRoundRect (g, area.toFloat(), juce::Colour (0xff11161b), accent.withAlpha (0.28f));
+
+    auto text = area.reduced (12, 7);
+    auto badge = text.removeFromRight (82).withSizeKeepingCentre (78, 24);
+    drawRoundRect (g, badge.toFloat(), accent.withAlpha (0.14f), accent.withAlpha (0.42f));
+    g.setColour (accent);
+    g.setFont (juce::FontOptions (11.0f, juce::Font::bold));
+    g.drawText (describeNextActionTitle (snapshot), badge, juce::Justification::centred);
+
+    g.setColour (muted.withAlpha (0.86f));
+    g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
+    g.drawText ("NEXT BEST MOVE", text.removeFromTop (14), juce::Justification::centredLeft);
+
+    g.setColour (ink);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText (describeNextActionBody (snapshot), text, juce::Justification::centredLeft);
 }
 
 class AboutComponent final : public juce::Component
@@ -231,7 +316,7 @@ public:
         drawRoundRect (g, badge.toFloat(), juce::Colour (0xff142320), brandAccent.withAlpha (0.34f));
         g.setColour (brandAccent);
         g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
-        g.drawText ("v0.3 PREVIEW", badge, juce::Justification::centred);
+        g.drawText ("TRUST METER", badge, juce::Justification::centred);
 
         g.setColour (ink);
         g.setFont (juce::FontOptions (18.5f, juce::Font::bold));
@@ -253,13 +338,15 @@ public:
         drawReadoutPill (g,
                          readouts,
                          "SUGGEST",
-                         snapshot.hasReliableOffset ? describeNudgeMove (snapshot.suggestedNudgeMs) : "LISTEN",
+                         snapshot.hasReliableOffset ? describeNudgeMoveCompact (snapshot.suggestedNudgeMs) : "LISTEN",
                          warningColour);
 
         content.removeFromTop (8);
         drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
         content.removeFromTop (8);
         drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
+        content.removeFromTop (8);
+        drawNextActionCard (g, content.removeFromTop (46), snapshot);
         content.removeFromTop (8);
 
         auto nudgeLine = content.removeFromTop (18);
@@ -474,10 +561,10 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
 
     addAndMakeVisible (stackRoleBox);
     stackRoleBox.addItem ("Manual", 1);
-    stackRoleBox.addItem ("Tight", 2);
-    stackRoleBox.addItem ("Natural", 3);
-    stackRoleBox.addItem ("Rap", 4);
-    stackRoleBox.addItem ("ADR", 5);
+    stackRoleBox.addItem ("Double Tight", 2);
+    stackRoleBox.addItem ("Choir Natural", 3);
+    stackRoleBox.addItem ("Rap Stack", 4);
+    stackRoleBox.addItem ("ADR Loose", 5);
     stackRoleBox.setTooltip ("Stack Role: choose the job of this layer. Presets set timing feel, consonant cleanup, Guide Blend, and Stereo Focus.");
     stackRoleBox.setColour (juce::ComboBox::backgroundColourId, panelLight);
     stackRoleBox.setColour (juce::ComboBox::outlineColourId, border);
@@ -571,7 +658,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
 
     auto controls = bounds.removeFromRight (238).reduced (24, 62);
     auto controlHeader = controls.removeFromTop (42).reduced (0, 7);
-    stackRoleBox.setBounds (controlHeader.removeFromRight (86));
+    stackRoleBox.setBounds (controlHeader.removeFromRight (126));
     const auto sliderHeight = 62;
 
     auto placeSlider = [&controls] (juce::Slider& slider, juce::Label& label)
@@ -599,8 +686,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
     const auto canApplyNudge = snapshot.hasReliableOffset && std::abs (snapshot.suggestedNudgeMs) > 0.05f;
     applySuggestedButton.setEnabled (canApplyNudge);
-    applySuggestedButton.setButtonText (canApplyNudge ? "Apply " + asSignedMs (snapshot.suggestedNudgeMs)
-                                                       : snapshot.hasReliableOffset ? "No Nudge" : "Waiting...");
+    applySuggestedButton.setButtonText (canApplyNudge ? describeApplyMove (snapshot.suggestedNudgeMs)
+                                                       : snapshot.hasReliableOffset ? "No Nudge" : "Need Confidence");
     updatePreviewModeButtons();
     updateStackRoleBox();
 
@@ -674,11 +761,30 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
                            : ! snapshot.hasReliableOffset ? 1
                            : std::abs (snapshot.suggestedNudgeMs) > 0.05f ? 2
                            : 3;
-    auto row = area.reduced (14, 18);
+    const juce::String stepDetails[] =
+    {
+        snapshot.guideFromSidechain ? "sidechain ok" : "guide missing",
+        snapshot.hasReliableOffset ? "confidence " + asPercent (snapshot.offsetConfidence)
+                                   : snapshot.guideRms < 0.025f ? "raise guide"
+                                   : snapshot.dubRms < 0.025f ? "raise dub"
+                                   : "gathering",
+        std::abs (snapshot.suggestedNudgeMs) > 0.05f ? describeNudgeMove (snapshot.suggestedNudgeMs)
+                                                     : "compare A/B",
+        snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
+                                         : "set taste",
+        "copy handoff"
+    };
+
+    auto row = area.reduced (14, 16);
+    auto railTitle = row.removeFromTop (24);
+    g.setColour (muted.withAlpha (0.78f));
+    g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
+    g.drawText ("SESSION FLOW", railTitle, juce::Justification::centredLeft);
+    row.removeFromTop (6);
 
     for (int i = 0; i < 5; ++i)
     {
-        auto stepArea = row.removeFromTop (34);
+        auto stepArea = row.removeFromTop (42);
         auto number = stepArea.removeFromLeft (26).withSizeKeepingCentre (22, 22);
         const auto isCurrent = i == currentStep;
         const auto isDone = i < currentStep;
@@ -707,8 +813,12 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
 
         g.setColour (isDone || isCurrent ? ink : muted);
         g.setFont (juce::FontOptions (13.5f, isCurrent ? juce::Font::bold : juce::Font::plain));
-        g.drawText (steps[i], stepArea.reduced (8, 0), juce::Justification::centredLeft);
-        row.removeFromTop (10);
+        auto stepText = stepArea.reduced (8, 0);
+        g.drawText (steps[i], stepText.removeFromTop (20), juce::Justification::centredLeft);
+        g.setColour (isDone || isCurrent ? muted.withAlpha (0.95f) : muted.withAlpha (0.58f));
+        g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
+        g.drawText (stepDetails[i], stepText, juce::Justification::centredLeft);
+        row.removeFromTop (7);
     }
 }
 
