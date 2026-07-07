@@ -87,7 +87,7 @@ Do not call a build V1 until these gates have current evidence:
 - DAW host matrix in [validation-host-latency.md](validation-host-latency.md) passes for at least Logic/GarageBand AU, Reaper AU/VST3, Ableton VST3, and Standalone sanity.
 - Landing, README, release notes, screenshots, checksums, and tester guide match the shipped behavior.
 
-## v0.3.0 Checksums
+## Published v0.3.0 Checksums
 
 ```text
 9d1d2e46401960f98c3c3511a547ddf4f205c87f0bdfc8d4d83d82dc7890ca16  BuffleAudioAlign-0.3.0-macOS.pkg
@@ -96,28 +96,19 @@ fdd34cbd5be39d76fdad46df1a2e5e3f907617fec4325ce127a37917e6c5934c  BuffleAudioAli
 
 ## Local Artifacts
 
-The ignored `dist/` folder currently contains:
-
-```text
-dist/BuffleAudioAlign-0.2.0-macOS-bundles.zip
-dist/BuffleAudioAlign-0.2.0-macOS.pkg
-dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip
-dist/BuffleAudioAlign-0.3.0-macOS.pkg
-```
-
-These files are build outputs and are intentionally not tracked by git. GitHub Releases are the public artifact source of truth.
+The ignored `dist/` folder is local build output and may contain staged bundles, `pkgroot`, and top-level package/archive artifacts from the most recent package run. Do not treat local `dist/` contents as the public source of truth; GitHub Releases and completed release evidence records are the public artifact record.
 
 ## Signing And Package State
 
 The staged bundles are ad-hoc signed for local verification. The installer packages are not Developer ID Installer signed or notarized yet.
 
-The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. Use `RELEASE_MODE=zip` when the package is intentionally held back.
+The build script now repairs package payload metadata and refuses to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. The publish script repeats the payload hygiene gate for `pkg` and `full` release modes. Use `RELEASE_MODE=zip` when the package is intentionally held back.
 
 Current release blockers before a broad V1 installer:
 
 - Developer ID Application and Developer ID Installer identities are not available in this local keychain.
-- The `.pkg` payload still needs AppleDouble `._*` cleanup before signing/notarization.
-- The bundle `.zip` is the cleaner preview artifact lane today.
+- Fresh package and archive hygiene evidence is required for each installer candidate.
+- The bundle `.zip` remains the preferred preview lane until signing, notarization, and clean-account install smoke pass.
 - AU validation, pluginval/VST3 host validation, and a clean-account install smoke still need to be run.
 
 Preview releases should be treated as GitHub prereleases until those gates pass.

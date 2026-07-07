@@ -115,7 +115,7 @@ Exit criteria:
 Goal: ship a clean, supportable macOS V1.
 
 - Pin or vendor JUCE, or provide a reproducible bootstrap.
-- Fix package payload hygiene so `.pkg` contains no `.DS_Store` or AppleDouble `._*` files.
+- Verify package payload hygiene for each installer candidate so `.pkg` contains no `.DS_Store` or AppleDouble `._*` files. **Build script repair-and-verify gate implemented.**
 - Add Developer ID Application and Installer signing.
 - Notarize and staple installer.
 - Run install smoke on a clean macOS account.

@@ -69,11 +69,11 @@ Outputs:
 dist/stage/Buffle Audio Align.app
 dist/stage/Buffle Audio Align.vst3
 dist/stage/Buffle Audio Align.component
-dist/BuffleAudioAlign-0.3.0-macOS.pkg
-dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip
+dist/BuffleAudioAlign-${VERSION}-macOS.pkg
+dist/BuffleAudioAlign-${VERSION}-macOS-bundles.zip
 ```
 
-The bundles are ad-hoc signed for local verification. The package is not Developer ID Installer signed or notarized.
+The bundles are ad-hoc signed for local verification. The package build repairs and verifies payload hygiene, but the package is not Developer ID Installer signed or notarized.
 
 ## Legacy Xcode Discovery
 

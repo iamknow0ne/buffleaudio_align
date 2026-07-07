@@ -39,6 +39,57 @@ verify_package_payload_hygiene() {
   fi
 }
 
+repair_package_payload_hygiene() {
+  local pkg="$1"
+  local temp_dir expanded_dir payload_root repaired_pkg
+
+  for tool in pkgutil gunzip cpio mkbom gzip xar; do
+    if ! command -v "${tool}" >/dev/null 2>&1; then
+      echo "${tool} is required to repair package payload hygiene." >&2
+      return 1
+    fi
+  done
+
+  temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/buffle-pkg-repair.XXXXXX")"
+  expanded_dir="${temp_dir}/expanded"
+  payload_root="${temp_dir}/payload-root"
+  repaired_pkg="${temp_dir}/repaired.pkg"
+
+  pkgutil --expand "${pkg}" "${expanded_dir}"
+  mkdir -p "${payload_root}"
+
+  (
+    cd "${payload_root}"
+    gunzip -c "${expanded_dir}/Payload" | cpio -idm --quiet
+    find . \( -name "._*" -o -name ".DS_Store" \) -delete
+    mkbom . "${expanded_dir}/Bom"
+    find . -print | cpio -o --format odc --quiet | gzip -c > "${expanded_dir}/Payload"
+  )
+
+  (
+    cd "${expanded_dir}"
+    xar -cf "${repaired_pkg}" --compression none Bom Payload PackageInfo
+  )
+
+  mv "${repaired_pkg}" "${pkg}"
+  rm -rf "${temp_dir}"
+}
+
+clean_macos_metadata() {
+  local path
+
+  for path in "$@"; do
+    if [[ -e "${path}" ]]; then
+      find "${path}" \( -name "._*" -o -name ".DS_Store" \) -delete
+      find "${path}" -exec xattr -c "{}" \;
+
+      if command -v dot_clean >/dev/null 2>&1; then
+        dot_clean -m "${path}"
+      fi
+    fi
+  done
+}
+
 cmake -S "${ROOT_DIR}" -B "${BUILD_DIR}" \
   -DCMAKE_BUILD_TYPE=Release \
   -DJUCE_PATH="${JUCE_PATH}"
@@ -71,8 +122,7 @@ if [[ -z "$(find "${STAGE_DIR}" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
   exit 1
 fi
 
-find "${STAGE_DIR}" "${PKGROOT_DIR}" -name "._*" -delete
-find "${STAGE_DIR}" "${PKGROOT_DIR}" -exec xattr -c "{}" \;
+clean_macos_metadata "${STAGE_DIR}" "${PKGROOT_DIR}"
 
 for bundle in \
   "${STAGE_DIR}/Buffle Audio Align.app" \
@@ -87,8 +137,7 @@ do
   fi
 done
 
-find "${STAGE_DIR}" "${PKGROOT_DIR}" -name "._*" -delete
-find "${STAGE_DIR}" "${PKGROOT_DIR}" -exec xattr -c "{}" \;
+clean_macos_metadata "${STAGE_DIR}" "${PKGROOT_DIR}"
 
 pkgbuild \
   --root "${PKGROOT_DIR}" \
@@ -101,6 +150,7 @@ pkgbuild \
   --install-location "/" \
   "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 
+repair_package_payload_hygiene "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 verify_package_payload_hygiene "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 
 ditto -c -k --norsrc --noextattr --noqtn \

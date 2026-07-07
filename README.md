@@ -11,7 +11,7 @@ Current source lane: post-`v0.3.0` V1-preview polish, pending fresh artifacts, h
 ## Links
 
 - Landing page: https://buffleaudio-align.pages.dev/
-- Latest release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0
+- Latest preview release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0
 - All releases: https://github.com/iamknow0ne/buffleaudio_align/releases
 - Support development: https://buymeacoffee.com/hostin.tech
 - Build notes: [docs/build.md](docs/build.md)
@@ -19,7 +19,7 @@ Current source lane: post-`v0.3.0` V1-preview polish, pending fresh artifacts, h
 - Release inventory: [docs/releases.md](docs/releases.md)
 - V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
 - Host latency validation: [docs/validation-host-latency.md](docs/validation-host-latency.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-tamer-audition.md](docs/healthcheck-2026-07-07-tamer-audition.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-package-hygiene.md](docs/healthcheck-2026-07-07-package-hygiene.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Product Preview
@@ -45,7 +45,7 @@ Preview build note: v0.3.0 is useful for local testing, but it is not Developer 
 
 For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) and paste the app's `Copy Report` output into feedback.
 
-## What Works Now
+## What Works In Current Source
 
 - Branded Buffle Audio editor with the shared logo, dark teal visual identity, and in-plugin About panel.
 - Persistent JUCE parameters through `AudioProcessorValueTreeState`.
@@ -150,9 +150,10 @@ Outputs:
 - `dist/stage/Buffle Audio Align.app`
 - `dist/stage/Buffle Audio Align.vst3`
 - `dist/stage/Buffle Audio Align.component`
-- `dist/BuffleAudioAlign-0.3.0-macOS.pkg`
+- `dist/BuffleAudioAlign-${VERSION}-macOS.pkg`
+- `dist/BuffleAudioAlign-${VERSION}-macOS-bundles.zip`
 
-The staged bundles are ad-hoc signed for local verification. The package is not Developer ID Installer signed or notarized yet.
+The staged bundles are ad-hoc signed for local verification. The package payload hygiene gate removes AppleDouble/`.DS_Store` entries before verification, but the package is not Developer ID Installer signed or notarized yet.
 
 ## Landing Page
 
