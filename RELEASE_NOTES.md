@@ -4,6 +4,9 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Current Unreleased Polish
 
+- Original / Aligned / Difference preview modes with persistent APVTS state.
+- Difference audition path for hearing the processed-minus-original material.
+- Updated standalone screenshot showing the A/B preview controls.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts.
 - Phrase-health strip, stateful workflow rail, and disabled Apply Nudge state until a safe suggestion exists.
 - CTest coverage for the consonant-tamer preview slice.

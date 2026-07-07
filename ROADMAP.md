@@ -15,6 +15,7 @@ Done:
 - Confidence-gated display so weak signals no longer show fake offset certainty.
 - Manual nudge delay in a standalone DSP module.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
+- Original / Aligned / Difference preview modes with test coverage for preview rendering.
 - Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
@@ -25,7 +26,8 @@ Not V1-ready yet:
 - Suggested nudge is still positive-delay-first; early/late compensation needs a fuller dual-path design.
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
-- Removed-material audition, A/B modes, and stack role presets are not implemented yet.
+- Difference mode is implemented as a first removed-material audition path, but it does not yet have dedicated metering or per-feature solo controls.
+- Stack role presets are not implemented yet.
 - Installer is not Developer ID signed or notarized.
 - No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
@@ -37,7 +39,7 @@ These are the target features that make Align meaningfully different from generi
 2. **One-Click Safe Nudge**: apply suggested nudge only when confidence and signal floors are credible.
 3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
-5. **Removed Material Audition**: solo the timing/consonant material being reduced.
+5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering.
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals.
 7. **Guide Fallback Intelligence**: explain missing/weak sidechain routing instead of producing misleading numbers.
 8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
@@ -70,7 +72,7 @@ Goal: deliver the first vocal-stack-specific differentiator.
 
 - Add transient/high-frequency consonant feature extraction.
 - Add fade-safe Dub attenuation controlled by `Consonant Tamer`. **Initial realtime slice implemented.**
-- Add removed-material audition mode.
+- Add removed-material audition mode. **Initial Difference preview implemented.**
 - Add breath/attack preservation heuristics.
 - Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries. **Core burst/silence/sustain/Guide-match tests implemented.**
 
@@ -85,7 +87,7 @@ Goal: make Align feel like a practical DAW tool rather than a meter.
 
 - Make the workflow rail stateful: Route, Listen, Preview, Tame, Print.
 - Add phrase health cards and error states.
-- Add A/B controls: Original, Aligned, Difference/Removed.
+- Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / Difference controls implemented.**
 - Add stack role presets.
 - Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
 

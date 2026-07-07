@@ -7,6 +7,7 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "DSP/ConsonantTamer.h"
 #include "DSP/ManualNudgeDelay.h"
+#include "DSP/PreviewModeMixer.h"
 
 //==============================================================================
 /**
@@ -95,10 +96,12 @@ private:
     std::atomic<float>* consonantLevelParam = nullptr;
     std::atomic<float>* nudgeParam = nullptr;
     std::atomic<float>* auditionParam = nullptr;
+    std::atomic<float>* previewModeParam = nullptr;
 
     double currentSampleRate = 44100.0;
     buffle::align::ManualNudgeDelay nudgeDelay;
     buffle::align::ConsonantTamer consonantTamer;
+    juce::AudioBuffer<float> originalDubBuffer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufflePlugAnalyzerAudioProcessor)
 };

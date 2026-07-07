@@ -11,6 +11,7 @@ constexpr auto naturalnessId = "naturalness";
 constexpr auto consonantLevelId = "consonantLevel";
 constexpr auto nudgeId = "nudge";
 constexpr auto auditionId = "audition";
+constexpr auto previewModeId = "previewMode";
 constexpr auto guideBlendId = "guideBlend";
 constexpr auto stereoFocusId = "stereoFocus";
 constexpr auto maxNudgeMs = 120.0f;
@@ -37,6 +38,16 @@ float calculateMatch (float guide, float dub)
 
     return 1.0f - juce::jlimit (0.0f, 1.0f, std::abs (guide - dub));
 }
+
+juce::String previewModeName (int mode)
+{
+    switch (mode)
+    {
+        case 0: return "Original";
+        case 2: return "Difference";
+        default: return "Aligned";
+    }
+}
 }
 
 //==============================================================================
@@ -59,6 +70,7 @@ BufflePlugAnalyzerAudioProcessor::BufflePlugAnalyzerAudioProcessor()
     consonantLevelParam = parameters.getRawParameterValue (consonantLevelId);
     nudgeParam = parameters.getRawParameterValue (nudgeId);
     auditionParam = parameters.getRawParameterValue (auditionId);
+    previewModeParam = parameters.getRawParameterValue (previewModeId);
 
     for (auto& value : guideHistory)
         value.store (0.0f);
@@ -145,6 +157,11 @@ void BufflePlugAnalyzerAudioProcessor::prepareToPlay (double sampleRate, int sam
     const auto maxDelaySamples = static_cast<int> (std::ceil (currentSampleRate * (maxNudgeMs / 1000.0f))) + 1;
     nudgeDelay.prepare (juce::jmax (1, getTotalNumOutputChannels()), maxDelaySamples);
     consonantTamer.prepare (currentSampleRate, juce::jmax (1, getTotalNumOutputChannels()));
+    originalDubBuffer.setSize (juce::jmax (1, getTotalNumOutputChannels()),
+                               juce::jmax (1, samplesPerBlock),
+                               false,
+                               false,
+                               true);
     historyWriteIndex.store (0);
     lastGuideRms.store (0.0f);
     lastDubRms.store (0.0f);
@@ -229,6 +246,9 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
     lastMatch.store (match);
 
     const auto auditionGain = auditionParam != nullptr ? auditionParam->load() : 1.0f;
+    const auto previewMode = previewModeParam != nullptr
+        ? static_cast<buffle::align::PreviewMode> (juce::roundToInt (previewModeParam->load()))
+        : buffle::align::PreviewMode::aligned;
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto consonantAmount = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.5f;
@@ -236,8 +256,22 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
                                             nudgeDelay.getMaxDelaySamples() - 1,
                                             static_cast<int> (std::round (std::abs (nudgeMs) * currentSampleRate / 1000.0)));
 
+    if (originalDubBuffer.getNumChannels() < dubBuffer.getNumChannels()
+     || originalDubBuffer.getNumSamples() < dubBuffer.getNumSamples())
+    {
+        originalDubBuffer.setSize (juce::jmax (1, dubBuffer.getNumChannels()),
+                                   juce::jmax (1, dubBuffer.getNumSamples()),
+                                   false,
+                                   false,
+                                   true);
+    }
+
+    for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
+        originalDubBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());
+
     nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), delaySamples);
     consonantTamer.process (dubBuffer, hasGuideSidechain ? &guideBuffer : nullptr, consonantAmount, naturalness);
+    buffle::align::renderPreviewMode (dubBuffer, originalDubBuffer, previewMode, dubBuffer.getNumChannels());
 
     buffer.applyGain (auditionGain);
 }
@@ -323,9 +357,12 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
     const auto tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;
     const auto consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
+    const auto previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
     const auto snapshot = getAlignmentSnapshot();
 
     return juce::String (snapshot.hasReliableOffset ? "Guide/Dub monitor locked - " : "Guide/Dub monitor listening - ")
+        + previewModeName (previewMode)
+        + " mode, "
         + "Tightness "
         + juce::String (static_cast<int> (tightness * 100.0f))
         + "%, tamer "
@@ -357,6 +394,9 @@ BufflePlugAnalyzerAudioProcessor::createParameterLayout()
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         auditionId, "Audition", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f));
+
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        previewModeId, "Preview Mode", juce::StringArray { "Original", "Aligned", "Difference" }, 1));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         guideBlendId, "Guide Blend", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.0f));

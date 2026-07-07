@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence, suggested nudge preview, and experimental Consonant Tamer Lite.">
+    <meta name="description" content="Buffle Audio Align v0.3.0 is a macOS vocal-stack alignment plugin for Guide/Dub timing, confidence, A/B preview, and experimental Consonant Tamer Lite.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
-    <meta property="og:description" content="Guide/Dub timing, confidence-gated safe nudge, and consonant-tamer preview for vocal stacks.">
+    <meta property="og:description" content="Guide/Dub timing, confidence-gated safe nudge, Original/Aligned/Difference preview, and consonant-tamer cleanup for vocal stacks.">
     <meta property="og:image" content="/assets/screenshots/standalone-app-v0.3.0.png">
     <meta name="theme-color" content="#050707">
     <title>Buffle Audio Align v0.3.0</title>
@@ -43,12 +43,13 @@
             <span>alignment</span>
             <span>with feel.</span>
           </h1>
-          <p class="lede">Route the Guide, play the Dub, wait for confidence, then preview a safe nudge and tame unmatched consonant clutter before the performance gets flattened.</p>
+          <p class="lede">Route the Guide, play the Dub, wait for confidence, then A/B Original, Aligned, and Difference while taming unmatched consonant clutter.</p>
           <div class="format-strip" aria-label="Built for">
             <span>Doubles</span>
             <span>Stacks</span>
             <span>Backing vocals</span>
             <span>Consonant Tamer Lite</span>
+            <span>Original / Aligned / Difference</span>
             <span>Unsigned macOS preview</span>
           </div>
           <div class="hero-actions">
@@ -92,6 +93,7 @@
           <span>signed offset</span>
           <span>confidence</span>
           <span>nudge preview</span>
+          <span>a/b difference</span>
           <span>consonant tamer</span>
           <span>vst3</span>
           <span>au</span>
@@ -103,6 +105,7 @@
           <span>signed offset</span>
           <span>confidence</span>
           <span>nudge preview</span>
+          <span>a/b difference</span>
           <span>consonant tamer</span>
           <span>vst3</span>
           <span>au</span>
@@ -118,7 +121,7 @@
         </div>
         <figure class="app-proof">
           <img src="assets/screenshots/standalone-app-v0.3.0.png" alt="Buffle Audio Align standalone app showing Guide/Dub timing readouts">
-          <figcaption>Guide/Dub monitor, phrase health, signed offset, confidence, safe nudge, and Consonant Tamer preview in one cockpit.</figcaption>
+          <figcaption>Guide/Dub monitor, phrase health, signed offset, confidence, safe nudge, A/B preview, and Consonant Tamer in one cockpit.</figcaption>
         </figure>
       </section>
 
@@ -142,8 +145,8 @@
           </article>
           <article class="module-card" style="--accent: var(--coral)">
             <span>03</span>
-            <h3>Preview the nudge</h3>
-            <p>Audition manual or suggested delay-safe movement before committing to deeper editing.</p>
+            <h3>A/B the move</h3>
+            <p>Switch Original, Aligned, and Difference to hear the dry Dub, processed path, or changed material.</p>
             <div class="mini nudge" aria-hidden="true"><i></i><i></i></div>
           </article>
           <article class="module-card" style="--accent: var(--green)">
@@ -163,8 +166,8 @@
           <h2 id="engine-title">Small DSP pieces you can test.</h2>
         </div>
         <div class="engine-rack">
-          <div><span>now</span><strong>Envelope features, signed offset, safe nudge, Consonant Tamer Lite, CTest coverage.</strong></div>
-          <div><span>next</span><strong>Captured analysis buffers, original/preview A/B, removed-material audition.</strong></div>
+          <div><span>now</span><strong>Envelope features, signed offset, safe nudge, A/B Difference, Consonant Tamer Lite, CTest coverage.</strong></div>
+          <div><span>next</span><strong>Captured analysis buffers, richer removed-material metering, clearer phrase-state capture.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, offline preview rendering, ARA/AAX evaluation.</strong></div>
         </div>
       </section>
@@ -173,13 +176,13 @@
         <div class="section-head">
           <p class="eyebrow">road to v1</p>
           <h2 id="v1-title">Transparent stack cleanup, not a black-box warper.</h2>
-          <p>V1 is focused on making the current safe-nudge and Consonant Tamer loop trustworthy before heavier offline warping.</p>
+          <p>V1 is focused on making the current safe-nudge, A/B preview, and Consonant Tamer loop trustworthy before heavier offline warping.</p>
         </div>
         <div class="v1-grid">
           <div><span>01</span><strong>Trust Meter Alignment</strong></div>
           <div><span>02</span><strong>One-Click Safe Nudge</strong></div>
           <div><span>03</span><strong>Consonant Tamer Lite</strong></div>
-          <div><span>04</span><strong>Removed Material Audition</strong></div>
+          <div><span>04</span><strong>Difference Audition</strong></div>
           <div><span>05</span><strong>Naturalness Guardrail</strong></div>
           <div><span>06</span><strong>Phrase Health Report</strong></div>
         </div>

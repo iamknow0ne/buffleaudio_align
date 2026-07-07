@@ -382,7 +382,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      "Preview how tightly doubled layers should hold the stereo image.",
                      true);
 
-    for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton })
+    for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton,
+                          &originalModeButton, &alignedModeButton, &differenceModeButton })
     {
         addAndMakeVisible (*button);
         button->setColour (juce::TextButton::buttonColourId, panelLight);
@@ -396,11 +397,18 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     analyzeButton.setTooltip ("Estimate timing confidence from the current monitoring window.");
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
     applySuggestedButton.setTooltip ("Apply the current confidence-gated suggested nudge to the Nudge control.");
+    originalModeButton.setTooltip ("Monitor the unprocessed Dub.");
+    alignedModeButton.setTooltip ("Monitor the current nudge and Consonant Tamer path.");
+    differenceModeButton.setTooltip ("Monitor what the preview path changed or removed.");
     applySuggestedButton.setEnabled (false);
     captureButton.onClick = [this] { showTransientStatus ("Capture pass armed - route Guide sidechain, then play the phrase."); };
     analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
     alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
     applySuggestedButton.onClick = [this] { applySuggestedNudge(); };
+    originalModeButton.onClick = [this] { setPreviewMode (0); };
+    alignedModeButton.onClick = [this] { setPreviewMode (1); };
+    differenceModeButton.onClick = [this] { setPreviewMode (2); };
+    updatePreviewModeButtons();
 
     addAndMakeVisible (statusLabel);
     statusLabel.setColour (juce::Label::textColourId, muted);
@@ -463,7 +471,15 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     juce::ignoreUnused (headerArea);
 
     auto rail = bounds.removeFromLeft (168).reduced (22, 8);
-    auto railButton = rail.removeFromBottom (160);
+    auto railButton = rail.removeFromBottom (224);
+    auto modeArea = railButton.removeFromTop (54);
+    originalModeButton.setBounds (modeArea.removeFromTop (24));
+    modeArea.removeFromTop (6);
+    auto lowerModes = modeArea.removeFromTop (24);
+    alignedModeButton.setBounds (lowerModes.removeFromLeft ((lowerModes.getWidth() - 6) / 2));
+    lowerModes.removeFromLeft (6);
+    differenceModeButton.setBounds (lowerModes);
+    railButton.removeFromTop (10);
     captureButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
     analyzeButton.setBounds (railButton.removeFromTop (32));
@@ -499,6 +515,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
 {
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
     applySuggestedButton.setEnabled (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f);
+    updatePreviewModeButtons();
 
     if (transientStatusFrames > 0)
     {
@@ -701,6 +718,31 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
         parameter->endChangeGesture();
         showTransientStatus ("Applied suggested nudge: " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms.");
     }
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::setPreviewMode (int modeIndex)
+{
+    if (auto* parameter = audioProcessor.getValueTreeState().getParameter ("previewMode"))
+    {
+        parameter->beginChangeGesture();
+        parameter->setValueNotifyingHost (parameter->convertTo0to1 (static_cast<float> (modeIndex)));
+        parameter->endChangeGesture();
+
+        const char* labels[] = { "Original", "Aligned", "Difference" };
+        showTransientStatus ("Preview mode: " + juce::String (labels[juce::jlimit (0, 2, modeIndex)]) + ".");
+    }
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::updatePreviewModeButtons()
+{
+    auto mode = 1;
+
+    if (auto* value = audioProcessor.getValueTreeState().getRawParameterValue ("previewMode"))
+        mode = juce::jlimit (0, 2, juce::roundToInt (value->load()));
+
+    originalModeButton.setToggleState (mode == 0, juce::dontSendNotification);
+    alignedModeButton.setToggleState (mode == 1, juce::dontSendNotification);
+    differenceModeButton.setToggleState (mode == 2, juce::dontSendNotification);
 }
 
 juce::Image BufflePlugAnalyzerAudioProcessorEditor::recolourForDarkTheme (const juce::Image& source,

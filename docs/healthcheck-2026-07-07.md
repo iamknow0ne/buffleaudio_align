@@ -2,7 +2,7 @@
 
 ## Scope
 
-This healthcheck covers the current post-`v0.3.0` preview polish slice:
+This healthcheck covers the first post-`v0.3.0` preview polish slice. It is superseded for A/B preview status by [healthcheck-2026-07-07-ab-preview.md](healthcheck-2026-07-07-ab-preview.md).
 
 - Experimental Consonant Tamer Lite DSP.
 - Phrase-health UI strip and stateful workflow rail.
@@ -34,7 +34,7 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and the e
 
 - Suggested nudge is positive-delay-first; full early/late compensation needs a dual-path or latency-aware design.
 - Consonant Tamer Lite is not yet a full consonant collision detector.
-- Removed-material audition and Original/Aligned/Difference A/B modes are not implemented.
+- Original/Aligned/Difference A/B modes landed after this slice; see [healthcheck-2026-07-07-ab-preview.md](healthcheck-2026-07-07-ab-preview.md). Dedicated per-feature removed-material metering is still open.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.
 - Installer packages are not Developer ID signed or notarized.
 - The `.pkg` payload still needs AppleDouble `._*` cleanup before broad distribution.

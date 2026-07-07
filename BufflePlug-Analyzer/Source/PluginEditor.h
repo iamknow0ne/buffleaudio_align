@@ -38,6 +38,8 @@ private:
     void showAboutBox();
     void showTransientStatus (const juce::String& message);
     void applySuggestedNudge();
+    void setPreviewMode (int modeIndex);
+    void updatePreviewModeButtons();
 
     static juce::Image recolourForDarkTheme (const juce::Image& source, juce::Colour tint);
 
@@ -74,6 +76,9 @@ private:
     juce::TextButton analyzeButton { "Analyze" };
     juce::TextButton alignButton { "Preview" };
     juce::TextButton applySuggestedButton { "Apply Nudge" };
+    juce::TextButton originalModeButton { "Original" };
+    juce::TextButton alignedModeButton { "Aligned" };
+    juce::TextButton differenceModeButton { "Diff" };
 
     juce::Image buffleAudioLogo;
     juce::Rectangle<int> brandLogoBounds;

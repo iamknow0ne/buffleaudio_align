@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Added persistent `Preview Mode` choices for Original, Aligned, and Difference monitoring.
+- Added `PreviewModeMixer` DSP and tests for Original restore, Aligned passthrough, and Difference audition rendering.
+- Added an in-editor Original / Aligned / Diff control and refreshed the standalone screenshot.
 - Added experimental `ConsonantTamer` DSP for reducing unmatched Dub consonant bursts while preserving sustained vowels and Guide-matched attacks.
 - Added CTest coverage for Consonant Tamer identity, silence, Dub-only burst reduction, sustained vowel stability, and Guide-matched attack preservation.
 - Added a phrase-health strip, stateful workflow rail, and disabled `Apply Nudge` state until the confidence-gated suggestion is actionable.

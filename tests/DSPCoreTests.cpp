@@ -1,6 +1,7 @@
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
+#include "DSP/PreviewModeMixer.h"
 #include "DSP/TimingOffsetEstimator.h"
 
 #include <cassert>
@@ -194,6 +195,57 @@ void testConsonantTamerPreservesGuideMatchedAttack()
 
     assert (matchedDub.getSample (0, 48) > dubOnly.getSample (0, 48));
 }
+
+void testPreviewModeOriginalRestoresInput()
+{
+    juce::AudioBuffer<float> processed (1, 4);
+    juce::AudioBuffer<float> original (1, 4);
+
+    for (int sample = 0; sample < 4; ++sample)
+    {
+        original.setSample (0, sample, static_cast<float> (sample + 1));
+        processed.setSample (0, sample, static_cast<float> ((sample + 1) * 10));
+    }
+
+    buffle::align::renderPreviewMode (processed, original, buffle::align::PreviewMode::original, 1);
+
+    for (int sample = 0; sample < 4; ++sample)
+        assert (processed.getSample (0, sample) == original.getSample (0, sample));
+}
+
+void testPreviewModeAlignedKeepsProcessed()
+{
+    juce::AudioBuffer<float> processed (1, 4);
+    juce::AudioBuffer<float> original (1, 4);
+
+    for (int sample = 0; sample < 4; ++sample)
+    {
+        original.setSample (0, sample, static_cast<float> (sample + 1));
+        processed.setSample (0, sample, static_cast<float> ((sample + 1) * 10));
+    }
+
+    buffle::align::renderPreviewMode (processed, original, buffle::align::PreviewMode::aligned, 1);
+
+    for (int sample = 0; sample < 4; ++sample)
+        assert (processed.getSample (0, sample) == static_cast<float> ((sample + 1) * 10));
+}
+
+void testPreviewModeDifferenceShowsChange()
+{
+    juce::AudioBuffer<float> processed (1, 4);
+    juce::AudioBuffer<float> original (1, 4);
+
+    for (int sample = 0; sample < 4; ++sample)
+    {
+        original.setSample (0, sample, static_cast<float> (sample + 1));
+        processed.setSample (0, sample, static_cast<float> ((sample + 1) * 3));
+    }
+
+    buffle::align::renderPreviewMode (processed, original, buffle::align::PreviewMode::difference, 1);
+
+    for (int sample = 0; sample < 4; ++sample)
+        assert (processed.getSample (0, sample) == static_cast<float> ((sample + 1) * 2));
+}
 }
 
 int main()
@@ -210,6 +262,9 @@ int main()
     testConsonantTamerReducesDubOnlyBurst();
     testConsonantTamerPreservesSustainedVowel();
     testConsonantTamerPreservesGuideMatchedAttack();
+    testPreviewModeOriginalRestoresInput();
+    testPreviewModeAlignedKeepsProcessed();
+    testPreviewModeDifferenceShowsChange();
 
     std::cout << "Buffle Align DSP tests passed\n";
     return 0;

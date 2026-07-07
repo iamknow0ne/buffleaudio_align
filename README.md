@@ -15,7 +15,7 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Build notes: [docs/build.md](docs/build.md)
 - Deployment notes: [docs/deployment.md](docs/deployment.md)
 - Release inventory: [docs/releases.md](docs/releases.md)
-- Healthcheck: [docs/healthcheck-2026-07-07.md](docs/healthcheck-2026-07-07.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-ab-preview.md](docs/healthcheck-2026-07-07-ab-preview.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Screenshot
@@ -33,7 +33,7 @@ Current v0.3.0 Standalone app capture:
 5. Read the signed offset and suggested safe nudge.
 6. Use manual `Nudge`, or the confidence-gated Apply Nudge workflow in the app UI.
 7. Raise `Consonant Tamer` carefully to soften unmatched Dub attacks without crushing sustained vowels.
-8. Compare feel before committing or printing the result in your DAW.
+8. Switch `Original`, `Aligned`, and `Diff` to hear the dry Dub, processed preview, or changed material before printing.
 
 Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
 
@@ -46,8 +46,9 @@ Preview build note: v0.3.0 is useful for local testing, but it is not Developer 
 - Live Guide/Dub monitoring, signed offset estimate, offset confidence, and delay-safe suggested nudge.
 - Realtime-safe manual nudge delay through a testable DSP module.
 - Experimental Consonant Tamer Lite DSP for reducing unmatched Dub consonant bursts while preserving Guide-matched attacks.
+- Original / Aligned / Difference preview modes for A/B trust checks.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states.
-- Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, and consonant-tamer behavior.
+- Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
 - Static landing page in `landing/`, deployed to Cloudflare Pages and safe to expose without serving the full repository.
@@ -62,7 +63,8 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 4. Gate suggestions by confidence so weak signals do not produce fake certainty.
 5. Preview or apply a safe nudge.
 6. Add vocal-stack-specific consonant cleanup through an experimental transient tamer.
-7. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+7. A/B Original, Aligned, and Difference preview before printing.
+8. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
 
 ## V1 Direction
 
@@ -73,7 +75,7 @@ Differentiating V1 feature candidates:
 - Trust Meter Alignment: explain Guide/Dub level, offset, confidence, and source state.
 - One-Click Safe Nudge: apply only confidence-gated suggested movement.
 - Consonant Tamer Lite: reduce unmatched Dub consonant bursts without flattening sustained vowels.
-- Removed Material Audition: listen to what cleanup changes.
+- Removed Material Audition: use Difference preview to hear what cleanup changes, then evolve toward dedicated removed-material metering.
 - Naturalness Guardrail: warn when timing correction risks sterile doubles.
 - Guide Fallback Intelligence: make routing problems visible and actionable.
 - Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
@@ -179,6 +181,7 @@ BufflePlug-Analyzer/Source/
     ConsonantTamer.*
     EnvelopeFeatureExtractor.*
     ManualNudgeDelay.*
+    PreviewModeMixer.*
     TimingOffsetEstimator.*
   PluginProcessor.*
   PluginEditor.*
