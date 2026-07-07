@@ -3,6 +3,7 @@
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
+#include "DSP/NaturalnessGuardrail.h"
 #include "DSP/PreviewModeMixer.h"
 #include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackRolePreset.h"
@@ -145,11 +146,30 @@ void testBidirectionalNudgePlanAllowsNegativeAndPositiveMoves()
     assert (late.delaySamples == 140);
 }
 
+void testBidirectionalNudgePlanClampsAtLatencyEdges()
+{
+    const auto advanceLimit = buffle::align::calculateBidirectionalNudgePlan (-250.0f, 1000.0, 120.0f, 241);
+    const auto delayLimit = buffle::align::calculateBidirectionalNudgePlan (250.0f, 1000.0, 120.0f, 241);
+
+    assert (advanceLimit.hostLatencySamples == 120);
+    assert (advanceLimit.delaySamples == 0);
+    assert (delayLimit.hostLatencySamples == 120);
+    assert (delayLimit.delaySamples == 240);
+}
+
 void testBidirectionalSuggestionInvertsOffset()
 {
     assert (buffle::align::suggestBidirectionalNudgeMs (35.0f, 120.0f) == -35.0f);
     assert (buffle::align::suggestBidirectionalNudgeMs (-22.5f, 120.0f) == 22.5f);
     assert (buffle::align::suggestBidirectionalNudgeMs (240.0f, 120.0f) == -120.0f);
+}
+
+float consonantFixtureSample (int sample)
+{
+    const auto body = 0.08f * std::sin (static_cast<float> (sample) * 0.037f);
+    const auto burstA = sample == 48 ? 1.0f : sample == 49 ? -0.72f : 0.0f;
+    const auto burstB = sample == 300 ? 0.84f : sample == 301 ? -0.62f : 0.0f;
+    return body + burstA + burstB;
 }
 
 void testConsonantTamerAmountZeroIsIdentity()
@@ -237,6 +257,40 @@ void testConsonantTamerPreservesGuideMatchedAttack()
     matchedTamer.process (matchedDub, &guide, 1.0f, 0.2f);
 
     assert (matchedDub.getSample (0, 48) > dubOnly.getSample (0, 48));
+}
+
+void testConsonantTamerMatchesSingleBlockAndChunkedProcessing()
+{
+    juce::AudioBuffer<float> full (1, 512);
+    juce::AudioBuffer<float> firstHalf (1, 256);
+    juce::AudioBuffer<float> secondHalf (1, 256);
+
+    for (int sample = 0; sample < full.getNumSamples(); ++sample)
+    {
+        const auto value = consonantFixtureSample (sample);
+        full.setSample (0, sample, value);
+
+        if (sample < 256)
+            firstHalf.setSample (0, sample, value);
+        else
+            secondHalf.setSample (0, sample - 256, value);
+    }
+
+    buffle::align::ConsonantTamer fullTamer;
+    fullTamer.prepare (44100.0, 1);
+    fullTamer.process (full, nullptr, 0.82f, 0.38f);
+
+    buffle::align::ConsonantTamer chunkedTamer;
+    chunkedTamer.prepare (44100.0, 1);
+    chunkedTamer.process (firstHalf, nullptr, 0.82f, 0.38f);
+    chunkedTamer.process (secondHalf, nullptr, 0.82f, 0.38f);
+
+    for (int sample = 0; sample < full.getNumSamples(); ++sample)
+    {
+        const auto chunked = sample < 256 ? firstHalf.getSample (0, sample)
+                                          : secondHalf.getSample (0, sample - 256);
+        assert (std::abs (full.getSample (0, sample) - chunked) < 0.0001f);
+    }
 }
 
 void testPreviewModeOriginalRestoresInput()
@@ -352,6 +406,53 @@ void testRemovedMaterialMeterUsesRequestedChannels()
     assert (stereo.peakDelta == 1.0f);
 }
 
+void testRemovedMaterialMeterCalibratesKnownGainReduction()
+{
+    juce::AudioBuffer<float> original (1, 32);
+    juce::AudioBuffer<float> processed (1, 32);
+
+    for (int sample = 0; sample < original.getNumSamples(); ++sample)
+    {
+        const auto value = sample % 2 == 0 ? 1.0f : -1.0f;
+        original.setSample (0, sample, value);
+        processed.setSample (0, sample, value * 0.5f);
+    }
+
+    const auto stats = buffle::align::measureRemovedMaterial (original, processed, 1);
+    assert (std::abs (stats.amount - 0.5f) < 0.001f);
+    assert (std::abs (stats.deltaRms - 0.5f) < 0.001f);
+    assert (std::abs (stats.peakDelta - 0.5f) < 0.001f);
+}
+
+void testNaturalnessGuardrailKeepsGentleCleanupSafe()
+{
+    const auto risk = buffle::align::assessNaturalnessRisk ({
+        true, 12.0f, 0.02f, 0.62f, 0.58f, 0.35f, 1
+    });
+
+    assert (risk == buffle::align::NaturalnessRisk::safe);
+    assert (std::string (buffle::align::getNaturalnessRiskLabel (risk)) == "Natural");
+}
+
+void testNaturalnessGuardrailAsksForDifferenceCheck()
+{
+    const auto risk = buffle::align::assessNaturalnessRisk ({
+        true, 42.0f, 0.06f, 0.72f, 0.42f, 0.72f, 3
+    });
+
+    assert (risk == buffle::align::NaturalnessRisk::checkDifference);
+}
+
+void testNaturalnessGuardrailFlagsOverCleanedLooseRole()
+{
+    const auto risk = buffle::align::assessNaturalnessRisk ({
+        true, 86.0f, 0.18f, 0.91f, 0.16f, 0.92f, 2
+    });
+
+    assert (risk == buffle::align::NaturalnessRisk::tooMuch);
+    assert (std::string (buffle::align::getNaturalnessRiskLabel (risk)) == "Too Much");
+}
+
 void testStackRolePresetProfilesAreDistinct()
 {
     const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
@@ -382,6 +483,7 @@ void testAlignmentReportHidesUnreliableOffset()
     assert (report.find ("Estimated offset: unavailable") != std::string::npos);
     assert (report.find ("Suggested timing correction: unavailable") != std::string::npos);
     assert (report.find ("Changed material: 0%") != std::string::npos);
+    assert (report.find ("Naturalness risk: Natural") != std::string::npos);
 }
 
 void testAlignmentReportCapturesSafeNudgeAndRole()
@@ -400,6 +502,7 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.consonantLevel = 0.86f;
     input.removedMaterial = 0.34f;
     input.removedPeakDelta = 0.78f;
+    input.naturalnessRisk = buffle::align::NaturalnessRisk::tooMuch;
 
     const auto report = buffle::align::buildAlignmentReport (input);
     assert (report.find ("Phrase health: Dub early - safe delay") != std::string::npos);
@@ -410,6 +513,7 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     assert (report.find ("Consonant Tamer: 86%") != std::string::npos);
     assert (report.find ("Changed material: 34%") != std::string::npos);
     assert (report.find ("Peak changed material: 78%") != std::string::npos);
+    assert (report.find ("Naturalness risk: Too Much") != std::string::npos);
 }
 }
 
@@ -425,12 +529,14 @@ int main()
     testManualNudgeDelaysImpulse();
     testBidirectionalNudgePlanUsesLatencyCentre();
     testBidirectionalNudgePlanAllowsNegativeAndPositiveMoves();
+    testBidirectionalNudgePlanClampsAtLatencyEdges();
     testBidirectionalSuggestionInvertsOffset();
     testConsonantTamerAmountZeroIsIdentity();
     testConsonantTamerSilenceStaysSilent();
     testConsonantTamerReducesDubOnlyBurst();
     testConsonantTamerPreservesSustainedVowel();
     testConsonantTamerPreservesGuideMatchedAttack();
+    testConsonantTamerMatchesSingleBlockAndChunkedProcessing();
     testPreviewModeOriginalRestoresInput();
     testPreviewModeAlignedKeepsProcessed();
     testPreviewModeDifferenceShowsChange();
@@ -438,6 +544,10 @@ int main()
     testRemovedMaterialMeterSilenceIsSafe();
     testRemovedMaterialMeterDetectsGainReducedTransient();
     testRemovedMaterialMeterUsesRequestedChannels();
+    testRemovedMaterialMeterCalibratesKnownGainReduction();
+    testNaturalnessGuardrailKeepsGentleCleanupSafe();
+    testNaturalnessGuardrailAsksForDifferenceCheck();
+    testNaturalnessGuardrailFlagsOverCleanedLooseRole();
     testStackRolePresetProfilesAreDistinct();
     testAlignmentReportHidesUnreliableOffset();
     testAlignmentReportCapturesSafeNudgeAndRole();

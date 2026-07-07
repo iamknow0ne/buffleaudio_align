@@ -33,8 +33,9 @@ Because this is an unsigned developer preview, macOS Gatekeeper may ask you to e
 7. Click Apply Nudge only when the button shows a concrete signed action.
 8. A/B `Original`, `Aligned`, and `Diff` before committing the move.
 9. Try one `Stack Role`: Double Tight, Choir Natural, Rap Stack, or ADR Loose.
-10. Raise `Consonant Tamer` gradually and listen for softened doubled consonants without vowel loss.
-11. Use `Copy Report` and include that text in feedback.
+10. Raise `Consonant Tamer` gradually and watch Naturalness Risk move between `Natural`, `Check Diff`, and `Too Much`.
+11. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
+12. Use `Copy Report` and include that text in feedback.
 
 ## Useful Test Material
 
@@ -60,6 +61,7 @@ Send:
 - Whether Apply Nudge moved the Dub in the expected direction.
 - Whether `Diff` sounded useful, too subtle, or misleading.
 - Stack Role used and whether it helped.
+- Naturalness Risk state and whether it matched what you heard.
 - Consonant Tamer setting and any artifacts heard.
 - Paste the `Copy Report` output.
 - Attach a screenshot or short audio before/after if possible.

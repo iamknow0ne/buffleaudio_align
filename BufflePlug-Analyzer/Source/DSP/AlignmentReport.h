@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "NaturalnessGuardrail.h"
+
 namespace buffle::align
 {
 
@@ -24,6 +26,7 @@ struct AlignmentReportInput
     float consonantLevel = 0.0f;
     float guideBlend = 0.0f;
     float stereoFocus = 0.0f;
+    NaturalnessRisk naturalnessRisk = NaturalnessRisk::safe;
 };
 
 const char* getAlignmentReportPhraseHealth (const AlignmentReportInput& input) noexcept;

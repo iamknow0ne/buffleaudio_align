@@ -119,6 +119,9 @@ juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::Al
     if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
         return "Apply";
 
+    if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
+        return "A/B";
+
     if (snapshot.removedMaterial > 0.04f)
         return "A/B";
 
@@ -141,6 +144,9 @@ juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::Ali
 
     if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
         return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then compare Aligned and Difference.";
+
+    if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
+        return juce::String (buffle::align::getNaturalnessRiskAdvice (snapshot.naturalnessRisk));
 
     if (snapshot.removedMaterial > 0.04f)
         return "Timing is locked. Use Difference to judge whether cleanup is changing too much.";
@@ -212,6 +218,30 @@ void drawChangedMaterialStrip (juce::Graphics& g,
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
     g.drawText (asPercent (snapshot.removedMaterial) + " overall preview change",
+                text,
+                juce::Justification::centredLeft);
+}
+
+void drawNaturalnessRiskStrip (juce::Graphics& g,
+                               juce::Rectangle<int> area,
+                               const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    const auto risk = snapshot.naturalnessRisk;
+    const auto colour = risk == buffle::align::NaturalnessRisk::safe ? alignedColour
+                      : risk == buffle::align::NaturalnessRisk::checkDifference ? warningColour
+                      : dubColour;
+
+    drawRoundRect (g, area.toFloat(), juce::Colour (0xff14181c), colour.withAlpha (0.28f));
+
+    auto text = area.reduced (12, 0);
+    g.setColour (colour);
+    g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+    g.drawText ("NATURALNESS", text.removeFromLeft (112), juce::Justification::centredLeft);
+
+    g.setColour (ink);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText (juce::String (buffle::align::getNaturalnessRiskLabel (risk)) + " - "
+                    + juce::String (buffle::align::getNaturalnessRiskAdvice (risk)),
                 text,
                 juce::Justification::centredLeft);
 }
@@ -343,6 +373,8 @@ public:
 
         content.removeFromTop (8);
         drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
+        content.removeFromTop (8);
+        drawNaturalnessRiskStrip (g, content.removeFromTop (24), snapshot);
         content.removeFromTop (8);
         drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
         content.removeFromTop (8);
@@ -770,8 +802,10 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
                                    : "gathering",
         std::abs (snapshot.suggestedNudgeMs) > 0.05f ? describeNudgeMove (snapshot.suggestedNudgeMs)
                                                      : "compare A/B",
-        snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
-                                         : "set taste",
+        snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe
+            ? juce::String (buffle::align::getNaturalnessRiskLabel (snapshot.naturalnessRisk))
+            : snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
+                                               : "set taste",
         "copy handoff"
     };
 

@@ -33,6 +33,7 @@ add_library(BuffleAlignDSP STATIC
     BufflePlug-Analyzer/Source/DSP/ConsonantTamer.cpp
     BufflePlug-Analyzer/Source/DSP/EnvelopeFeatureExtractor.cpp
     BufflePlug-Analyzer/Source/DSP/ManualNudgeDelay.cpp
+    BufflePlug-Analyzer/Source/DSP/NaturalnessGuardrail.cpp
     BufflePlug-Analyzer/Source/DSP/PreviewModeMixer.cpp
     BufflePlug-Analyzer/Source/DSP/RemovedMaterialMeter.cpp
     BufflePlug-Analyzer/Source/DSP/StackRolePreset.cpp

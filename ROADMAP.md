@@ -20,7 +20,9 @@ Done:
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
 - Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Phrase-health strip, stateful workflow rail, and `Next Best Move` card in the editor.
+- Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` states in UI and Copy Report.
 - V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
+- Host latency validation matrix for AU/VST3 DAW proof.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
 - Cloudflare Pages landing page.
@@ -30,7 +32,7 @@ Not V1-ready yet:
 - Bidirectional nudge is implemented as fixed-latency preview compensation, but still needs DAW host validation and clearer clean-session latency testing.
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are now framed as a session checklist, but they are not a complete captured phrase state machine.
-- Difference mode now has a first changed-material meter, but it does not yet have per-feature removed-material solo controls or polished over-cleaning guardrails.
+- Difference mode now has a first changed-material meter and naturalness guardrail, but it does not yet have per-feature removed-material solo controls.
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
 - Copy Report is clipboard-only and includes broad changed-material stats, but does not yet include per-feature removed-material metering or file export.
 - Installer is not Developer ID signed or notarized.
@@ -45,7 +47,7 @@ These are the target features that make Align meaningfully different from generi
 3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Initial changed-material meter implemented.**
-6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals.
+6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals. **Initial policy layer implemented.**
 7. **Guide Fallback Intelligence**: explain missing/weak sidechain routing instead of producing misleading numbers.
 8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
 9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals.
@@ -79,6 +81,7 @@ Goal: deliver the first vocal-stack-specific differentiator.
 - Add transient/high-frequency consonant feature extraction.
 - Add fade-safe Dub attenuation controlled by `Consonant Tamer`. **Initial realtime slice implemented.**
 - Add removed-material audition and meter foundations. **Initial Difference preview and changed-material meter implemented.**
+- Add naturalness risk guardrail for over-cleaning. **Initial UI/report policy layer implemented.**
 - Add breath/attack preservation heuristics.
 - Add synthetic tests for consonant bursts, breath-like noise, and fade boundaries. **Core burst/silence/sustain/Guide-match tests implemented.**
 
@@ -115,6 +118,7 @@ Goal: ship a clean, supportable macOS V1.
 - Notarize and staple installer.
 - Run install smoke on a clean macOS account.
 - Run AU validation and at least one VST3 host load test.
+- Execute the host latency validation matrix in [docs/validation-host-latency.md](docs/validation-host-latency.md).
 - Publish GitHub release with SHA256 checksums.
 - Update landing, README, changelog, docs, screenshots, and release notes.
 

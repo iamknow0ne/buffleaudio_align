@@ -7,6 +7,7 @@
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "DSP/ConsonantTamer.h"
 #include "DSP/ManualNudgeDelay.h"
+#include "DSP/NaturalnessGuardrail.h"
 #include "DSP/PreviewModeMixer.h"
 
 //==============================================================================
@@ -70,6 +71,7 @@ public:
         float offsetConfidence = 0.0f;
         float removedMaterial = 0.0f;
         float removedPeakDelta = 0.0f;
+        buffle::align::NaturalnessRisk naturalnessRisk = buffle::align::NaturalnessRisk::safe;
         int latencyMs = 0;
         bool guideFromSidechain = false;
         bool hasReliableOffset = false;

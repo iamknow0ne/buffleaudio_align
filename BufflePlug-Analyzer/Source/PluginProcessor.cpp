@@ -366,6 +366,16 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
         snapshot.suggestedNudgeMs = buffle::align::suggestBidirectionalNudgeMs (offset.milliseconds, maxNudgeMs);
     }
 
+    snapshot.naturalnessRisk = buffle::align::assessNaturalnessRisk ({
+        snapshot.hasReliableOffset,
+        snapshot.suggestedNudgeMs,
+        snapshot.removedMaterial,
+        tightnessParam != nullptr ? tightnessParam->load() : 0.0f,
+        naturalnessParam != nullptr ? naturalnessParam->load() : 0.0f,
+        consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f,
+        stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0
+    });
+
     return snapshot;
 }
 
@@ -421,6 +431,7 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;
     input.naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.0f;
     input.consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
+    input.naturalnessRisk = snapshot.naturalnessRisk;
 
     if (auto* value = parameters.getRawParameterValue (guideBlendId))
         input.guideBlend = value->load();

@@ -16,7 +16,8 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Deployment notes: [docs/deployment.md](docs/deployment.md)
 - Release inventory: [docs/releases.md](docs/releases.md)
 - V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-session-flow-polish.md](docs/healthcheck-2026-07-07-session-flow-polish.md)
+- Host latency validation: [docs/validation-host-latency.md](docs/validation-host-latency.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-naturalness-validation.md](docs/healthcheck-2026-07-07-naturalness-validation.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Product Preview
@@ -56,6 +57,7 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 - Phrase-health UI strip for route/listen/locked/safe-nudge states.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Initial changed-material meter for the overall processed-vs-original preview change. This is the tested foundation for richer removed-material metering, not a per-feature consonant solo yet.
+- Naturalness Risk Guardrail v0: a UI/report policy layer that flags `Natural`, `Check Diff`, or `Too Much` based on changed material, nudge, tamer, tightness, naturalness, and stack role.
 - Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, changed-material metering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
@@ -88,7 +90,7 @@ Differentiating V1 feature candidates:
 - One-Click Safe Nudge: apply only confidence-gated early/late corrections, with clear unavailable states for weak, ambiguous, or unsafe material.
 - Consonant Tamer Lite: reduce unmatched Dub consonant bursts without flattening sustained vowels.
 - Removed Material Audition: use Difference preview to hear what cleanup changes, with an initial changed-material meter in place; per-feature removed-material solo and richer metering remain V1 work.
-- Naturalness Guardrail: warn when timing correction risks sterile doubles.
+- Naturalness Guardrail: warn when timing correction risks sterile doubles. Initial `Natural` / `Check Diff` / `Too Much` policy layer is implemented.
 - Guide Fallback Intelligence: make routing problems visible and actionable.
 - Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
 - Stack Spread Governor: preserve controlled width across doubles/harmonies.
@@ -197,6 +199,7 @@ BufflePlug-Analyzer/Source/
     BidirectionalNudge.*
     EnvelopeFeatureExtractor.*
     ManualNudgeDelay.*
+    NaturalnessGuardrail.*
     PreviewModeMixer.*
     RemovedMaterialMeter.*
     StackRolePreset.*

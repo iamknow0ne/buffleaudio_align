@@ -77,6 +77,8 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
     report << "Current nudge: " << input.currentNudgeMs << " ms\n";
     report << "Changed material: " << asPercent (input.removedMaterial) << "%\n";
     report << "Peak changed material: " << asPercent (input.removedPeakDelta) << "%\n";
+    report << "Naturalness risk: " << getNaturalnessRiskLabel (input.naturalnessRisk)
+           << " - " << getNaturalnessRiskAdvice (input.naturalnessRisk) << "\n";
     report << "Preview mode: " << previewModeName (input.previewMode) << "\n";
     report << "Stack role: " << getStackRoleName (role) << "\n";
     report << "Tightness: " << asPercent (input.tightness) << "%\n";

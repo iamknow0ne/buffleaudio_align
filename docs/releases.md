@@ -4,6 +4,8 @@ This repo publishes macOS developer preview builds through GitHub Releases.
 
 For hands-on feedback, use the [V1 tester guide](v1-tester-guide.md). The bundle zip is the preferred preview lane today; the `.pkg` remains a rough local preview artifact until signing, notarization, and clean-account install smoke pass.
 
+For signed nudge and host plugin delay compensation proof, use the [host latency validation matrix](validation-host-latency.md).
+
 ## Published Releases
 
 | Version | Status | GitHub release | Assets |
@@ -58,7 +60,7 @@ Do not call a build V1 until these gates have current evidence:
 - Clean macOS account install smoke passes.
 - AU validation passes.
 - VST3/pluginval or host scan passes.
-- DAW host matrix includes at least Logic/GarageBand AU, Reaper AU/VST3, Ableton VST3, and Standalone sanity.
+- DAW host matrix in [validation-host-latency.md](validation-host-latency.md) passes for at least Logic/GarageBand AU, Reaper AU/VST3, Ableton VST3, and Standalone sanity.
 - Landing, README, release notes, screenshots, checksums, and tester guide match the shipped behavior.
 
 ## v0.3.0 Checksums

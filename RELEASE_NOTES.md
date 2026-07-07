@@ -6,7 +6,9 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
 - Session-flow rail and `Next Best Move` card for tester-friendly phrase workflow guidance.
+- Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` UI/report states.
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
+- Additional deterministic DSP regression coverage for nudge edge clamps, Consonant Tamer block-size invariance, changed-material calibration, and guardrail policy.
 - Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
@@ -23,7 +25,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - `Apply Nudge` workflow action for reliable suggestions.
 - Visible `Guide Blend` and `Stereo Focus` controls.
 - V1 roadmap reframed around trust-meter alignment, delay-safe nudge, and consonant cleanup.
-- Landing, README, and V1 tester guide updated with the producer workflow and current V1 focus.
+- Landing, README, host-latency validation, and V1 tester guide updated with the producer workflow and current V1 focus.
 
 ## v0.3.0
 
