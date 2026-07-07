@@ -1,4 +1,5 @@
 #include "DSP/AlignmentReport.h"
+#include "DSP/BidirectionalNudge.h"
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
@@ -56,6 +57,21 @@ void testShiftedClickOffset()
     assert (result.confidence > 0.99f);
 }
 
+void testReverseShiftedClickOffset()
+{
+    std::vector<float> guide (32, 0.0f);
+    std::vector<float> dub (32, 0.0f);
+    guide[13] = 1.0f;
+    dub[10] = 1.0f;
+
+    buffle::align::TimingOffsetEstimator estimator;
+    const auto result = estimator.estimate (guide, dub, 8, 5.0f);
+
+    assert (result.frameOffset == -3);
+    assert (std::abs (result.milliseconds + 15.0f) < 0.001f);
+    assert (result.confidence > 0.99f);
+}
+
 void testEqualClickOffsetIsZero()
 {
     std::vector<float> guide (32, 0.0f);
@@ -110,6 +126,30 @@ void testManualNudgeDelaysImpulse()
     assert (buffer.getSample (0, 1) == 0.0f);
     assert (buffer.getSample (0, 2) == 0.0f);
     assert (buffer.getSample (0, 3) == 1.0f);
+}
+
+void testBidirectionalNudgePlanUsesLatencyCentre()
+{
+    const auto plan = buffle::align::calculateBidirectionalNudgePlan (0.0f, 1000.0, 120.0f, 241);
+    assert (plan.hostLatencySamples == 120);
+    assert (plan.delaySamples == 120);
+}
+
+void testBidirectionalNudgePlanAllowsNegativeAndPositiveMoves()
+{
+    const auto early = buffle::align::calculateBidirectionalNudgePlan (-20.0f, 1000.0, 120.0f, 241);
+    const auto late = buffle::align::calculateBidirectionalNudgePlan (20.0f, 1000.0, 120.0f, 241);
+
+    assert (early.hostLatencySamples == 120);
+    assert (early.delaySamples == 100);
+    assert (late.delaySamples == 140);
+}
+
+void testBidirectionalSuggestionInvertsOffset()
+{
+    assert (buffle::align::suggestBidirectionalNudgeMs (35.0f, 120.0f) == -35.0f);
+    assert (buffle::align::suggestBidirectionalNudgeMs (-22.5f, 120.0f) == 22.5f);
+    assert (buffle::align::suggestBidirectionalNudgeMs (240.0f, 120.0f) == -120.0f);
 }
 
 void testConsonantTamerAmountZeroIsIdentity()
@@ -340,7 +380,7 @@ void testAlignmentReportHidesUnreliableOffset()
     const auto report = buffle::align::buildAlignmentReport (input);
     assert (report.find ("Phrase health: Listening for confidence") != std::string::npos);
     assert (report.find ("Estimated offset: unavailable") != std::string::npos);
-    assert (report.find ("Suggested safe nudge: unavailable") != std::string::npos);
+    assert (report.find ("Suggested timing correction: unavailable") != std::string::npos);
     assert (report.find ("Changed material: 0%") != std::string::npos);
 }
 
@@ -362,9 +402,9 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.removedPeakDelta = 0.78f;
 
     const auto report = buffle::align::buildAlignmentReport (input);
-    assert (report.find ("Phrase health: Safe nudge ready") != std::string::npos);
+    assert (report.find ("Phrase health: Dub early - safe delay") != std::string::npos);
     assert (report.find ("Estimated offset: -18.4 ms") != std::string::npos);
-    assert (report.find ("Suggested safe nudge: 18.4 ms") != std::string::npos);
+    assert (report.find ("Suggested timing correction: 18.4 ms") != std::string::npos);
     assert (report.find ("Preview mode: Difference") != std::string::npos);
     assert (report.find ("Stack role: Rap Stack") != std::string::npos);
     assert (report.find ("Consonant Tamer: 86%") != std::string::npos);
@@ -378,10 +418,14 @@ int main()
     testSilenceEnvelopeIsZero();
     testImpulseProducesOnset();
     testShiftedClickOffset();
+    testReverseShiftedClickOffset();
     testEqualClickOffsetIsZero();
     testSilenceOffsetHasLowConfidence();
     testManualNudgeZeroDelayIsIdentity();
     testManualNudgeDelaysImpulse();
+    testBidirectionalNudgePlanUsesLatencyCentre();
+    testBidirectionalNudgePlanAllowsNegativeAndPositiveMoves();
+    testBidirectionalSuggestionInvertsOffset();
     testConsonantTamerAmountZeroIsIdentity();
     testConsonantTamerSilenceStaysSilent();
     testConsonantTamerReducesDubOnlyBurst();

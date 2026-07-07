@@ -4,7 +4,9 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Current Unreleased Polish
 
-- Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested nudge, changed-material amount, preview mode, stack role, and current controls.
+- Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
+- Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
+- Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
 - Initial changed-material meter for processed-vs-original preview delta, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.

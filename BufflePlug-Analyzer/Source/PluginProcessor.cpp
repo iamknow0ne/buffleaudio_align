@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "DSP/AlignmentReport.h"
+#include "DSP/BidirectionalNudge.h"
 #include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
@@ -160,7 +161,9 @@ void BufflePlugAnalyzerAudioProcessor::prepareToPlay (double sampleRate, int sam
     juce::ignoreUnused (samplesPerBlock);
 
     currentSampleRate = sampleRate > 0.0 ? sampleRate : 44100.0;
-    const auto maxDelaySamples = static_cast<int> (std::ceil (currentSampleRate * (maxNudgeMs / 1000.0f))) + 1;
+    const auto latencySamples = static_cast<int> (std::round (currentSampleRate * (maxNudgeMs / 1000.0f)));
+    const auto maxDelaySamples = latencySamples * 2 + 1;
+    setLatencySamples (latencySamples);
     nudgeDelay.prepare (juce::jmax (1, getTotalNumOutputChannels()), maxDelaySamples);
     consonantTamer.prepare (currentSampleRate, juce::jmax (1, getTotalNumOutputChannels()));
     originalDubBuffer.setSize (juce::jmax (1, getTotalNumOutputChannels()),
@@ -260,9 +263,10 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto consonantAmount = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.5f;
-    const auto delaySamples = juce::jlimit (0,
-                                            nudgeDelay.getMaxDelaySamples() - 1,
-                                            static_cast<int> (std::round (std::abs (nudgeMs) * currentSampleRate / 1000.0)));
+    const auto nudgePlan = buffle::align::calculateBidirectionalNudgePlan (nudgeMs,
+                                                                           currentSampleRate,
+                                                                           maxNudgeMs,
+                                                                           nudgeDelay.getMaxDelaySamples());
 
     if (originalDubBuffer.getNumChannels() < dubBuffer.getNumChannels()
      || originalDubBuffer.getNumSamples() < dubBuffer.getNumSamples())
@@ -277,7 +281,7 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
     for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
         originalDubBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());
 
-    nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), delaySamples);
+    nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), nudgePlan.delaySamples);
     consonantTamer.process (dubBuffer, hasGuideSidechain ? &guideBuffer : nullptr, consonantAmount, naturalness);
     const auto removed = buffle::align::measureRemovedMaterial (originalDubBuffer, dubBuffer, dubBuffer.getNumChannels());
     lastRemovedMaterial.store (removed.amount);
@@ -335,7 +339,7 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
     if (nudgeParam != nullptr)
     {
         snapshot.nudgeMs = nudgeParam->load();
-        snapshot.latencyMs = static_cast<int> (std::round (nudgeParam->load()));
+        snapshot.latencyMs = static_cast<int> (std::round (static_cast<double> (getLatencySamples()) * 1000.0 / currentSampleRate));
     }
 
     std::vector<float> guideEnvelope;
@@ -359,7 +363,7 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
     if (snapshot.hasReliableOffset)
     {
         snapshot.estimatedOffsetMs = offset.milliseconds;
-        snapshot.suggestedNudgeMs = offset.milliseconds < 0.0f ? std::abs (offset.milliseconds) : 0.0f;
+        snapshot.suggestedNudgeMs = buffle::align::suggestBidirectionalNudgeMs (offset.milliseconds, maxNudgeMs);
     }
 
     return snapshot;
@@ -435,7 +439,7 @@ BufflePlugAnalyzerAudioProcessor::createParameterLayout()
         consonantLevelId, "Consonant Level", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.68f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
-        nudgeId, "Manual Nudge", juce::NormalisableRange<float> (0.0f, maxNudgeMs, 0.1f), 0.0f));
+        nudgeId, "Manual Nudge", juce::NormalisableRange<float> (-maxNudgeMs, maxNudgeMs, 0.1f), 0.0f));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         auditionId, "Audition", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f));

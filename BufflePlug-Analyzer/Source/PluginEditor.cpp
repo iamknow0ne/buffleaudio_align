@@ -43,6 +43,17 @@ juce::String asSignedMs (float value)
     return (value > 0.0f ? "+" : "") + juce::String (value, 1) + " ms";
 }
 
+juce::String describeNudgeMove (float value)
+{
+    if (value > 0.05f)
+        return "Delay " + asSignedMs (value);
+
+    if (value < -0.05f)
+        return "Advance " + asSignedMs (value);
+
+    return "No nudge";
+}
+
 juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
     if (! snapshot.guideFromSidechain)
@@ -57,15 +68,16 @@ juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::Align
     if (! snapshot.hasReliableOffset)
         return "Listening for confidence";
 
-    if (snapshot.suggestedNudgeMs <= 0.05f)
-        return "Locked - no delay needed";
+    if (std::abs (snapshot.suggestedNudgeMs) <= 0.05f)
+        return "Locked - no nudge needed";
 
-    return "Safe nudge ready";
+    return snapshot.suggestedNudgeMs > 0.0f ? "Dub early - safe delay"
+                                            : "Dub late - safe advance";
 }
 
 juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    if (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f)
+    if (snapshot.hasReliableOffset && std::abs (snapshot.suggestedNudgeMs) > 0.05f)
         return alignedColour;
 
     if (snapshot.hasReliableOffset)
@@ -241,7 +253,7 @@ public:
         drawReadoutPill (g,
                          readouts,
                          "SUGGEST",
-                         snapshot.hasReliableOffset ? juce::String (snapshot.suggestedNudgeMs, 1) + " ms" : "LISTEN",
+                         snapshot.hasReliableOffset ? describeNudgeMove (snapshot.suggestedNudgeMs) : "LISTEN",
                          warningColour);
 
         content.removeFromTop (8);
@@ -255,7 +267,7 @@ public:
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
         g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - "
                         + (snapshot.hasReliableOffset
-                            ? "positive-delay suggestion " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms, changed " + asPercent (snapshot.removedMaterial)
+                            ? "suggest " + describeNudgeMove (snapshot.suggestedNudgeMs) + ", changed " + asPercent (snapshot.removedMaterial)
                             : "waiting for reliable Guide/Dub confidence"),
                     nudgeLine,
                     juce::Justification::centredLeft);
@@ -396,8 +408,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      true);
     configureSlider (nudgeSlider,
                      nudgeLabel,
-                     "Nudge",
-                     "Manual delay preview in milliseconds.",
+                     "Nudge Dub",
+                     "Move the Dub earlier or later relative to the Guide. Negative advances with host latency compensation; positive delays.",
                      false);
     configureSlider (auditionSlider,
                      auditionLabel,
@@ -430,7 +442,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     captureButton.setTooltip ("Arm the listening pass: route Guide sidechain, then play the phrase.");
     analyzeButton.setTooltip ("Check timing confidence from the current monitoring window.");
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
-    applySuggestedButton.setTooltip ("Apply the current confidence-gated suggested nudge to the Nudge control.");
+    applySuggestedButton.setTooltip ("Apply the current confidence-gated timing correction to the Nudge Dub control.");
     reportButton.setTooltip ("Copy a session handoff report with phrase health, offset, confidence, role, and current controls.");
     originalModeButton.setTooltip ("Monitor the unprocessed Dub.");
     alignedModeButton.setTooltip ("Monitor the current nudge and Consonant Tamer path.");
@@ -585,9 +597,9 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
 void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
 {
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
-    const auto canApplyNudge = snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f;
+    const auto canApplyNudge = snapshot.hasReliableOffset && std::abs (snapshot.suggestedNudgeMs) > 0.05f;
     applySuggestedButton.setEnabled (canApplyNudge);
-    applySuggestedButton.setButtonText (canApplyNudge ? "Apply +" + juce::String (snapshot.suggestedNudgeMs, 1) + " ms"
+    applySuggestedButton.setButtonText (canApplyNudge ? "Apply " + asSignedMs (snapshot.suggestedNudgeMs)
                                                        : snapshot.hasReliableOffset ? "No Nudge" : "Waiting...");
     updatePreviewModeButtons();
     updateStackRoleBox();
@@ -616,7 +628,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::configureSlider (juce::Slider& slid
     addAndMakeVisible (label);
 
     slider.setSliderStyle (juce::Slider::LinearHorizontal);
-    slider.setTextBoxStyle (juce::Slider::TextBoxRight, false, 66, 22);
+    slider.setTextBoxStyle (juce::Slider::TextBoxRight, false, isPercentValue ? 66 : 96, 22);
     slider.setColour (juce::Slider::trackColourId, juce::Colour (0xff5a6675));
     slider.setColour (juce::Slider::backgroundColourId, juce::Colour (0xff2a3440));
     slider.setColour (juce::Slider::thumbColourId, ink);
@@ -636,7 +648,13 @@ void BufflePlugAnalyzerAudioProcessorEditor::configureSlider (juce::Slider& slid
     {
         slider.textFromValueFunction = [] (double value)
         {
-            return juce::String (value, 1) + " ms";
+            if (value > 0.05)
+                return "Delay " + juce::String (value, 1);
+
+            if (value < -0.05)
+                return "Adv " + juce::String (std::abs (value), 1);
+
+            return juce::String ("No nudge");
         };
     }
 
@@ -654,7 +672,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
     const auto currentStep = ! snapshot.guideFromSidechain ? 0
                            : ! snapshot.hasReliableOffset ? 1
-                           : snapshot.suggestedNudgeMs > 0.05f ? 2
+                           : std::abs (snapshot.suggestedNudgeMs) > 0.05f ? 2
                            : 3;
     auto row = area.reduced (14, 18);
 
@@ -780,9 +798,9 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
         return;
     }
 
-    if (snapshot.suggestedNudgeMs <= 0.05f)
+    if (std::abs (snapshot.suggestedNudgeMs) <= 0.05f)
     {
-        showTransientStatus ("No positive delay nudge needed - keep the current Dub timing or use manual Nudge.");
+        showTransientStatus ("No timing nudge needed - keep the current Dub timing or use manual Nudge.");
         return;
     }
 
@@ -791,7 +809,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
         parameter->beginChangeGesture();
         parameter->setValueNotifyingHost (parameter->convertTo0to1 (snapshot.suggestedNudgeMs));
         parameter->endChangeGesture();
-        showTransientStatus ("Applied suggested nudge: " + juce::String (snapshot.suggestedNudgeMs, 1) + " ms.");
+        showTransientStatus ("Applied suggested timing correction: " + asSignedMs (snapshot.suggestedNudgeMs) + ".");
     }
 }
 

@@ -31,6 +31,6 @@ Result: Debug Standalone, VST3, AU, shared code, DSP library, and DSP tests buil
 ## Still Open For V1
 
 - The current meter is a broad preview-delta meter, not a per-feature consonant-only removed-material solo.
-- Suggested nudge is still positive-delay-first; bidirectional early/late compensation remains open.
+- Bidirectional nudge was added in a later slice; this Changed Meter slice did not change nudge behavior.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.
 - The `.pkg` preview artifact still needs AppleDouble payload cleanup before signing/notarization.

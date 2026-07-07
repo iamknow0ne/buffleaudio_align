@@ -2,7 +2,9 @@
 
 ## Unreleased
 
-- Added clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested nudge, changed-material amount, preview mode, stack role, and current controls.
+- Added latency-compensated bidirectional `Nudge Dub` support with signed early/late suggestions and CTest coverage.
+- Updated Apply Nudge, phrase health, report text, and editor copy for signed timing corrections.
+- Added clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Added `AlignmentReport` formatter and CTest coverage for unreliable and safe-nudge report states.
 - Added initial `RemovedMaterialMeter` DSP helper for processed-vs-original changed material amount, RMS delta, and peak delta, with CTest coverage.
 - Surfaced a compact `CHANGED` preview-delta meter in the editor and Copy Report.

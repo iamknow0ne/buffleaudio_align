@@ -34,7 +34,7 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and the e
 ## Still Open For V1
 
 - Tightness, Guide Blend, and Stereo Focus are not yet all deep DSP behaviors; today the most audible preset movement comes from Naturalness and Consonant Tamer.
-- Suggested nudge is still positive-delay-first.
+- Bidirectional nudge was added in a later slice; this Stack Role slice did not change nudge behavior.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.
 - Dedicated per-feature removed-material metering is still missing; a later slice added the initial broad changed-material meter.
 - Installer signing/notarization, package payload cleanup, DAW host validation, and golden WAV regression tests are still missing.

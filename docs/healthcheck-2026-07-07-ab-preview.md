@@ -35,6 +35,6 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and the e
 
 - Difference mode is a broad processed-minus-original audition, not yet per-feature removed-material solo.
 - No visual removed-material meter yet.
-- Suggested nudge is still positive-delay-first.
+- Bidirectional nudge was added in a later slice; this A/B preview slice did not change nudge behavior.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.
 - Installer signing/notarization, package payload cleanup, DAW host validation, and golden WAV regression tests are still missing.

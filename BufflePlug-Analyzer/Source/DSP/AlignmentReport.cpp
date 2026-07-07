@@ -43,10 +43,11 @@ const char* getAlignmentReportPhraseHealth (const AlignmentReportInput& input) n
     if (! input.hasReliableOffset)
         return "Listening for confidence";
 
-    if (input.suggestedNudgeMs <= 0.05f)
-        return "Locked - no delay needed";
+    if (std::abs (input.suggestedNudgeMs) <= 0.05f)
+        return "Locked - no timing nudge needed";
 
-    return "Safe nudge ready";
+    return input.suggestedNudgeMs > 0.0f ? "Dub early - safe delay"
+                                         : "Dub late - safe advance";
 }
 
 std::string buildAlignmentReport (const AlignmentReportInput& input)
@@ -65,12 +66,12 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
     if (input.hasReliableOffset)
     {
         report << "Estimated offset: " << input.estimatedOffsetMs << " ms\n";
-        report << "Suggested safe nudge: " << input.suggestedNudgeMs << " ms\n";
+        report << "Suggested timing correction: " << input.suggestedNudgeMs << " ms\n";
     }
     else
     {
         report << "Estimated offset: unavailable\n";
-        report << "Suggested safe nudge: unavailable\n";
+        report << "Suggested timing correction: unavailable\n";
     }
 
     report << "Current nudge: " << input.currentNudgeMs << " ms\n";

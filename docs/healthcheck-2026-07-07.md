@@ -26,13 +26,13 @@ The build still emits the known JUCE `juce_SimpleShapedText.h` warning and the e
 - The processor applies Consonant Tamer after manual nudge and before preview output gain.
 - The `Naturalness` parameter now influences the tamer depth/sensitivity.
 - The editor labels the control as `Consonant Tamer` and `Preview Level`.
-- The editor shows phrase health: route guide, quiet guide, quiet dub, listening, locked, or safe nudge ready.
+- The editor shows phrase health: route guide, quiet guide, quiet dub, listening, locked, or safe signed nudge ready.
 - `Apply Nudge` is disabled until a reliable, positive suggested nudge exists.
 - DSP tests now cover tamer identity, silence, Dub-only burst reduction, sustained vowel stability, and Guide-matched attack preservation.
 
 ## Still Open For V1
 
-- Suggested nudge is positive-delay-first; full early/late compensation needs a dual-path or latency-aware design.
+- Bidirectional nudge was added in a later slice; this earlier healthcheck captured the positive-delay-first state at the time.
 - Consonant Tamer Lite is not yet a full consonant collision detector.
 - Original/Aligned/Difference A/B modes landed after this slice; see [healthcheck-2026-07-07-ab-preview.md](healthcheck-2026-07-07-ab-preview.md). Dedicated per-feature removed-material metering is still open.
 - Capture/analyze/preview buttons remain workflow hints, not a complete phrase capture state machine.

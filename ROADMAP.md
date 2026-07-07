@@ -13,12 +13,12 @@ Done:
 - Optional Guide sidechain bus plus Dub main input.
 - Live Guide/Dub level history, signed offset estimate, confidence, and suggested nudge.
 - Confidence-gated display so weak signals no longer show fake offset certainty.
-- Manual nudge delay in a standalone DSP module.
+- Bidirectional manual nudge in a standalone DSP module using fixed host latency compensation.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
 - Initial changed-material meter for the processed-vs-original preview delta, with CTest coverage for silence, identity, transient reduction, and channel-aware peak delta.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested nudge, changed-material amount, preview mode, stack role, and current controls.
+- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
@@ -26,7 +26,7 @@ Done:
 
 Not V1-ready yet:
 
-- Suggested nudge is still positive-delay-first; early/late compensation needs a fuller dual-path design.
+- Bidirectional nudge is implemented as fixed-latency preview compensation, but still needs DAW host validation and clearer clean-session latency testing.
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
 - Difference mode now has a first changed-material meter, but it does not yet have per-feature removed-material solo controls or polished over-cleaning guardrails.
@@ -40,7 +40,7 @@ Not V1-ready yet:
 These are the target features that make Align meaningfully different from generic alignment tools:
 
 1. **Trust Meter Alignment**: show source state, Guide/Dub levels, offset direction, confidence, and why the recommendation is safe or unavailable.
-2. **One-Click Safe Nudge**: apply suggested positive-delay nudge only when confidence and signal floors are credible; extend to bidirectional early/late handling before V1.
+2. **One-Click Safe Nudge**: apply suggested early/late timing nudge only when confidence and signal floors are credible. **Initial bidirectional latency-compensated path implemented.**
 3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Initial changed-material meter implemented.**
@@ -58,8 +58,8 @@ These are the target features that make Align meaningfully different from generi
 Goal: make the current analysis/nudge workflow trustworthy enough for daily testing.
 
 - Keep all offset and suggested-nudge UI gated by confidence.
-- Add one-click positive-delay safe nudge to the editor. **Initial Apply Nudge implemented.**
-- Add clear states: route, listen, confidence locked, no usable guide, no positive delay nudge needed.
+- Add one-click bidirectional safe nudge to the editor. **Initial signed Apply Nudge implemented.**
+- Add clear states: route, listen, confidence locked, no usable guide, no timing nudge needed.
 - Add tests for confidence gating, silence, weak signal, and offset sign.
 - Document DAW sidechain setup and unsigned preview safety.
 - Verify Standalone build, DSP tests, and current package generation.
@@ -67,7 +67,7 @@ Goal: make the current analysis/nudge workflow trustworthy enough for daily test
 Exit criteria:
 
 - Weak/silent input never displays a bogus numeric recommendation.
-- A reliable negative offset can set `Manual Nudge` through the UI.
+- A reliable signed offset can set the appropriate early/late `Nudge Dub` correction through the UI.
 - README and landing explain the exact producer loop.
 
 ## Milestone B - Consonant Tamer Lite
