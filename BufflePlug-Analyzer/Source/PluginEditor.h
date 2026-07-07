@@ -84,7 +84,8 @@ private:
     juce::TextButton reportButton { "Copy Report" };
     juce::TextButton originalModeButton { "Original" };
     juce::TextButton alignedModeButton { "Aligned" };
-    juce::TextButton differenceModeButton { "Diff" };
+    juce::TextButton differenceModeButton { "All Diff" };
+    juce::TextButton tamerModeButton { "Tamer" };
 
     juce::Image buffleAudioLogo;
     juce::Rectangle<int> brandLogoBounds;

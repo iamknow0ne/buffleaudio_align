@@ -50,6 +50,7 @@ juce::String previewModeName (int mode)
     {
         case 0: return "Original";
         case 2: return "Difference";
+        case 3: return "Tamer";
         default: return "Aligned";
     }
 }
@@ -171,12 +172,19 @@ void BufflePlugAnalyzerAudioProcessor::prepareToPlay (double sampleRate, int sam
                                false,
                                false,
                                true);
+    preConsonantBuffer.setSize (juce::jmax (1, getTotalNumOutputChannels()),
+                                juce::jmax (1, samplesPerBlock),
+                                false,
+                                false,
+                                true);
     historyWriteIndex.store (0);
     lastGuideRms.store (0.0f);
     lastDubRms.store (0.0f);
     lastMatch.store (0.0f);
     lastRemovedMaterial.store (0.0f);
     lastRemovedPeakDelta.store (0.0f);
+    lastConsonantRemovedMaterial.store (0.0f);
+    lastConsonantRemovedPeakDelta.store (0.0f);
     analysisHopMs.store (static_cast<float> (static_cast<double> (juce::jmax (1, samplesPerBlock))
                                            * 1000.0 / currentSampleRate));
     guideSidechainActive.store (false);
@@ -278,15 +286,35 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
                                    true);
     }
 
+    if (preConsonantBuffer.getNumChannels() < dubBuffer.getNumChannels()
+     || preConsonantBuffer.getNumSamples() < dubBuffer.getNumSamples())
+    {
+        preConsonantBuffer.setSize (juce::jmax (1, dubBuffer.getNumChannels()),
+                                    juce::jmax (1, dubBuffer.getNumSamples()),
+                                    false,
+                                    false,
+                                    true);
+    }
+
     for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
         originalDubBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());
 
     nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), nudgePlan.delaySamples);
+
+    for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
+        preConsonantBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());
+
     consonantTamer.process (dubBuffer, hasGuideSidechain ? &guideBuffer : nullptr, consonantAmount, naturalness);
+    const auto consonantRemoved = buffle::align::measureRemovedMaterial (preConsonantBuffer, dubBuffer, dubBuffer.getNumChannels());
     const auto removed = buffle::align::measureRemovedMaterial (originalDubBuffer, dubBuffer, dubBuffer.getNumChannels());
     lastRemovedMaterial.store (removed.amount);
     lastRemovedPeakDelta.store (removed.peakDelta);
-    buffle::align::renderPreviewMode (dubBuffer, originalDubBuffer, previewMode, dubBuffer.getNumChannels());
+    lastConsonantRemovedMaterial.store (consonantRemoved.amount);
+    lastConsonantRemovedPeakDelta.store (consonantRemoved.peakDelta);
+    buffle::align::renderPreviewMode (dubBuffer,
+                                      previewMode == buffle::align::PreviewMode::consonantRemoved ? preConsonantBuffer : originalDubBuffer,
+                                      previewMode,
+                                      dubBuffer.getNumChannels());
 
     buffer.applyGain (auditionGain);
 }
@@ -334,6 +362,8 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
     snapshot.match = lastMatch.load();
     snapshot.removedMaterial = lastRemovedMaterial.load();
     snapshot.removedPeakDelta = lastRemovedPeakDelta.load();
+    snapshot.consonantRemovedMaterial = lastConsonantRemovedMaterial.load();
+    snapshot.consonantRemovedPeakDelta = lastConsonantRemovedPeakDelta.load();
     snapshot.guideFromSidechain = guideSidechainActive.load();
 
     if (nudgeParam != nullptr)
@@ -430,6 +460,8 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.currentNudgeMs = snapshot.nudgeMs;
     input.removedMaterial = snapshot.removedMaterial;
     input.removedPeakDelta = snapshot.removedPeakDelta;
+    input.consonantRemovedMaterial = snapshot.consonantRemovedMaterial;
+    input.consonantRemovedPeakDelta = snapshot.consonantRemovedPeakDelta;
     input.previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
     input.stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;
@@ -468,7 +500,7 @@ BufflePlugAnalyzerAudioProcessor::createParameterLayout()
         auditionId, "Audition", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 1.0f));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
-        previewModeId, "Preview Mode", juce::StringArray { "Original", "Aligned", "Difference" }, 1));
+        previewModeId, "Preview Mode", juce::StringArray { "Original", "Aligned", "Difference", "Tamer" }, 1));
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         stackRoleId, "Stack Role", juce::StringArray { "Manual", "Double Tight", "Choir Natural", "Rap Stack", "ADR Loose" }, 0));

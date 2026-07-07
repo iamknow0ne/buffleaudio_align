@@ -20,6 +20,8 @@ struct AlignmentReportInput
     float currentNudgeMs = 0.0f;
     float removedMaterial = 0.0f;
     float removedPeakDelta = 0.0f;
+    float consonantRemovedMaterial = 0.0f;
+    float consonantRemovedPeakDelta = 0.0f;
     int previewMode = 1;
     int stackRole = 0;
     float tightness = 0.0f;

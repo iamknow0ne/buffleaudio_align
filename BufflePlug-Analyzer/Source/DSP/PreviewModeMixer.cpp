@@ -26,7 +26,7 @@ void renderPreviewMode (juce::AudioBuffer<float>& processed,
             continue;
         }
 
-        if (mode == PreviewMode::difference)
+        if (mode == PreviewMode::difference || mode == PreviewMode::consonantRemoved)
             juce::FloatVectorOperations::subtract (processedData, originalData, samples);
     }
 }

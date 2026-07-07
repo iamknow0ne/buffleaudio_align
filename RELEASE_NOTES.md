@@ -6,6 +6,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
 - Trust Diagnostics v1: shared Trust Meter reason codes and action advice for route, quiet-lane, listening, locked, delay, and advance states.
+- Consonant-only `Tamer` audition mode plus report fields for tamer-only removed material, separate from broad `All Diff` preview changes.
 - Session-flow rail and `Next Best Move` card for tester-friendly phrase workflow guidance.
 - Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` UI/report states.
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.

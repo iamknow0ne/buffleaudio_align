@@ -72,6 +72,8 @@ public:
         float offsetConfidence = 0.0f;
         float removedMaterial = 0.0f;
         float removedPeakDelta = 0.0f;
+        float consonantRemovedMaterial = 0.0f;
+        float consonantRemovedPeakDelta = 0.0f;
         buffle::align::NaturalnessRisk naturalnessRisk = buffle::align::NaturalnessRisk::safe;
         buffle::align::TrustState trustState = buffle::align::TrustState::routeGuide;
         int latencyMs = 0;
@@ -97,6 +99,8 @@ private:
     std::atomic<float> lastMatch { 0.0f };
     std::atomic<float> lastRemovedMaterial { 0.0f };
     std::atomic<float> lastRemovedPeakDelta { 0.0f };
+    std::atomic<float> lastConsonantRemovedMaterial { 0.0f };
+    std::atomic<float> lastConsonantRemovedPeakDelta { 0.0f };
     std::atomic<float> analysisHopMs { 0.0f };
     std::atomic<bool> guideSidechainActive { false };
 
@@ -112,6 +116,7 @@ private:
     buffle::align::ManualNudgeDelay nudgeDelay;
     buffle::align::ConsonantTamer consonantTamer;
     juce::AudioBuffer<float> originalDubBuffer;
+    juce::AudioBuffer<float> preConsonantBuffer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufflePlugAnalyzerAudioProcessor)
 };

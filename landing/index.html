@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, explainable Trust Meter reason codes, confidence-aware bidirectional nudge, Naturalness Guardrail, Stack Role presets, A/B preview, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
+    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, explainable Trust Meter reason codes, confidence-aware bidirectional nudge, Naturalness Guardrail, Stack Role presets, A/B preview, Tamer-only audition, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
     <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
     <meta property="og:image" content="/assets/screenshots/landing-hero-v0.3.0.jpg">
@@ -50,12 +50,13 @@
             <span>Buffle Audio</span>
             <span>Align</span>
           </h1>
-          <p class="hero-copy">Lock doubles, ADR, and backing vocals to a guide while keeping the small timing imperfections that make a stack feel human.</p>
+          <p class="hero-copy">Preview timing moves for doubles, ADR, and backing vocals against a guide while keeping the small imperfections that make a stack feel human.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download v0.3.0</a>
+            <a class="button primary" href="https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0">Download packaged preview</a>
             <a class="button" href="#workflow">See workflow</a>
             <a class="button support" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
           </div>
+          <p class="release-note">Public download is v0.3.0. Current main has post-v0.3 V1 polish pending fresh artifacts and host validation.</p>
         </div>
 
         <aside class="hero-console" aria-label="Live alignment preview">
@@ -88,6 +89,7 @@
           <span>trust reason codes</span>
           <span>naturalness guardrail</span>
           <span>consonant cleanup</span>
+          <span>tamer-only audition</span>
           <span>a/b difference</span>
           <span>stack role presets</span>
           <span>copy report</span>
@@ -99,6 +101,7 @@
           <span>trust reason codes</span>
           <span>naturalness guardrail</span>
           <span>consonant cleanup</span>
+          <span>tamer-only audition</span>
           <span>a/b difference</span>
           <span>stack role presets</span>
           <span>copy report</span>
@@ -109,7 +112,7 @@
         <div class="section-copy">
           <p class="eyebrow">one job, done clearly</p>
           <h2 id="product-title">Line up the stack while keeping the performance alive.</h2>
-          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition the early/late correction before trusting the move.</p>
+          <p>Align watches the Guide and Dub, estimates a signed timing offset, scores phrase confidence, and lets you audition full preview changes or only the consonants reduced by the tamer.</p>
         </div>
         <figure class="app-frame">
           <img src="assets/screenshots/standalone-app-stack-roles-v0.3.0.png" alt="Buffle Audio Align standalone app showing Stack Role, Guide/Dub monitor, offset, delay-safe nudge, A/B preview, and Consonant Tamer controls.">
@@ -136,7 +139,7 @@
           <article style="--accent: var(--coral)">
             <span>03</span>
             <h3>A/B the change</h3>
-            <p>Original, Aligned, and Difference modes make the timing move audible, while the Changed Material meter shows the broad preview change.</p>
+            <p>Original, Aligned, All Diff, and Tamer modes split the full timing change from consonant-only cleanup so the preview does not hide what changed.</p>
           </article>
           <article style="--accent: var(--green)">
             <span>04</span>
@@ -153,7 +156,7 @@
           <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, bundle archive, rough installer package, and release assets are all part of the current workflow.</p>
         </div>
         <div class="engine-list">
-          <div><span>now</span><strong>Signed offset, Trust Meter reason codes, bidirectional Apply Nudge, Naturalness Guardrail, Stack Role presets, A/B Difference, Changed meter, Consonant Tamer Lite, Copy Report.</strong></div>
+          <div><span>now</span><strong>Signed offset, Trust Meter reason codes, bidirectional Apply Nudge, Naturalness Guardrail, Stack Role presets, All Diff, Tamer-only audition, Changed meters, Consonant Tamer Lite, Copy Report.</strong></div>
           <div><span>v1 focus</span><strong>Phrase workflow, naturalness guardrails, golden audio checks, DAW validation, signing, notarization.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
         </div>

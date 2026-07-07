@@ -345,6 +345,23 @@ void testPreviewModeDifferenceShowsChange()
         assert (processed.getSample (0, sample) == static_cast<float> ((sample + 1) * 2));
 }
 
+void testPreviewModeConsonantRemovedShowsScopedChange()
+{
+    juce::AudioBuffer<float> processed (1, 4);
+    juce::AudioBuffer<float> preTamer (1, 4);
+
+    for (int sample = 0; sample < 4; ++sample)
+    {
+        preTamer.setSample (0, sample, static_cast<float> (sample + 1));
+        processed.setSample (0, sample, static_cast<float> ((sample + 1) * 0.75f));
+    }
+
+    buffle::align::renderPreviewMode (processed, preTamer, buffle::align::PreviewMode::consonantRemoved, 1);
+
+    for (int sample = 0; sample < 4; ++sample)
+        assert (std::abs (processed.getSample (0, sample) - static_cast<float> (sample + 1) * -0.25f) < 0.0001f);
+}
+
 void testRemovedMaterialMeterIdentityIsZero()
 {
     juce::AudioBuffer<float> original (1, 4);
@@ -423,6 +440,26 @@ void testRemovedMaterialMeterCalibratesKnownGainReduction()
     assert (std::abs (stats.amount - 0.5f) < 0.001f);
     assert (std::abs (stats.deltaRms - 0.5f) < 0.001f);
     assert (std::abs (stats.peakDelta - 0.5f) < 0.001f);
+}
+
+void testConsonantTamerFeedsRemovedMaterialMeter()
+{
+    juce::AudioBuffer<float> buffer (1, 4096);
+
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        buffer.setSample (0, sample, 0.06f * std::sin (static_cast<float> (sample) * 0.017f));
+
+    buffer.setSample (0, 96, 1.0f);
+    buffer.setSample (0, 97, -0.78f);
+    const auto preTamer = buffer;
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 1);
+    tamer.process (buffer, nullptr, 1.0f, 0.2f);
+
+    const auto stats = buffle::align::measureRemovedMaterial (preTamer, buffer, 1);
+    assert (stats.amount > 0.01f);
+    assert (stats.peakDelta > 0.05f);
 }
 
 void testNaturalnessGuardrailKeepsGentleCleanupSafe()
@@ -540,6 +577,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.consonantLevel = 0.86f;
     input.removedMaterial = 0.34f;
     input.removedPeakDelta = 0.78f;
+    input.consonantRemovedMaterial = 0.12f;
+    input.consonantRemovedPeakDelta = 0.38f;
     input.naturalnessRisk = buffle::align::NaturalnessRisk::tooMuch;
 
     const auto report = buffle::align::buildAlignmentReport (input);
@@ -552,6 +591,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     assert (report.find ("Consonant Tamer: 86%") != std::string::npos);
     assert (report.find ("Changed material: 34%") != std::string::npos);
     assert (report.find ("Peak changed material: 78%") != std::string::npos);
+    assert (report.find ("Consonant removed: 12%") != std::string::npos);
+    assert (report.find ("Peak consonant removed: 38%") != std::string::npos);
     assert (report.find ("Naturalness risk: Too Much") != std::string::npos);
 }
 }
@@ -579,11 +620,13 @@ int main()
     testPreviewModeOriginalRestoresInput();
     testPreviewModeAlignedKeepsProcessed();
     testPreviewModeDifferenceShowsChange();
+    testPreviewModeConsonantRemovedShowsScopedChange();
     testRemovedMaterialMeterIdentityIsZero();
     testRemovedMaterialMeterSilenceIsSafe();
     testRemovedMaterialMeterDetectsGainReducedTransient();
     testRemovedMaterialMeterUsesRequestedChannels();
     testRemovedMaterialMeterCalibratesKnownGainReduction();
+    testConsonantTamerFeedsRemovedMaterialMeter();
     testNaturalnessGuardrailKeepsGentleCleanupSafe();
     testNaturalnessGuardrailAsksForDifferenceCheck();
     testNaturalnessGuardrailFlagsOverCleanedLooseRole();

@@ -136,6 +136,37 @@ juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::Ali
     return "Copy Report for the session notes, or adjust Stack Role for this layer.";
 }
 
+juce::String describeSuggestPill (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    switch (snapshot.trustState)
+    {
+        case buffle::align::TrustState::routeGuide: return "Route Guide";
+        case buffle::align::TrustState::guideQuiet: return "Raise Guide";
+        case buffle::align::TrustState::dubQuiet: return "Raise Dub";
+        case buffle::align::TrustState::listening: return "Play Phrase";
+        case buffle::align::TrustState::locked: return "No Move";
+        case buffle::align::TrustState::delayDub:
+        case buffle::align::TrustState::advanceDub: return describeNudgeMoveCompact (snapshot.suggestedNudgeMs);
+        default: return "Play Phrase";
+    }
+}
+
+juce::String describeHeaderTrust (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    switch (snapshot.trustState)
+    {
+        case buffle::align::TrustState::routeGuide: return "Route Guide";
+        case buffle::align::TrustState::guideQuiet: return "Guide Quiet";
+        case buffle::align::TrustState::dubQuiet: return "Dub Quiet";
+        case buffle::align::TrustState::listening: return "Listening - " + asPercent (snapshot.offsetConfidence);
+        case buffle::align::TrustState::locked: return "Locked - " + asPercent (snapshot.offsetConfidence) + " confidence";
+        case buffle::align::TrustState::delayDub:
+        case buffle::align::TrustState::advanceDub:
+            return describeNudgeMove (snapshot.suggestedNudgeMs) + " - " + asPercent (snapshot.offsetConfidence);
+        default: return describePhraseHealth (snapshot);
+    }
+}
+
 void drawReadoutPill (juce::Graphics& g,
                       juce::Rectangle<int> area,
                       const juce::String& label,
@@ -192,14 +223,15 @@ void drawChangedMaterialStrip (juce::Graphics& g,
     auto text = area.reduced (12, 0);
     g.setColour (dubColour.brighter (0.16f));
     g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
-    g.drawText ("CHANGED MATERIAL", text.removeFromLeft (142), juce::Justification::centredLeft);
+    g.drawText ("CHANGED MATERIAL", text.removeFromLeft (134), juce::Justification::centredLeft);
 
     auto meterArea = text.removeFromRight (120).withSizeKeepingCentre (104, 8);
     drawHorizontalMeter (g, meterArea, snapshot.removedMaterial, dubColour.brighter (0.2f));
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (asPercent (snapshot.removedMaterial) + " overall preview change",
+    g.drawText (asPercent (snapshot.removedMaterial) + " all / "
+                    + asPercent (snapshot.consonantRemovedMaterial) + " tamer",
                 text,
                 juce::Justification::centredLeft);
 }
@@ -350,7 +382,7 @@ public:
         drawReadoutPill (g,
                          readouts,
                          "SUGGEST",
-                         snapshot.hasReliableOffset ? describeNudgeMoveCompact (snapshot.suggestedNudgeMs) : "LISTEN",
+                         describeSuggestPill (snapshot),
                          warningColour);
 
         content.removeFromTop (8);
@@ -368,7 +400,9 @@ public:
         g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
         g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - "
                         + (snapshot.hasReliableOffset
-                            ? "suggest " + describeNudgeMove (snapshot.suggestedNudgeMs) + ", changed " + asPercent (snapshot.removedMaterial)
+                            ? "suggest " + describeNudgeMove (snapshot.suggestedNudgeMs)
+                                + ", all " + asPercent (snapshot.removedMaterial)
+                                + ", tamer " + asPercent (snapshot.consonantRemovedMaterial)
                             : "waiting for reliable Guide/Dub confidence"),
                     nudgeLine,
                     juce::Justification::centredLeft);
@@ -530,7 +564,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
 
     for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton,
                           &reportButton,
-                          &originalModeButton, &alignedModeButton, &differenceModeButton })
+                          &originalModeButton, &alignedModeButton, &differenceModeButton, &tamerModeButton })
     {
         addAndMakeVisible (*button);
         button->setColour (juce::TextButton::buttonColourId, panelLight);
@@ -547,7 +581,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     reportButton.setTooltip ("Copy a session handoff report with phrase health, offset, confidence, role, and current controls.");
     originalModeButton.setTooltip ("Monitor the unprocessed Dub.");
     alignedModeButton.setTooltip ("Monitor the current nudge and Consonant Tamer path.");
-    differenceModeButton.setTooltip ("Monitor what the preview path changed or removed.");
+    differenceModeButton.setTooltip ("Monitor all timing and tamer material changed by the preview path.");
+    tamerModeButton.setTooltip ("Solo only the consonant material reduced by Consonant Tamer.");
     applySuggestedButton.setEnabled (false);
     captureButton.onClick = [this] { showTransientStatus ("Capture pass armed - route Guide sidechain, then play the phrase."); };
     analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
@@ -557,6 +592,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     originalModeButton.onClick = [this] { setPreviewMode (0); };
     alignedModeButton.onClick = [this] { setPreviewMode (1); };
     differenceModeButton.onClick = [this] { setPreviewMode (2); };
+    tamerModeButton.onClick = [this] { setPreviewMode (3); };
     updatePreviewModeButtons();
 
     addAndMakeVisible (statusLabel);
@@ -653,12 +689,15 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     auto rail = bounds.removeFromLeft (168).reduced (22, 8);
     auto railButton = rail.removeFromBottom (262);
     auto modeArea = railButton.removeFromTop (54);
-    originalModeButton.setBounds (modeArea.removeFromTop (24));
+    auto upperModes = modeArea.removeFromTop (24);
+    originalModeButton.setBounds (upperModes.removeFromLeft ((upperModes.getWidth() - 6) / 2));
+    upperModes.removeFromLeft (6);
+    alignedModeButton.setBounds (upperModes);
     modeArea.removeFromTop (6);
     auto lowerModes = modeArea.removeFromTop (24);
-    alignedModeButton.setBounds (lowerModes.removeFromLeft ((lowerModes.getWidth() - 6) / 2));
+    differenceModeButton.setBounds (lowerModes.removeFromLeft ((lowerModes.getWidth() - 6) / 2));
     lowerModes.removeFromLeft (6);
-    differenceModeButton.setBounds (lowerModes);
+    tamerModeButton.setBounds (lowerModes);
     railButton.removeFromTop (10);
     captureButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
@@ -786,8 +825,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
         snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe
             ? juce::String (buffle::align::getNaturalnessRiskLabel (snapshot.naturalnessRisk))
             : snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
-                                               : "set taste",
-        "copy handoff"
+                                               : "Tune tamer",
+        "Copy report"
     };
 
     auto row = area.reduced (14, 16);
@@ -874,7 +913,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawHeader (juce::Graphics& g, juce
     drawRoundRect (g, chip.toFloat(), juce::Colour (0xff1d2731), sourceColour.withAlpha (0.35f));
     g.setColour (sourceColour);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (describePhraseHealth (snapshot) + juce::String (" - ") + asPercent (snapshot.offsetConfidence),
+    g.drawText (describeHeaderTrust (snapshot),
                 chip,
                 juce::Justification::centred);
 }
@@ -952,8 +991,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::setPreviewMode (int modeIndex)
         parameter->setValueNotifyingHost (parameter->convertTo0to1 (static_cast<float> (modeIndex)));
         parameter->endChangeGesture();
 
-        const char* labels[] = { "Original", "Aligned", "Difference" };
-        showTransientStatus ("Preview mode: " + juce::String (labels[juce::jlimit (0, 2, modeIndex)]) + ".");
+        const char* labels[] = { "Original", "Aligned", "Difference", "Tamer Removed" };
+        showTransientStatus ("Preview mode: " + juce::String (labels[juce::jlimit (0, 3, modeIndex)]) + ".");
     }
 }
 
@@ -962,11 +1001,12 @@ void BufflePlugAnalyzerAudioProcessorEditor::updatePreviewModeButtons()
     auto mode = 1;
 
     if (auto* value = audioProcessor.getValueTreeState().getRawParameterValue ("previewMode"))
-        mode = juce::jlimit (0, 2, juce::roundToInt (value->load()));
+        mode = juce::jlimit (0, 3, juce::roundToInt (value->load()));
 
     originalModeButton.setToggleState (mode == 0, juce::dontSendNotification);
     alignedModeButton.setToggleState (mode == 1, juce::dontSendNotification);
     differenceModeButton.setToggleState (mode == 2, juce::dontSendNotification);
+    tamerModeButton.setToggleState (mode == 3, juce::dontSendNotification);
 }
 
 void BufflePlugAnalyzerAudioProcessorEditor::applyStackRolePreset (int roleIndex)

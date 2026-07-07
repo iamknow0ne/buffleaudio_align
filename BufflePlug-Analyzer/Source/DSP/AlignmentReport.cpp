@@ -19,6 +19,7 @@ const char* previewModeName (int mode) noexcept
     {
         case 0: return "Original";
         case 2: return "Difference";
+        case 3: return "Tamer Removed";
         default: return "Aligned";
     }
 }
@@ -73,6 +74,8 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
     report << "Current nudge: " << input.currentNudgeMs << " ms\n";
     report << "Changed material: " << asPercent (input.removedMaterial) << "%\n";
     report << "Peak changed material: " << asPercent (input.removedPeakDelta) << "%\n";
+    report << "Consonant removed: " << asPercent (input.consonantRemovedMaterial) << "%\n";
+    report << "Peak consonant removed: " << asPercent (input.consonantRemovedPeakDelta) << "%\n";
     report << "Naturalness risk: " << getNaturalnessRiskLabel (input.naturalnessRisk)
            << " - " << getNaturalnessRiskAdvice (input.naturalnessRisk) << "\n";
     report << "Preview mode: " << previewModeName (input.previewMode) << "\n";

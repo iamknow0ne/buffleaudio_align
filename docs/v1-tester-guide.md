@@ -2,6 +2,14 @@
 
 Use this guide when testing the current macOS developer preview and sending feedback toward V1.
 
+## Version Status
+
+| Lane | What it means |
+| --- | --- |
+| `v0.3.0` packaged preview | Current public GitHub release artifacts for Standalone, AU, VST3, and rough `.pkg` preview. |
+| Current `main` source | Post-`v0.3.0` V1-preview polish, including Trust Diagnostics and Tamer audition work, pending fresh release artifacts. |
+| Next preview target | Fresh zip-first artifacts after local build, DSP tests, release hygiene, and host-validation evidence are refreshed. |
+
 ## Preferred Download
 
 Use the bundle archive first:
@@ -31,11 +39,12 @@ Because this is an unsigned developer preview, macOS Gatekeeper may ask you to e
 5. Confirm the UI moves from route/listen into locked confidence before trusting numbers.
 6. Check the signed offset and suggested `Delay Dub` or `Advance Dub` action.
 7. Click Apply Nudge only when the button shows a concrete signed action.
-8. A/B `Original`, `Aligned`, and `Diff` before committing the move.
+8. A/B `Original`, `Aligned`, `All Diff`, and `Tamer` before committing the move.
 9. Try one `Stack Role`: Double Tight, Choir Natural, Rap Stack, or ADR Loose.
 10. Raise `Consonant Tamer` gradually and watch Naturalness Risk move between `Natural`, `Check Diff`, and `Too Much`.
 11. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
-12. Use `Copy Report` and include that text in feedback.
+12. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
+13. Use `Copy Report` and include that text in feedback.
 
 ## Trust Diagnostics
 
@@ -75,6 +84,7 @@ Send:
 - Confidence value, signed offset, and suggested nudge direction.
 - Whether Apply Nudge moved the Dub in the expected direction.
 - Whether `Diff` sounded useful, too subtle, or misleading.
+- Whether `Tamer` isolated consonant cleanup clearly from the full timing/difference path.
 - Stack Role used and whether it helped.
 - Naturalness Risk state and whether it matched what you heard.
 - Consonant Tamer setting and any artifacts heard.
@@ -86,5 +96,5 @@ Send:
 - `Arm Listen`, `Check Timing`, and `Preview Align` are still workflow/checklist controls, not a complete captured phrase editor.
 - Bidirectional nudge uses fixed host latency compensation and still needs DAW host validation.
 - `Guide Blend` and `Stereo Focus` are preview/monitoring shape controls until deeper stereo DSP lands.
-- `Changed Material` is an overall processed-vs-original preview meter, not per-feature removed-material solo yet.
+- `All Diff` is the overall processed-vs-original preview delta; `Tamer` isolates the current Consonant Tamer reduction only.
 - The installer is not Developer ID signed or notarized.

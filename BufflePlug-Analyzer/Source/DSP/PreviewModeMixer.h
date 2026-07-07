@@ -8,7 +8,8 @@ enum class PreviewMode
 {
     original = 0,
     aligned = 1,
-    difference = 2
+    difference = 2,
+    consonantRemoved = 3
 };
 
 void renderPreviewMode (juce::AudioBuffer<float>& processed,
