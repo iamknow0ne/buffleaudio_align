@@ -9,6 +9,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` UI/report states.
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
 - Additional deterministic DSP regression coverage for nudge edge clamps, Consonant Tamer block-size invariance, changed-material calibration, and guardrail policy.
+- Release tooling now reads `VERSION` and supports zip/pkg/full publish modes with draft prerelease defaults.
 - Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.

@@ -12,6 +12,7 @@
 - Added Naturalness Risk Guardrail v0 with `Natural`, `Check Diff`, and `Too Much` UI/report states.
 - Added host-latency validation matrix documentation for AU/VST3 V1 proof.
 - Added deterministic DSP regression coverage for nudge edge clamps, Consonant Tamer block-size invariance, changed-material calibration, and Naturalness Guardrail policy.
+- Centralized release versioning in `VERSION` and hardened publish tooling with zip/pkg/full modes, clean-tree preflight, archive hygiene checks, and draft prerelease defaults.
 - Added a V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
 - Added clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Added `AlignmentReport` formatter and CTest coverage for unreliable and safe-nudge report states.

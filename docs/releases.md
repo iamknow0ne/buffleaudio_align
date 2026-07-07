@@ -6,6 +6,8 @@ For hands-on feedback, use the [V1 tester guide](v1-tester-guide.md). The bundle
 
 For signed nudge and host plugin delay compensation proof, use the [host latency validation matrix](validation-host-latency.md).
 
+The project version lives in [`../VERSION`](../VERSION). Release scripts read that file by default, and still allow `VERSION=x.y.z` for one-off previews.
+
 ## Published Releases
 
 | Version | Status | GitHub release | Assets |
@@ -42,6 +44,28 @@ shasum -a 256 dist/BuffleAudioAlign-0.3.0-macOS.pkg dist/BuffleAudioAlign-0.3.0-
 ```
 
 V1 also needs at least one clean-account install smoke, AU validation, and a VST3 host/pluginval pass.
+
+## Publish Modes
+
+Preview releases should prefer the clean bundle archive:
+
+```bash
+RELEASE_MODE=zip GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_github_release.sh
+```
+
+Installer-inclusive release candidates must use:
+
+```bash
+RELEASE_MODE=full GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_github_release.sh
+```
+
+`RELEASE_MODE=zip` uploads only `BuffleAudioAlign-X.Y.Z-macOS-bundles.zip`.
+`RELEASE_MODE=pkg` uploads only the installer and requires clean package payload hygiene.
+`RELEASE_MODE=full` uploads both artifacts and requires the package hygiene gate to pass.
+
+The publish script refuses a dirty working tree unless `ALLOW_DIRTY=1` is set, refuses existing release tags, verifies bundle archive metadata, and creates draft prereleases by default. Use `DRAFT_RELEASE=0 PRERELEASE=0` only for a fully validated V1.
+
+Use [release-evidence-template.md](release-evidence-template.md) for each V1 release candidate.
 
 ## V1 Promotion Gates
 
@@ -87,7 +111,7 @@ These files are build outputs and are intentionally not tracked by git. GitHub R
 
 The staged bundles are ad-hoc signed for local verification. The installer packages are not Developer ID Installer signed or notarized yet.
 
-The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. The current publish script still expects both the `.pkg` and bundle zip to exist, so a future zip-only preview publish mode is needed if the package is intentionally held back.
+The build and publish scripts now refuse to continue when `pkgutil --payload-files` reports AppleDouble `._*` or `.DS_Store` entries in the installer payload. Use `RELEASE_MODE=zip` when the package is intentionally held back.
 
 Current release blockers before a broad V1 installer:
 

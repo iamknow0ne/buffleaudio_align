@@ -25,6 +25,7 @@ Done:
 - Host latency validation matrix for AU/VST3 DAW proof.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
+- Release tooling reads `VERSION`, supports zip/pkg/full publish modes, and defaults preview publishes to draft prereleases.
 - Cloudflare Pages landing page.
 
 Not V1-ready yet:
@@ -120,6 +121,7 @@ Goal: ship a clean, supportable macOS V1.
 - Run AU validation and at least one VST3 host load test.
 - Execute the host latency validation matrix in [docs/validation-host-latency.md](docs/validation-host-latency.md).
 - Publish GitHub release with SHA256 checksums.
+- Attach a completed release evidence record using [docs/release-evidence-template.md](docs/release-evidence-template.md).
 - Update landing, README, changelog, docs, screenshots, and release notes.
 
 Exit criteria:

@@ -16,6 +16,8 @@ That folder is missing on the current machine. The `.jucer` and CMake build now 
 
 Override it with `JUCE_PATH=/path/to/JUCE`.
 
+The release version is read from the repository [VERSION](../VERSION) file. Override it only for intentional preview builds with `VERSION=x.y.z`.
+
 ## Canonical Product Naming
 
 Use these names going forward:
@@ -55,6 +57,12 @@ ctest --test-dir build/cmake-debug --output-on-failure
 scripts/build_and_package_macos.sh
 ```
 
+For release-candidate hygiene, clear old top-level artifacts first:
+
+```bash
+CLEAN_DIST=1 scripts/build_and_package_macos.sh
+```
+
 Outputs:
 
 ```text
@@ -62,6 +70,7 @@ dist/stage/Buffle Audio Align.app
 dist/stage/Buffle Audio Align.vst3
 dist/stage/Buffle Audio Align.component
 dist/BuffleAudioAlign-0.3.0-macOS.pkg
+dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip
 ```
 
 The bundles are ad-hoc signed for local verification. The package is not Developer ID Installer signed or notarized.

@@ -17,7 +17,7 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Release inventory: [docs/releases.md](docs/releases.md)
 - V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
 - Host latency validation: [docs/validation-host-latency.md](docs/validation-host-latency.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-naturalness-validation.md](docs/healthcheck-2026-07-07-naturalness-validation.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-release-tooling.md](docs/healthcheck-2026-07-07-release-tooling.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Product Preview
@@ -111,6 +111,8 @@ The canonical build path is CMake. It currently uses the local JUCE checkout at:
 
 Override it with `JUCE_PATH=/path/to/JUCE`.
 
+The project version is read from [VERSION](VERSION). Release scripts use that file unless `VERSION=x.y.z` is provided in the environment.
+
 ```bash
 cmake -S . -B build/cmake-debug \
   -DJUCE_PATH=/Users/hostin/vibecoding/waveform-visualizer/JUCE \
@@ -186,8 +188,10 @@ For current testers, prefer the bundle archive. The `.pkg` is a rough local prev
 To publish a future release after building:
 
 ```bash
-GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_github_release.sh
+RELEASE_MODE=zip GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_github_release.sh
 ```
+
+`RELEASE_MODE=zip` publishes the preferred preview archive. `RELEASE_MODE=full` requires both the clean bundle archive and clean `.pkg` installer. New releases are draft prereleases by default until V1 gates pass.
 
 ## Source Layout
 

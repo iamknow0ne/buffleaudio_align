@@ -8,8 +8,17 @@ DIST_DIR="${ROOT_DIR}/dist"
 STAGE_DIR="${DIST_DIR}/stage"
 PKGROOT_DIR="${DIST_DIR}/pkgroot"
 JUCE_PATH="${JUCE_PATH:-/Users/hostin/vibecoding/waveform-visualizer/JUCE}"
-VERSION="0.3.0"
+VERSION="${VERSION:-$(tr -d '[:space:]' < "${ROOT_DIR}/VERSION")}"
 PKG_ID="com.buffleaudio.align"
+
+if [[ -z "${VERSION}" ]]; then
+  echo "Release version is empty. Set VERSION or update ${ROOT_DIR}/VERSION." >&2
+  exit 1
+fi
+
+if [[ "${CLEAN_DIST:-0}" == "1" ]]; then
+  find "${DIST_DIR}" -maxdepth 1 -type f -name "BuffleAudioAlign-*-macOS*" -delete 2>/dev/null || true
+fi
 
 verify_package_payload_hygiene() {
   local pkg="$1"
