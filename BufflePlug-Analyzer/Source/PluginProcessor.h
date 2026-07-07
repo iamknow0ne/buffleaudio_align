@@ -97,6 +97,7 @@ private:
     std::atomic<float>* nudgeParam = nullptr;
     std::atomic<float>* auditionParam = nullptr;
     std::atomic<float>* previewModeParam = nullptr;
+    std::atomic<float>* stackRoleParam = nullptr;
 
     double currentSampleRate = 44100.0;
     buffle::align::ManualNudgeDelay nudgeDelay;

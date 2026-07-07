@@ -15,14 +15,14 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Build notes: [docs/build.md](docs/build.md)
 - Deployment notes: [docs/deployment.md](docs/deployment.md)
 - Release inventory: [docs/releases.md](docs/releases.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-ab-preview.md](docs/healthcheck-2026-07-07-ab-preview.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-stack-roles.md](docs/healthcheck-2026-07-07-stack-roles.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Screenshot
 
 Current v0.3.0 Standalone app capture:
 
-![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-v0.3.0.png)
+![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-stack-roles-v0.3.0.png)
 
 ## Try It In 5 Minutes
 
@@ -34,6 +34,7 @@ Current v0.3.0 Standalone app capture:
 6. Use manual `Nudge`, or the confidence-gated Apply Nudge workflow in the app UI.
 7. Raise `Consonant Tamer` carefully to soften unmatched Dub attacks without crushing sustained vowels.
 8. Switch `Original`, `Aligned`, and `Diff` to hear the dry Dub, processed preview, or changed material before printing.
+9. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
 
 Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
 
@@ -47,8 +48,9 @@ Preview build note: v0.3.0 is useful for local testing, but it is not Developer 
 - Realtime-safe manual nudge delay through a testable DSP module.
 - Experimental Consonant Tamer Lite DSP for reducing unmatched Dub consonant bursts while preserving Guide-matched attacks.
 - Original / Aligned / Difference preview modes for A/B trust checks.
+- Stack Role presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` apply role-aware Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus settings.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states.
-- Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, and consonant-tamer behavior.
+- Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
 - Static landing page in `landing/`, deployed to Cloudflare Pages and safe to expose without serving the full repository.
@@ -64,7 +66,8 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 5. Preview or apply a safe nudge.
 6. Add vocal-stack-specific consonant cleanup through an experimental transient tamer.
 7. A/B Original, Aligned, and Difference preview before printing.
-8. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+8. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
+9. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
 
 ## V1 Direction
 
@@ -82,7 +85,7 @@ Differentiating V1 feature candidates:
 - Stack Spread Governor: preserve controlled width across doubles/harmonies.
 - Breath Preservation Mask: protect breaths and expressive attacks.
 - Vowel-Only Warp Preview: future micro-warping that avoids consonant smearing.
-- Harmony-Aware Tightness: looser defaults for harmony stacks than unison doubles.
+- Harmony-Aware Tightness Presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` roles tune tightness, naturalness, consonant amount, guide blend, and stereo focus.
 - Exportable Alignment Report: phrase offset, confidence, and correction summary.
 
 See [ROADMAP.md](ROADMAP.md) for milestones, risks, and verification gates.
@@ -182,6 +185,7 @@ BufflePlug-Analyzer/Source/
     EnvelopeFeatureExtractor.*
     ManualNudgeDelay.*
     PreviewModeMixer.*
+    StackRolePreset.*
     TimingOffsetEstimator.*
   PluginProcessor.*
   PluginEditor.*

@@ -1,6 +1,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "BinaryData.h"
+#include "DSP/StackRolePreset.h"
 
 #include <algorithm>
 
@@ -424,6 +425,36 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     guideBlendAttachment = std::make_unique<SliderAttachment> (state, "guideBlend", guideBlendSlider);
     stereoFocusAttachment = std::make_unique<SliderAttachment> (state, "stereoFocus", stereoFocusSlider);
 
+    addAndMakeVisible (stackRoleBox);
+    stackRoleBox.addItem ("Manual", 1);
+    stackRoleBox.addItem ("Tight", 2);
+    stackRoleBox.addItem ("Natural", 3);
+    stackRoleBox.addItem ("Rap", 4);
+    stackRoleBox.addItem ("ADR", 5);
+    stackRoleBox.setTooltip ("Stack Role: choose the job of this layer. Presets set timing feel, consonant cleanup, Guide Blend, and Stereo Focus.");
+    stackRoleBox.setColour (juce::ComboBox::backgroundColourId, panelLight);
+    stackRoleBox.setColour (juce::ComboBox::outlineColourId, border);
+    stackRoleBox.setColour (juce::ComboBox::textColourId, ink);
+    stackRoleBox.setColour (juce::ComboBox::arrowColourId, brandAccent);
+    stackRoleBox.onChange = [this]
+    {
+        const auto roleIndex = stackRoleBox.getSelectedId() - 1;
+        if (roleIndex > 0)
+            applyStackRolePreset (roleIndex);
+    };
+    updateStackRoleBox();
+
+    auto markManual = [this]
+    {
+        if (! applyingStackRolePreset)
+            markStackRoleManual();
+    };
+    tightnessSlider.onValueChange = markManual;
+    naturalnessSlider.onValueChange = markManual;
+    consonantSlider.onValueChange = markManual;
+    guideBlendSlider.onValueChange = markManual;
+    stereoFocusSlider.onValueChange = markManual;
+
     setResizable (true, true);
     setResizeLimits (820, 680, 1220, 820);
     setSize (1040, 700);
@@ -451,9 +482,10 @@ void BufflePlugAnalyzerAudioProcessorEditor::paint (juce::Graphics& g)
     auto controls = bounds.removeFromRight (238).reduced (8, 10);
     drawRoundRect (g, controls.toFloat(), panel, border);
 
+    auto controlHeader = controls.removeFromTop (42).reduced (16, 0);
     g.setColour (ink);
-    g.setFont (juce::FontOptions (16.0f, juce::Font::bold));
-    g.drawText ("Control Room", controls.removeFromTop (42).reduced (16, 0), juce::Justification::centredLeft);
+    g.setFont (juce::FontOptions (13.8f, juce::Font::bold));
+    g.drawText ("Control Room", controlHeader.withTrimmedRight (90), juce::Justification::centredLeft);
 
     auto controlRows = controls.reduced (16, 12);
     for (int i = 0; i < 7; ++i)
@@ -489,6 +521,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     applySuggestedButton.setBounds (railButton.removeFromTop (32));
 
     auto controls = bounds.removeFromRight (238).reduced (24, 62);
+    auto controlHeader = controls.removeFromTop (42).reduced (0, 7);
+    stackRoleBox.setBounds (controlHeader.removeFromRight (86));
     const auto sliderHeight = 62;
 
     auto placeSlider = [&controls] (juce::Slider& slider, juce::Label& label)
@@ -516,6 +550,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::timerCallback()
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
     applySuggestedButton.setEnabled (snapshot.hasReliableOffset && snapshot.suggestedNudgeMs > 0.05f);
     updatePreviewModeButtons();
+    updateStackRoleBox();
 
     if (transientStatusFrames > 0)
     {
@@ -743,6 +778,66 @@ void BufflePlugAnalyzerAudioProcessorEditor::updatePreviewModeButtons()
     originalModeButton.setToggleState (mode == 0, juce::dontSendNotification);
     alignedModeButton.setToggleState (mode == 1, juce::dontSendNotification);
     differenceModeButton.setToggleState (mode == 2, juce::dontSendNotification);
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::applyStackRolePreset (int roleIndex)
+{
+    const auto boundedRole = juce::jlimit (0, 4, roleIndex);
+    const auto role = static_cast<buffle::align::StackRole> (boundedRole);
+    const auto settings = buffle::align::getStackRoleSettings (role);
+    auto& state = audioProcessor.getValueTreeState();
+
+    auto setParameter = [&state] (const char* parameterId, float value)
+    {
+        if (auto* parameter = state.getParameter (parameterId))
+        {
+            parameter->beginChangeGesture();
+            parameter->setValueNotifyingHost (parameter->convertTo0to1 (value));
+            parameter->endChangeGesture();
+        }
+    };
+
+    applyingStackRolePreset = true;
+
+    setParameter ("tightness", settings.tightness);
+    setParameter ("naturalness", settings.naturalness);
+    setParameter ("consonantLevel", settings.consonantLevel);
+    setParameter ("guideBlend", settings.guideBlend);
+    setParameter ("stereoFocus", settings.stereoFocus);
+
+    if (auto* parameter = state.getParameter ("stackRole"))
+    {
+        parameter->beginChangeGesture();
+        parameter->setValueNotifyingHost (parameter->convertTo0to1 (static_cast<float> (boundedRole)));
+        parameter->endChangeGesture();
+    }
+
+    applyingStackRolePreset = false;
+    updateStackRoleBox();
+    showTransientStatus ("Stack Role: " + juce::String (buffle::align::getStackRoleName (role)) + ".");
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::markStackRoleManual()
+{
+    if (auto* parameter = audioProcessor.getValueTreeState().getParameter ("stackRole"))
+    {
+        parameter->beginChangeGesture();
+        parameter->setValueNotifyingHost (parameter->convertTo0to1 (0.0f));
+        parameter->endChangeGesture();
+    }
+
+    updateStackRoleBox();
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::updateStackRoleBox()
+{
+    auto role = 0;
+
+    if (auto* value = audioProcessor.getValueTreeState().getRawParameterValue ("stackRole"))
+        role = juce::jlimit (0, 4, juce::roundToInt (value->load()));
+
+    if (stackRoleBox.getSelectedId() != role + 1)
+        stackRoleBox.setSelectedId (role + 1, juce::dontSendNotification);
 }
 
 juce::Image BufflePlugAnalyzerAudioProcessorEditor::recolourForDarkTheme (const juce::Image& source,

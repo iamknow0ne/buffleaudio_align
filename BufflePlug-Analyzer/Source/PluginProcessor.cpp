@@ -1,5 +1,6 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
 #include <vector>
@@ -12,6 +13,7 @@ constexpr auto consonantLevelId = "consonantLevel";
 constexpr auto nudgeId = "nudge";
 constexpr auto auditionId = "audition";
 constexpr auto previewModeId = "previewMode";
+constexpr auto stackRoleId = "stackRole";
 constexpr auto guideBlendId = "guideBlend";
 constexpr auto stereoFocusId = "stereoFocus";
 constexpr auto maxNudgeMs = 120.0f;
@@ -48,6 +50,7 @@ juce::String previewModeName (int mode)
         default: return "Aligned";
     }
 }
+
 }
 
 //==============================================================================
@@ -71,6 +74,7 @@ BufflePlugAnalyzerAudioProcessor::BufflePlugAnalyzerAudioProcessor()
     nudgeParam = parameters.getRawParameterValue (nudgeId);
     auditionParam = parameters.getRawParameterValue (auditionId);
     previewModeParam = parameters.getRawParameterValue (previewModeId);
+    stackRoleParam = parameters.getRawParameterValue (stackRoleId);
 
     for (auto& value : guideHistory)
         value.store (0.0f);
@@ -358,11 +362,14 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
     const auto consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
+    const auto stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     const auto snapshot = getAlignmentSnapshot();
 
     return juce::String (snapshot.hasReliableOffset ? "Guide/Dub monitor locked - " : "Guide/Dub monitor listening - ")
         + previewModeName (previewMode)
         + " mode, "
+        + juce::String (buffle::align::getStackRoleName (static_cast<buffle::align::StackRole> (juce::jlimit (0, 4, stackRole))))
+        + " role, "
         + "Tightness "
         + juce::String (static_cast<int> (tightness * 100.0f))
         + "%, tamer "
@@ -397,6 +404,9 @@ BufflePlugAnalyzerAudioProcessor::createParameterLayout()
 
     params.push_back (std::make_unique<juce::AudioParameterChoice> (
         previewModeId, "Preview Mode", juce::StringArray { "Original", "Aligned", "Difference" }, 1));
+
+    params.push_back (std::make_unique<juce::AudioParameterChoice> (
+        stackRoleId, "Stack Role", juce::StringArray { "Manual", "Double Tight", "Choir Natural", "Rap Stack", "ADR Loose" }, 0));
 
     params.push_back (std::make_unique<juce::AudioParameterFloat> (
         guideBlendId, "Guide Blend", juce::NormalisableRange<float> (0.0f, 1.0f, 0.001f), 0.0f));

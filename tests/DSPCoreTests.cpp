@@ -2,6 +2,7 @@
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/PreviewModeMixer.h"
+#include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
 #include <cassert>
@@ -246,6 +247,22 @@ void testPreviewModeDifferenceShowsChange()
     for (int sample = 0; sample < 4; ++sample)
         assert (processed.getSample (0, sample) == static_cast<float> ((sample + 1) * 2));
 }
+
+void testStackRolePresetProfilesAreDistinct()
+{
+    const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
+    const auto tight = buffle::align::getStackRoleSettings (buffle::align::StackRole::doubleTight);
+    const auto choir = buffle::align::getStackRoleSettings (buffle::align::StackRole::choirNatural);
+    const auto rap = buffle::align::getStackRoleSettings (buffle::align::StackRole::rapStack);
+    const auto adr = buffle::align::getStackRoleSettings (buffle::align::StackRole::adrLoose);
+
+    assert (tight.tightness > manual.tightness);
+    assert (tight.stereoFocus > manual.stereoFocus);
+    assert (choir.naturalness > tight.naturalness);
+    assert (rap.consonantLevel > choir.consonantLevel);
+    assert (adr.tightness < manual.tightness);
+    assert (adr.naturalness > manual.naturalness);
+}
 }
 
 int main()
@@ -265,6 +282,7 @@ int main()
     testPreviewModeOriginalRestoresInput();
     testPreviewModeAlignedKeepsProcessed();
     testPreviewModeDifferenceShowsChange();
+    testStackRolePresetProfilesAreDistinct();
 
     std::cout << "Buffle Align DSP tests passed\n";
     return 0;

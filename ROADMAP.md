@@ -16,6 +16,7 @@ Done:
 - Manual nudge delay in a standalone DSP module.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation.
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
+- User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
 - Phrase-health strip and stateful workflow rail in the editor.
 - CMake build for Standalone, VST3, AU, and DSP tests.
 - macOS package and bundle archive generation.
@@ -27,7 +28,7 @@ Not V1-ready yet:
 - Consonant Tamer is implemented as a first realtime transient tamer, but it is not yet a full consonant collision detector or removed-material audition workflow.
 - Capture/analyze/preview buttons are workflow hints, not a complete phrase state machine.
 - Difference mode is implemented as a first removed-material audition path, but it does not yet have dedicated metering or per-feature solo controls.
-- Stack role presets are not implemented yet.
+- Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
 - Installer is not Developer ID signed or notarized.
 - No DAW host validation matrix, audio demo corpus, or golden WAV regression lane yet.
 
@@ -46,7 +47,7 @@ These are the target features that make Align meaningfully different from generi
 9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals.
 10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup.
 11. **Vowel-Only Micro-Warp Preview**: future constrained warping that stretches vowels while locking consonants.
-12. **Harmony-Aware Tightness Presets**: `Double Tight`, `Choir Natural`, `Rap Stack`, `ADR Loose`.
+12. **Harmony-Aware Tightness Presets**: `Double Tight`, `Choir Natural`, `Rap Stack`, `ADR Loose`. **Initial user-facing selector implemented.**
 13. **Exportable Alignment Report**: phrase offset, confidence, nudge, and correction amount for session handoff.
 
 ## Milestone A - Reliable Nudge Product
@@ -88,7 +89,7 @@ Goal: make Align feel like a practical DAW tool rather than a meter.
 - Make the workflow rail stateful: Route, Listen, Preview, Tame, Print.
 - Add phrase health cards and error states.
 - Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / Difference controls implemented.**
-- Add stack role presets.
+- Add stack role presets. **Initial Stack Role selector implemented.**
 - Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
 
 Exit criteria:

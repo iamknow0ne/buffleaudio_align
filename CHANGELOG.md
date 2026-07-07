@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Added user-facing `Stack Role` presets for `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose`.
+- Added `StackRolePreset` DSP profile definitions and CTest coverage for distinct role behavior.
 - Added persistent `Preview Mode` choices for Original, Aligned, and Difference monitoring.
 - Added `PreviewModeMixer` DSP and tests for Original restore, Aligned passthrough, and Difference audition rendering.
 - Added an in-editor Original / Aligned / Diff control and refreshed the standalone screenshot.

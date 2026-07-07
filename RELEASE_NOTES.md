@@ -4,6 +4,8 @@ Developer preview for macOS Standalone, VST3, and AU.
 
 ## Current Unreleased Polish
 
+- Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
+- Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode.
 - Original / Aligned / Difference preview modes with persistent APVTS state.
 - Difference audition path for hearing the processed-minus-original material.
 - Updated standalone screenshot showing the A/B preview controls.

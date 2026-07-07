@@ -40,6 +40,9 @@ private:
     void applySuggestedNudge();
     void setPreviewMode (int modeIndex);
     void updatePreviewModeButtons();
+    void applyStackRolePreset (int roleIndex);
+    void markStackRoleManual();
+    void updateStackRoleBox();
 
     static juce::Image recolourForDarkTheme (const juce::Image& source, juce::Colour tint);
 
@@ -63,6 +66,7 @@ private:
     juce::Label guideBlendLabel;
     juce::Label stereoFocusLabel;
     juce::Label statusLabel;
+    juce::ComboBox stackRoleBox;
 
     std::unique_ptr<SliderAttachment> tightnessAttachment;
     std::unique_ptr<SliderAttachment> naturalnessAttachment;
@@ -84,6 +88,7 @@ private:
     juce::Rectangle<int> brandLogoBounds;
     juce::String transientStatus;
     int transientStatusFrames = 0;
+    bool applyingStackRolePreset = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (BufflePlugAnalyzerAudioProcessorEditor)
 };
