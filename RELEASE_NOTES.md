@@ -5,6 +5,7 @@
 These changes are in the current source tree after the public `v0.3.0` GitHub release. They should be included in the next preview release after fresh artifacts are built and verified.
 
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
+- Trust Diagnostics v1: shared Trust Meter reason codes and action advice for route, quiet-lane, listening, locked, delay, and advance states.
 - Session-flow rail and `Next Best Move` card for tester-friendly phrase workflow guidance.
 - Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` UI/report states.
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.

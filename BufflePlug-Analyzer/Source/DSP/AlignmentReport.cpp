@@ -8,10 +8,6 @@
 
 namespace buffle::align
 {
-namespace
-{
-constexpr auto usableSignalFloor = 0.025f;
-
 int asPercent (float value) noexcept
 {
     return static_cast<int> (std::clamp (value, 0.0f, 1.0f) * 100.0f + 0.5f);
@@ -27,27 +23,17 @@ const char* previewModeName (int mode) noexcept
     }
 }
 
-} // namespace
-
 const char* getAlignmentReportPhraseHealth (const AlignmentReportInput& input) noexcept
 {
-    if (! input.guideFromSidechain)
-        return "Route Guide sidechain";
+    const auto state = input.trustState == TrustState::routeGuide
+        ? assessTrustState ({ input.guideFromSidechain,
+                              input.hasReliableOffset,
+                              input.guideRms,
+                              input.dubRms,
+                              input.suggestedNudgeMs })
+        : input.trustState;
 
-    if (input.guideRms < usableSignalFloor)
-        return "Guide too quiet";
-
-    if (input.dubRms < usableSignalFloor)
-        return "Dub too quiet";
-
-    if (! input.hasReliableOffset)
-        return "Listening for confidence";
-
-    if (std::abs (input.suggestedNudgeMs) <= 0.05f)
-        return "Locked - no timing nudge needed";
-
-    return input.suggestedNudgeMs > 0.0f ? "Dub early - safe delay"
-                                         : "Dub late - safe advance";
+    return getTrustStateLabel (state);
 }
 
 std::string buildAlignmentReport (const AlignmentReportInput& input)
@@ -57,7 +43,17 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
     std::ostringstream report;
     report << std::fixed << std::setprecision (1);
     report << "Buffle Audio Align Report\n";
-    report << "Phrase health: " << getAlignmentReportPhraseHealth (input) << "\n";
+    const auto trustState = input.trustState == TrustState::routeGuide
+        ? assessTrustState ({ input.guideFromSidechain,
+                              input.hasReliableOffset,
+                              input.guideRms,
+                              input.dubRms,
+                              input.suggestedNudgeMs })
+        : input.trustState;
+
+    report << "Phrase health: " << getTrustStateLabel (trustState) << "\n";
+    report << "Trust reason: " << getTrustStateCode (trustState) << "\n";
+    report << "Trust advice: " << getTrustStateAdvice (trustState) << "\n";
     report << "Guide source: " << (input.guideFromSidechain ? "Sidechain" : "Missing / fallback") << "\n";
     report << "Guide level: " << asPercent (input.guideRms) << "%\n";
     report << "Dub level: " << asPercent (input.dubRms) << "%\n";

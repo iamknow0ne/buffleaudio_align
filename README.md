@@ -17,7 +17,7 @@ Current release: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 - Release inventory: [docs/releases.md](docs/releases.md)
 - V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
 - Host latency validation: [docs/validation-host-latency.md](docs/validation-host-latency.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-release-tooling.md](docs/healthcheck-2026-07-07-release-tooling.md)
+- Healthcheck: [docs/healthcheck-2026-07-07-trust-diagnostics.md](docs/healthcheck-2026-07-07-trust-diagnostics.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Product Preview
@@ -54,11 +54,11 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 - Experimental Consonant Tamer Lite DSP for reducing unmatched Dub consonant bursts while preserving Guide-matched attacks.
 - Original / Aligned / Difference preview modes for A/B trust checks.
 - Stack Role presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` apply role-aware Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus settings. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP is still V1 work.
-- Phrase-health UI strip for route/listen/locked/safe-nudge states.
+- Phrase-health UI strip for route/listen/locked/safe-nudge states, backed by stable Trust Meter reason codes.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Initial changed-material meter for the overall processed-vs-original preview change. This is the tested foundation for richer removed-material metering, not a per-feature consonant solo yet.
 - Naturalness Risk Guardrail v0: a UI/report policy layer that flags `Natural`, `Check Diff`, or `Too Much` based on changed material, nudge, tamer, tightness, naturalness, and stack role.
-- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
+- Clipboard `Copy Report` handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, changed-material metering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
@@ -80,18 +80,32 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 10. Copy a clipboard alignment report for tester/session handoff.
 11. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
 
+### Guide Fallback Intelligence
+
+Align never pretends a missing Guide is a confident read. When the sidechain is absent, weak, or ambiguous, the Trust Meter explains why timing is unavailable and gives the next routing/listening action instead of showing fake precision.
+
+Trust Meter reason codes:
+
+- `ROUTE_GUIDE`: no usable Guide sidechain detected. Route the lead vocal into the Guide input and play the phrase again.
+- `GUIDE_TOO_QUIET`: Guide exists but is below the usable signal floor.
+- `DUB_TOO_QUIET`: Dub/main input is too quiet for nudge, tamer, or report decisions.
+- `LISTENING_FOR_CONFIDENCE`: Guide and Dub are present, but the timing match is not stable enough yet.
+- `LOCKED_NO_NUDGE`: timing is stable and no useful nudge is needed.
+- `DUB_EARLY_SAFE_DELAY`: Dub is early; a confidence-gated delay is available.
+- `DUB_LATE_SAFE_ADVANCE`: Dub is late; a confidence-gated advance is available.
+
 ## V1 Direction
 
 The V1 wedge is transparent stack cleanup: **delay-safe nudge + trust meter + consonant control**.
 
 Differentiating V1 feature candidates:
 
-- Trust Meter Alignment: explain Guide/Dub level, offset, confidence, and source state.
+- Trust Meter Alignment: explain Guide source, Guide/Dub levels, offset direction, confidence, and the reason a nudge is available or blocked.
 - One-Click Safe Nudge: apply only confidence-gated early/late corrections, with clear unavailable states for weak, ambiguous, or unsafe material.
 - Consonant Tamer Lite: reduce unmatched Dub consonant bursts without flattening sustained vowels.
 - Removed Material Audition: use Difference preview to hear what cleanup changes, with an initial changed-material meter in place; per-feature removed-material solo and richer metering remain V1 work.
 - Naturalness Guardrail: warn when timing correction risks sterile doubles. Initial `Natural` / `Check Diff` / `Too Much` policy layer is implemented.
-- Guide Fallback Intelligence: make routing problems visible and actionable.
+- Guide Fallback Intelligence: make routing problems visible and actionable. Initial Trust Meter reason codes are implemented.
 - Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
 - Stack Spread Governor: preserve controlled width across doubles/harmonies.
 - Breath Preservation Mask: protect breaths and expressive attacks.
@@ -208,6 +222,7 @@ BufflePlug-Analyzer/Source/
     RemovedMaterialMeter.*
     StackRolePreset.*
     TimingOffsetEstimator.*
+    TrustDiagnostics.*
   PluginProcessor.*
   PluginEditor.*
 

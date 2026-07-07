@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, confidence-aware bidirectional nudge, Naturalness Guardrail, Stack Role presets, A/B preview, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
+    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment plugin preview for Guide/Dub timing, explainable Trust Meter reason codes, confidence-aware bidirectional nudge, Naturalness Guardrail, Stack Role presets, A/B preview, changed-material metering, Consonant Tamer Lite, and clipboard reports.">
     <meta property="og:title" content="Buffle Audio Align v0.3.0">
     <meta property="og:description" content="A timing decision surface for vocal doubles, stacks, ADR, and backing vocals.">
     <meta property="og:image" content="/assets/screenshots/landing-hero-v0.3.0.jpg">
@@ -60,8 +60,8 @@
 
         <aside class="hero-console" aria-label="Live alignment preview">
           <div class="console-top">
-            <span>guide / dub</span>
-            <b>armed</b>
+            <span>trust meter</span>
+            <b>safe delay</b>
           </div>
           <div class="offset">
             <span>delay-safe nudge</span>
@@ -69,7 +69,7 @@
           </div>
           <div class="confidence" aria-hidden="true">
             <i></i>
-            <span>confidence 87%</span>
+            <span>reason: Dub early / confidence 87%</span>
           </div>
           <div class="console-wave" aria-hidden="true">
             <svg viewBox="0 0 420 116">
@@ -84,6 +84,8 @@
         <div>
           <span>guide / dub timing</span>
           <span>confidence-gated nudge</span>
+          <span>guide fallback intelligence</span>
+          <span>trust reason codes</span>
           <span>naturalness guardrail</span>
           <span>consonant cleanup</span>
           <span>a/b difference</span>
@@ -93,6 +95,8 @@
         <div aria-hidden="true">
           <span>guide / dub timing</span>
           <span>confidence-gated nudge</span>
+          <span>guide fallback intelligence</span>
+          <span>trust reason codes</span>
           <span>naturalness guardrail</span>
           <span>consonant cleanup</span>
           <span>a/b difference</span>
@@ -127,7 +131,7 @@
           <article style="--accent: var(--amber)">
             <span>02</span>
             <h3>Trust the read</h3>
-            <p>Phrase health and confidence keep the nudge button honest when the material is too short or noisy.</p>
+            <p>The Trust Meter names the reason: route the Guide, raise a quiet lane, keep listening for confidence, or apply a safe Delay/Advance Dub move.</p>
           </article>
           <article style="--accent: var(--coral)">
             <span>03</span>
@@ -149,7 +153,7 @@
           <p>v0.3.0 is a developer preview, but the core path is real: CMake builds, DSP unit tests, standalone, AU, VST3, bundle archive, rough installer package, and release assets are all part of the current workflow.</p>
         </div>
         <div class="engine-list">
-          <div><span>now</span><strong>Signed offset, bidirectional Apply Nudge, Naturalness Guardrail, Stack Role presets, A/B Difference, Changed meter, Consonant Tamer Lite, Copy Report.</strong></div>
+          <div><span>now</span><strong>Signed offset, Trust Meter reason codes, bidirectional Apply Nudge, Naturalness Guardrail, Stack Role presets, A/B Difference, Changed meter, Consonant Tamer Lite, Copy Report.</strong></div>
           <div><span>v1 focus</span><strong>Phrase workflow, naturalness guardrails, golden audio checks, DAW validation, signing, notarization.</strong></div>
           <div><span>later</span><strong>Constrained DTW, warp maps, offline preview render, ARA/AAX research.</strong></div>
         </div>

@@ -37,6 +37,20 @@ Because this is an unsigned developer preview, macOS Gatekeeper may ask you to e
 11. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
 12. Use `Copy Report` and include that text in feedback.
 
+## Trust Diagnostics
+
+The Trust Meter should explain why timing is available or unavailable. During testing, try to capture at least three of these reason codes in `Copy Report`:
+
+| Scenario | Expected reason code | Expected behavior |
+| --- | --- | --- |
+| No sidechain Guide routed | `ROUTE_GUIDE` | No offset or nudge number is trusted. |
+| Guide present but too low | `GUIDE_TOO_QUIET` | App asks for more Guide level instead of inventing timing. |
+| Dub/main input too low | `DUB_TOO_QUIET` | App asks for more Dub level before nudge/tamer decisions. |
+| Both lanes audible but unstable | `LISTENING_FOR_CONFIDENCE` | App keeps listening and hides stale timing numbers. |
+| Timing is stable with no useful correction | `LOCKED_NO_NUDGE` | App reports locked timing without pushing an unnecessary nudge. |
+| Dub is early | `DUB_EARLY_SAFE_DELAY` | App offers a confidence-gated `Delay Dub` move. |
+| Dub is late | `DUB_LATE_SAFE_ADVANCE` | App offers a confidence-gated `Advance Dub` move. |
+
 ## Useful Test Material
 
 Please try at least one of these cases:
@@ -57,6 +71,7 @@ Send:
 - Install path used: bundle zip or `.pkg`.
 - Vocal case: double, harmony, rap stack, ADR, backing vocal, or other.
 - Whether the Guide sidechain was detected.
+- `Phrase health`, `Trust reason`, and `Trust advice` lines from `Copy Report`.
 - Confidence value, signed offset, and suggested nudge direction.
 - Whether Apply Nudge moved the Dub in the expected direction.
 - Whether `Diff` sounded useful, too subtle, or misleading.

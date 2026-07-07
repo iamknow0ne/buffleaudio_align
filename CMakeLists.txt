@@ -40,7 +40,8 @@ add_library(BuffleAlignDSP STATIC
     BufflePlug-Analyzer/Source/DSP/PreviewModeMixer.cpp
     BufflePlug-Analyzer/Source/DSP/RemovedMaterialMeter.cpp
     BufflePlug-Analyzer/Source/DSP/StackRolePreset.cpp
-    BufflePlug-Analyzer/Source/DSP/TimingOffsetEstimator.cpp)
+    BufflePlug-Analyzer/Source/DSP/TimingOffsetEstimator.cpp
+    BufflePlug-Analyzer/Source/DSP/TrustDiagnostics.cpp)
 
 target_include_directories(BuffleAlignDSP
     PUBLIC

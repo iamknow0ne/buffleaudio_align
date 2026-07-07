@@ -366,6 +366,14 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
         snapshot.suggestedNudgeMs = buffle::align::suggestBidirectionalNudgeMs (offset.milliseconds, maxNudgeMs);
     }
 
+    snapshot.trustState = buffle::align::assessTrustState ({
+        snapshot.guideFromSidechain,
+        snapshot.hasReliableOffset,
+        snapshot.guideRms,
+        snapshot.dubRms,
+        snapshot.suggestedNudgeMs
+    });
+
     snapshot.naturalnessRisk = buffle::align::assessNaturalnessRisk ({
         snapshot.hasReliableOffset,
         snapshot.suggestedNudgeMs,
@@ -385,16 +393,12 @@ juce::String BufflePlugAnalyzerAudioProcessor::getWorkflowStatus() const
     const auto snapshot = getAlignmentSnapshot();
 
     if (! snapshot.guideFromSidechain)
-        return "Route: add the Guide sidechain, then play the phrase.";
+        return juce::String ("Route: ") + buffle::align::getTrustStateAdvice (snapshot.trustState);
 
-    if (snapshot.guideRms < usableSignalFloor)
-        return "Listen: Guide is too quiet for a trustworthy timing read.";
-
-    if (snapshot.dubRms < usableSignalFloor)
-        return "Listen: Dub is too quiet for nudge, tamer, or report decisions.";
-
-    if (! snapshot.hasReliableOffset)
-        return "Listen: gathering confidence before showing a timing recommendation.";
+    if (snapshot.trustState == buffle::align::TrustState::guideQuiet
+     || snapshot.trustState == buffle::align::TrustState::dubQuiet
+     || snapshot.trustState == buffle::align::TrustState::listening)
+        return juce::String ("Listen: ") + buffle::align::getTrustStateAdvice (snapshot.trustState);
 
     if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
     {
@@ -432,6 +436,7 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.0f;
     input.consonantLevel = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     input.naturalnessRisk = snapshot.naturalnessRisk;
+    input.trustState = snapshot.trustState;
 
     if (auto* value = parameters.getRawParameterValue (guideBlendId))
         input.guideBlend = value->load();

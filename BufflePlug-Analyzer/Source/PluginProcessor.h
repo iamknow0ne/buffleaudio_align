@@ -9,6 +9,7 @@
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/NaturalnessGuardrail.h"
 #include "DSP/PreviewModeMixer.h"
+#include "DSP/TrustDiagnostics.h"
 
 //==============================================================================
 /**
@@ -72,6 +73,7 @@ public:
         float removedMaterial = 0.0f;
         float removedPeakDelta = 0.0f;
         buffle::align::NaturalnessRisk naturalnessRisk = buffle::align::NaturalnessRisk::safe;
+        buffle::align::TrustState trustState = buffle::align::TrustState::routeGuide;
         int latencyMs = 0;
         bool guideFromSidechain = false;
         bool hasReliableOffset = false;

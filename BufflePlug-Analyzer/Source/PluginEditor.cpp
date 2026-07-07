@@ -78,23 +78,7 @@ juce::String describeApplyMove (float value)
 
 juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    if (! snapshot.guideFromSidechain)
-        return "Route Guide sidechain";
-
-    if (snapshot.guideRms < 0.025f)
-        return "Guide too quiet";
-
-    if (snapshot.dubRms < 0.025f)
-        return "Dub too quiet";
-
-    if (! snapshot.hasReliableOffset)
-        return "Listening for confidence";
-
-    if (std::abs (snapshot.suggestedNudgeMs) <= 0.05f)
-        return "Locked - no nudge needed";
-
-    return snapshot.suggestedNudgeMs > 0.0f ? "Dub early - safe delay"
-                                            : "Dub late - safe advance";
+    return juce::String (buffle::align::getTrustStateLabel (snapshot.trustState));
 }
 
 juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
@@ -110,13 +94,16 @@ juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::Alignme
 
 juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    if (! snapshot.guideFromSidechain)
+    if (snapshot.trustState == buffle::align::TrustState::routeGuide)
         return "Route";
 
-    if (snapshot.guideRms < 0.025f || snapshot.dubRms < 0.025f || ! snapshot.hasReliableOffset)
+    if (snapshot.trustState == buffle::align::TrustState::guideQuiet
+     || snapshot.trustState == buffle::align::TrustState::dubQuiet
+     || snapshot.trustState == buffle::align::TrustState::listening)
         return "Listen";
 
-    if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
+    if (snapshot.trustState == buffle::align::TrustState::delayDub
+     || snapshot.trustState == buffle::align::TrustState::advanceDub)
         return "Apply";
 
     if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
@@ -130,19 +117,14 @@ juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::Al
 
 juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    if (! snapshot.guideFromSidechain)
-        return "Route the Guide vocal into the sidechain, then play the phrase.";
+    if (snapshot.trustState == buffle::align::TrustState::routeGuide
+     || snapshot.trustState == buffle::align::TrustState::guideQuiet
+     || snapshot.trustState == buffle::align::TrustState::dubQuiet
+     || snapshot.trustState == buffle::align::TrustState::listening)
+        return juce::String (buffle::align::getTrustStateAdvice (snapshot.trustState));
 
-    if (snapshot.guideRms < 0.025f)
-        return "Raise or unmute the Guide. Align is protecting you from fake timing numbers.";
-
-    if (snapshot.dubRms < 0.025f)
-        return "Raise or unmute the Dub before trusting nudge, tamer, or report output.";
-
-    if (! snapshot.hasReliableOffset)
-        return "Keep playback rolling until confidence locks, or widen the phrase selection.";
-
-    if (std::abs (snapshot.suggestedNudgeMs) > 0.05f)
+    if (snapshot.trustState == buffle::align::TrustState::delayDub
+     || snapshot.trustState == buffle::align::TrustState::advanceDub)
         return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then compare Aligned and Difference.";
 
     if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
@@ -795,13 +777,12 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
                            : 3;
     const juce::String stepDetails[] =
     {
-        snapshot.guideFromSidechain ? "sidechain ok" : "guide missing",
+        snapshot.trustState == buffle::align::TrustState::routeGuide ? "guide missing" : "sidechain ok",
         snapshot.hasReliableOffset ? "confidence " + asPercent (snapshot.offsetConfidence)
-                                   : snapshot.guideRms < 0.025f ? "raise guide"
-                                   : snapshot.dubRms < 0.025f ? "raise dub"
-                                   : "gathering",
-        std::abs (snapshot.suggestedNudgeMs) > 0.05f ? describeNudgeMove (snapshot.suggestedNudgeMs)
-                                                     : "compare A/B",
+                                   : juce::String (buffle::align::getTrustStateCode (snapshot.trustState)),
+        snapshot.trustState == buffle::align::TrustState::delayDub
+            || snapshot.trustState == buffle::align::TrustState::advanceDub ? describeNudgeMove (snapshot.suggestedNudgeMs)
+                                                                            : "compare A/B",
         snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe
             ? juce::String (buffle::align::getNaturalnessRiskLabel (snapshot.naturalnessRisk))
             : snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
@@ -938,7 +919,7 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
 
     if (! snapshot.hasReliableOffset)
     {
-        showTransientStatus ("Apply Nudge unavailable - keep playing until Guide/Dub confidence locks.");
+        showTransientStatus ("Apply Nudge unavailable - " + juce::String (buffle::align::getTrustStateAdvice (snapshot.trustState)));
         return;
     }
 

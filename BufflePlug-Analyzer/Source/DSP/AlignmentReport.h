@@ -3,6 +3,7 @@
 #include <string>
 
 #include "NaturalnessGuardrail.h"
+#include "TrustDiagnostics.h"
 
 namespace buffle::align
 {
@@ -27,6 +28,7 @@ struct AlignmentReportInput
     float guideBlend = 0.0f;
     float stereoFocus = 0.0f;
     NaturalnessRisk naturalnessRisk = NaturalnessRisk::safe;
+    TrustState trustState = TrustState::routeGuide;
 };
 
 const char* getAlignmentReportPhraseHealth (const AlignmentReportInput& input) noexcept;

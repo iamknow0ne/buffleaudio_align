@@ -81,6 +81,20 @@ Use [validation-host-latency.md](validation-host-latency.md).
 | Reaper | VST3 | | | | | | |
 | Ableton Live | VST3 | | | | | | |
 
+## Trust Diagnostics Acceptance
+
+Capture these from the app UI and `Copy Report`.
+
+| Scenario | Expected label | Expected reason | Actual report text | Result |
+| --- | --- | --- | --- | --- |
+| No sidechain Guide | Route Guide | `ROUTE_GUIDE` | | |
+| Quiet Guide | Guide too quiet | `GUIDE_TOO_QUIET` | | |
+| Quiet Dub | Dub too quiet | `DUB_TOO_QUIET` | | |
+| Audible but unstable | Listening for confidence | `LISTENING_FOR_CONFIDENCE` | | |
+| Stable/no correction | Locked - no nudge | `LOCKED_NO_NUDGE` | | |
+| Dub early | Dub early - safe delay | `DUB_EARLY_SAFE_DELAY` | | |
+| Dub late | Dub late - safe advance | `DUB_LATE_SAFE_ADVANCE` | | |
+
 ## Clean Account Install
 
 - Account:

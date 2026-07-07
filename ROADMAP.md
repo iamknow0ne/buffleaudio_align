@@ -18,8 +18,8 @@ Done:
 - Original / Aligned / Difference preview modes with test coverage for preview rendering.
 - Initial changed-material meter for the overall processed-vs-original preview change, with CTest coverage for silence, identity, transient reduction, and channel-aware peak delta.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- Clipboard `Copy Report` handoff summary for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
-- Phrase-health strip, stateful workflow rail, and `Next Best Move` card in the editor.
+- Clipboard `Copy Report` handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
+- Phrase-health strip, Trust Meter reason codes, stateful workflow rail, and `Next Best Move` card in the editor.
 - Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` states in UI and Copy Report.
 - V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
 - Host latency validation matrix for AU/VST3 DAW proof.
@@ -49,7 +49,7 @@ These are the target features that make Align meaningfully different from generi
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Initial changed-material meter implemented.**
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals. **Initial policy layer implemented.**
-7. **Guide Fallback Intelligence**: explain missing/weak sidechain routing instead of producing misleading numbers.
+7. **Guide Fallback Intelligence**: explain missing, weak, or ambiguous Guide states with stable Trust Meter reason codes instead of producing misleading numbers. **Initial route/listen/locked/safe-nudge states implemented.**
 8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
 9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals.
 10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup.
@@ -63,7 +63,7 @@ Goal: make the current analysis/nudge workflow trustworthy enough for daily test
 
 - Keep all offset and suggested-nudge UI gated by confidence.
 - Add one-click bidirectional safe nudge to the editor. **Initial signed Apply Nudge implemented.**
-- Add clear states: route, listen, confidence locked, no usable guide, no timing nudge needed.
+- Add clear states: route, quiet Guide, quiet Dub, listen, confidence locked, no usable guide, no timing nudge needed. **Initial Trust Meter reason codes implemented.**
 - Make the editor's next action visible without reading docs. **Initial `Next Best Move` card implemented.**
 - Add tests for confidence gating, silence, weak signal, and offset sign.
 - Document DAW sidechain setup and unsigned preview safety.

@@ -8,6 +8,7 @@
 #include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
+#include "DSP/TrustDiagnostics.h"
 
 #include <cassert>
 #include <cmath>
@@ -453,6 +454,38 @@ void testNaturalnessGuardrailFlagsOverCleanedLooseRole()
     assert (std::string (buffle::align::getNaturalnessRiskLabel (risk)) == "Too Much");
 }
 
+void testTrustDiagnosticsPriority()
+{
+    using buffle::align::TrustState;
+
+    assert (buffle::align::assessTrustState ({ false, true, 0.0f, 0.0f, 80.0f }) == TrustState::routeGuide);
+    assert (buffle::align::assessTrustState ({ true, true, 0.0249f, 0.0f, 80.0f }) == TrustState::guideQuiet);
+    assert (buffle::align::assessTrustState ({ true, true, 0.025f, 0.0249f, 80.0f }) == TrustState::dubQuiet);
+    assert (buffle::align::assessTrustState ({ true, false, 0.025f, 0.025f, 80.0f }) == TrustState::listening);
+}
+
+void testTrustDiagnosticsThresholdsAndDirections()
+{
+    using buffle::align::TrustState;
+
+    assert (buffle::align::assessTrustState ({ true, true, 0.025f, 0.025f, -0.05f }) == TrustState::locked);
+    assert (buffle::align::assessTrustState ({ true, true, 0.025f, 0.025f, 0.05f }) == TrustState::locked);
+    assert (buffle::align::assessTrustState ({ true, true, 0.025f, 0.025f, 0.0501f }) == TrustState::delayDub);
+    assert (buffle::align::assessTrustState ({ true, true, 0.025f, 0.025f, -0.0501f }) == TrustState::advanceDub);
+    assert (std::string (buffle::align::getTrustStateCode (TrustState::delayDub)) == "DUB_EARLY_SAFE_DELAY");
+    assert (std::string (buffle::align::getTrustStateCode (TrustState::advanceDub)) == "DUB_LATE_SAFE_ADVANCE");
+}
+
+void testTrustDiagnosticsLabelsAndAdviceAreStable()
+{
+    using buffle::align::TrustState;
+
+    assert (std::string (buffle::align::getTrustStateLabel (TrustState::routeGuide)) == "Route Guide sidechain");
+    assert (std::string (buffle::align::getTrustStateAdvice (TrustState::routeGuide)).find ("sidechain") != std::string::npos);
+    assert (std::string (buffle::align::getTrustStateAdvice (TrustState::guideQuiet)).find ("fake timing") != std::string::npos);
+    assert (std::string (buffle::align::getTrustStateAdvice (TrustState::advanceDub)).find ("host latency") != std::string::npos);
+}
+
 void testStackRolePresetProfilesAreDistinct()
 {
     const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
@@ -477,11 +510,16 @@ void testAlignmentReportHidesUnreliableOffset()
     input.dubRms = 0.58f;
     input.offsetConfidence = 0.12f;
     input.hasReliableOffset = false;
+    input.estimatedOffsetMs = 42.0f;
+    input.suggestedNudgeMs = -42.0f;
 
     const auto report = buffle::align::buildAlignmentReport (input);
     assert (report.find ("Phrase health: Listening for confidence") != std::string::npos);
+    assert (report.find ("Trust reason: LISTENING_FOR_CONFIDENCE") != std::string::npos);
+    assert (report.find ("Trust advice: Keep playback rolling") != std::string::npos);
     assert (report.find ("Estimated offset: unavailable") != std::string::npos);
     assert (report.find ("Suggested timing correction: unavailable") != std::string::npos);
+    assert (report.find ("42.0 ms") == std::string::npos);
     assert (report.find ("Changed material: 0%") != std::string::npos);
     assert (report.find ("Naturalness risk: Natural") != std::string::npos);
 }
@@ -506,6 +544,7 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
 
     const auto report = buffle::align::buildAlignmentReport (input);
     assert (report.find ("Phrase health: Dub early - safe delay") != std::string::npos);
+    assert (report.find ("Trust reason: DUB_EARLY_SAFE_DELAY") != std::string::npos);
     assert (report.find ("Estimated offset: -18.4 ms") != std::string::npos);
     assert (report.find ("Suggested timing correction: 18.4 ms") != std::string::npos);
     assert (report.find ("Preview mode: Difference") != std::string::npos);
@@ -548,6 +587,9 @@ int main()
     testNaturalnessGuardrailKeepsGentleCleanupSafe();
     testNaturalnessGuardrailAsksForDifferenceCheck();
     testNaturalnessGuardrailFlagsOverCleanedLooseRole();
+    testTrustDiagnosticsPriority();
+    testTrustDiagnosticsThresholdsAndDirections();
+    testTrustDiagnosticsLabelsAndAdviceAreStable();
     testStackRolePresetProfilesAreDistinct();
     testAlignmentReportHidesUnreliableOffset();
     testAlignmentReportCapturesSafeNudgeAndRole();
