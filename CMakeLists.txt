@@ -115,4 +115,20 @@ target_link_libraries(BuffleAlignDSPTests
         BuffleAlignDSP)
 
 add_test(NAME BuffleAlignDSPTests COMMAND BuffleAlignDSPTests)
+
+add_executable(BuffleAlignProcessorLatencyContractTests
+    tests/ProcessorLatencyContractTests.cpp)
+
+target_include_directories(BuffleAlignProcessorLatencyContractTests
+    PRIVATE
+        BufflePlug-Analyzer/Source)
+
+target_link_libraries(BuffleAlignProcessorLatencyContractTests
+    PRIVATE
+        BuffleAlign
+        juce::juce_audio_processors
+        juce::juce_audio_utils
+        juce::juce_gui_extra)
+
+add_test(NAME BuffleAlignProcessorLatencyContractTests COMMAND BuffleAlignProcessorLatencyContractTests)
 endif()

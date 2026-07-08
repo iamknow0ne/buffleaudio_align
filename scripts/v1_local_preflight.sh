@@ -111,8 +111,9 @@ cmake -S "${ROOT_DIR}" -B "${BUILD_DIR}" \
   -DCMAKE_BUILD_TYPE=Debug \
   -DBUFFLE_BUILD_TESTS=ON
 cmake --build "${BUILD_DIR}" --target BuffleAlignDSPTests --config Debug --parallel
+cmake --build "${BUILD_DIR}" --target BuffleAlignProcessorLatencyContractTests --config Debug --parallel
 ctest --test-dir "${BUILD_DIR}" --output-on-failure
-pass "DSP tests"
+pass "DSP and processor contract tests"
 
 if [[ "${RUN_PACKAGE}" == "1" ]]; then
   echo
