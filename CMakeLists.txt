@@ -41,6 +41,7 @@ add_library(BuffleAlignDSP STATIC
     BufflePlug-Analyzer/Source/DSP/NaturalnessGuardrail.cpp
     BufflePlug-Analyzer/Source/DSP/PreviewModeMixer.cpp
     BufflePlug-Analyzer/Source/DSP/RemovedMaterialMeter.cpp
+    BufflePlug-Analyzer/Source/DSP/StackSpreadGovernor.cpp
     BufflePlug-Analyzer/Source/DSP/StackRolePreset.cpp
     BufflePlug-Analyzer/Source/DSP/TimingOffsetEstimator.cpp
     BufflePlug-Analyzer/Source/DSP/TrustDiagnostics.cpp)

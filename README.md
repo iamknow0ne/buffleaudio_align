@@ -56,7 +56,8 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 - Consonant Tamer Lite DSP plus Breath Preservation Mask v0 for soft sustained breath-like material and Guide-matched attacks.
 - First Articulation Risk strip for suspected unmatched Dub attacks. This is a visual aid over current transient/tamer evidence, not full phoneme detection.
 - Original / Aligned / All Diff / Tamer preview modes for A/B trust checks and consonant-only removed-material audition.
-- Stack Role presets tune the feel for doubles, choirs, rap stacks, and ADR. Today, Naturalness and Consonant Tamer are the most audible role changes; Guide Blend and Stereo Focus are still preview controls.
+- Stack Role presets tune the feel for doubles, choirs, rap stacks, and ADR, including Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus targets.
+- Stack Spread Governor v0 uses `Stereo Focus` to narrow tight doubles/rap stacks or preserve wider choir/ADR layers with a lightweight mid/side width stage.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states, backed by stable Trust Meter reason codes.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Changed-material meter now separates broad processed-vs-original preview change from tamer-only consonant removal.
@@ -85,7 +86,8 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 6. Read changed-material meters for broad processed-vs-original change and consonant-only tamer removal.
 7. Use the Articulation Risk strip as a warning for likely Dub consonant clutter, then confirm with Tamer audition.
 8. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
-9. Copy or save an alignment report for tester/session handoff.
+9. Use Stereo Focus to keep tight roles centered or let looser roles breathe wider.
+10. Copy or save an alignment report for tester/session handoff.
 
 ### Guide Fallback Intelligence
 
@@ -115,7 +117,7 @@ Differentiating V1 feature candidates:
 - Naturalness Guardrail: warn when timing correction risks sterile doubles. Initial `Natural` / `Check Diff` / `Too Much` policy layer is implemented.
 - Guide Fallback Intelligence: make routing problems visible and actionable. Initial Trust Meter reason codes are implemented.
 - Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
-- Stack Spread Governor: preserve controlled width across doubles/harmonies.
+- Stack Spread Governor: preserve controlled width across doubles/harmonies. Initial `Stereo Focus` mid/side governor is implemented.
 - Breath Preservation Mask: protect breaths and expressive attacks. Initial soft sustained material protection is implemented inside Consonant Tamer.
 - Vowel-Only Warp Preview: future micro-warping that avoids consonant smearing.
 - Harmony-Aware Tightness Presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` roles tune tightness, naturalness, consonant amount, guide blend, and stereo focus.

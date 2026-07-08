@@ -15,6 +15,7 @@ Done:
 - Confidence-gated display so weak signals no longer show fake offset certainty.
 - Bidirectional manual nudge in a standalone DSP module using fixed host latency compensation.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts, with Guide-matched attack preservation and Breath Preservation Mask v0 for soft sustained breath-like material.
+- Stack Spread Governor v0 uses the `Stereo Focus` control as a lightweight mid/side width stage for role-aware doubles, stacks, choir layers, and ADR.
 - Original / Aligned / All Diff / Tamer preview modes with test coverage for preview rendering.
 - Changed-material meters for the overall processed-vs-original preview change and tamer-only consonant reduction, with CTest coverage for silence, identity, transient reduction, channel-aware peak delta, and real Consonant Tamer output.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
@@ -34,7 +35,7 @@ Not V1-ready yet:
 - A first Articulation Risk strip is implemented for suspected consonant clutter, but it is still a lightweight visual aid over transient/tamer evidence, not a full phoneme-aware detector or detailed collision timeline.
 - Capture/analyze/preview buttons are now framed as a session checklist, but they are not a complete captured phrase state machine.
 - Difference mode now has broad changed-material metering and Tamer mode solos Consonant Tamer reductions; richer per-feature timelines remain open.
-- Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
+- Stack role presets apply role-owned controls, and `Stereo Focus` now drives Stack Spread Governor v0. `Guide Blend` remains a monitoring/preview control until deeper guide-aware DSP lands.
 - Alignment Report now supports clipboard copy and text-file save; richer per-feature removed-material metering remains open.
 - Installer is not Developer ID signed or notarized.
 - Host validation matrix exists, and local AU plus strict VST3 `pluginval` validation have current evidence, but DAW timing results, audio demo corpus, and golden WAV regression lane remain open.
@@ -51,7 +52,7 @@ These are the target features that make Align meaningfully different from generi
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals. **Initial policy layer implemented.**
 7. **Guide Fallback Intelligence**: explain missing, weak, or ambiguous Guide states with stable Trust Meter reason codes instead of producing misleading numbers. **Initial route/listen/locked/safe-nudge states implemented.**
 8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
-9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals.
+9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals. **Initial `Stereo Focus` mid/side governor is implemented.**
 10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup. **Initial soft sustained material protection is implemented inside Consonant Tamer.**
 11. **Vowel-Only Micro-Warp Preview**: future constrained warping that stretches vowels while locking consonants.
 12. **Harmony-Aware Tightness Presets**: `Double Tight`, `Choir Natural`, `Rap Stack`, `ADR Loose`. **Initial user-facing selector implemented.**
@@ -102,6 +103,7 @@ Goal: make Align feel like a practical DAW tool rather than a meter.
 - Add tester-facing session guidance in the app. **Initial session-flow rail details and `Next Best Move` card implemented.**
 - Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / All Diff / Tamer controls implemented.**
 - Add stack role presets. **Initial Stack Role selector implemented.**
+- Add stack spread governor. **Initial `Stereo Focus` mid/side governor implemented.**
 - Add session handoff report. **Copy Report and Save Report text export implemented.**
 - Add compatibility matrix for Standalone, VST3, AU, macOS, Apple Silicon/Intel, and tested DAWs.
 - Add tester guide and feedback checklist. **Initial V1 tester guide implemented.**

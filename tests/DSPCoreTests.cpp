@@ -8,6 +8,7 @@
 #include "DSP/NaturalnessGuardrail.h"
 #include "DSP/PreviewModeMixer.h"
 #include "DSP/RemovedMaterialMeter.h"
+#include "DSP/StackSpreadGovernor.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 #include "DSP/TrustDiagnostics.h"
@@ -619,6 +620,46 @@ void testStackRolePresetProfilesAreDistinct()
     assert (adr.naturalness > manual.naturalness);
 }
 
+void testStackSpreadGovernorLeavesMonoUnchanged()
+{
+    juce::AudioBuffer<float> buffer (1, 4);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        buffer.setSample (0, sample, 0.1f * static_cast<float> (sample + 1));
+
+    auto original = buffer;
+    buffle::align::applyStackSpreadGovernor (buffer, 1, 1.0f);
+
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+        assert (buffer.getSample (0, sample) == original.getSample (0, sample));
+}
+
+void testStackSpreadGovernorNarrowsHighFocusStereo()
+{
+    juce::AudioBuffer<float> buffer (2, 1);
+    buffer.setSample (0, 0, 1.0f);
+    buffer.setSample (1, 0, -1.0f);
+
+    buffle::align::applyStackSpreadGovernor (buffer, 2, 1.0f);
+
+    assert (std::abs (buffer.getSample (0, 0) - buffer.getSample (1, 0)) < 0.8f);
+}
+
+void testStackSpreadGovernorKeepsLooseRolesWider()
+{
+    juce::AudioBuffer<float> loose (2, 1);
+    juce::AudioBuffer<float> tight (2, 1);
+    loose.setSample (0, 0, 0.65f);
+    loose.setSample (1, 0, -0.35f);
+    tight = loose;
+
+    buffle::align::applyStackSpreadGovernor (loose, 2, 0.15f);
+    buffle::align::applyStackSpreadGovernor (tight, 2, 0.85f);
+
+    const auto looseWidth = std::abs (loose.getSample (0, 0) - loose.getSample (1, 0));
+    const auto tightWidth = std::abs (tight.getSample (0, 0) - tight.getSample (1, 0));
+    assert (looseWidth > tightWidth * 2.0f);
+}
+
 void testAlignmentReportHidesUnreliableOffset()
 {
     buffle::align::AlignmentReportInput input;
@@ -740,6 +781,9 @@ int main()
     testTrustDiagnosticsThresholdsAndDirections();
     testTrustDiagnosticsLabelsAndAdviceAreStable();
     testStackRolePresetProfilesAreDistinct();
+    testStackSpreadGovernorLeavesMonoUnchanged();
+    testStackSpreadGovernorNarrowsHighFocusStereo();
+    testStackSpreadGovernorKeepsLooseRolesWider();
     testAlignmentReportHidesUnreliableOffset();
     testAlignmentReportCapturesSafeNudgeAndRole();
     testAlignmentReportClampsMalformedSessionValues();

@@ -3,6 +3,7 @@
 #include "DSP/AlignmentReport.h"
 #include "DSP/BidirectionalNudge.h"
 #include "DSP/RemovedMaterialMeter.h"
+#include "DSP/StackSpreadGovernor.h"
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 
@@ -271,6 +272,9 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto consonantAmount = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.5f;
+    const auto stereoFocus = parameters.getRawParameterValue (stereoFocusId) != nullptr
+        ? parameters.getRawParameterValue (stereoFocusId)->load()
+        : 0.35f;
     const auto nudgePlan = buffle::align::calculateBidirectionalNudgePlan (nudgeMs,
                                                                            currentSampleRate,
                                                                            maxNudgeMs,
@@ -300,6 +304,7 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
         originalDubBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());
 
     nudgeDelay.process (dubBuffer, dubBuffer.getNumChannels(), nudgePlan.delaySamples);
+    buffle::align::applyStackSpreadGovernor (dubBuffer, dubBuffer.getNumChannels(), stereoFocus);
 
     for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
         preConsonantBuffer.copyFrom (channel, 0, dubBuffer, channel, 0, dubBuffer.getNumSamples());

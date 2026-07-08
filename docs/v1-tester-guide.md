@@ -42,10 +42,11 @@ Because this is an unsigned macOS preview, Gatekeeper may ask you to explicitly 
 8. A/B `Original`, `Aligned`, `All Diff`, and `Tamer` before committing the move.
 9. Try one `Stack Role`: Double Tight, Choir Natural, Rap Stack, or ADR Loose.
 10. Raise `Consonant Tamer` gradually and watch Naturalness Risk move between `Natural`, `Check Diff`, and `Too Much`.
-11. Check whether the `Articulation` strip matches the consonant clutter you hear.
-12. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
-13. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
-14. Use `Copy` or `Save` Report and include that text in feedback.
+11. Move `Stereo Focus` and confirm tighter roles narrow the stack while looser roles keep width.
+12. Check whether the `Articulation` strip matches the consonant clutter you hear.
+13. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
+14. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
+15. Use `Copy` or `Save` Report and include that text in feedback.
 
 ## Trust Diagnostics
 
@@ -87,7 +88,7 @@ Send:
 - Whether `Diff` sounded useful, too subtle, or misleading.
 - Whether `Tamer` isolated consonant cleanup clearly from the full timing/difference path.
 - Whether the `Articulation` strip matched the consonant clutter you heard.
-- Stack Role used and whether it helped.
+- Stack Role used, Stereo Focus setting, and whether the width felt useful.
 - Naturalness Risk state and whether it matched what you heard.
 - Consonant Tamer setting and any unwanted side effects heard.
 - Paste the `Copy` or `Save` Report output.
@@ -97,7 +98,8 @@ Send:
 
 - `Arm Listen`, `Check Timing`, and `Preview Align` are still workflow/checklist controls, not a complete captured phrase editor.
 - Bidirectional nudge uses fixed host latency compensation and still needs DAW host validation.
-- `Guide Blend` and `Stereo Focus` are preview/monitoring shape controls until deeper stereo DSP lands.
+- `Stereo Focus` drives a lightweight mid/side Stack Spread Governor v0; it is not a full harmony-aware spatial engine yet.
+- `Guide Blend` remains a preview/monitoring shape control until deeper guide-aware DSP lands.
 - `All Diff` is the overall processed-vs-original preview delta; `Tamer` isolates the current Consonant Tamer reduction only.
 - The `Articulation` strip is a first visual aid for suspected consonant clutter, not a full phoneme detector or detailed timeline.
 - Breath Preservation Mask v0 protects soft sustained breath-like material, but it is not a full phoneme or lyric-aware breath detector.

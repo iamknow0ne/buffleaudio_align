@@ -6,6 +6,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 
 - Product-first landing page refresh centered on the actual Align workflow and current standalone UI.
 - Breath Preservation Mask v0 inside Consonant Tamer to better protect soft sustained breath-like material while reducing sharper unmatched Dub attacks.
+- Stack Spread Governor v0: `Stereo Focus` now drives a lightweight mid/side width stage for tighter doubles or wider choir/ADR-style layers.
 - Saveable alignment reports for session notes and tester feedback, alongside clipboard copy.
 - Compact central UI guidance for Naturalness, Articulation, and Next Best Move so the decision surface is easier to scan at smaller editor sizes.
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
@@ -21,7 +22,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.
 - Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP remains V1 work.
+- Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Stereo Focus now drives the initial Stack Spread Governor; Guide Blend remains preview/monitoring-focused.
 - Original / Aligned / Difference preview modes with persistent APVTS state.
 - Difference audition path for hearing the processed-minus-original material. Initial changed-material metering is in place; per-feature removed-material solo remains V1 work.
 - Updated standalone screenshots showing the current product surface and A/B preview controls.
