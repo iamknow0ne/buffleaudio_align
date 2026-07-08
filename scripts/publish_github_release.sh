@@ -115,16 +115,14 @@ fi
 COPYFILE_DISABLE=1 ditto -c -k --norsrc --noextattr --keepParent "${STAGE}" "${ARCHIVE}"
 verify_archive_payload_hygiene "${ARCHIVE}"
 
-if [[ ! -f "${CHECKSUMS}" ]]; then
-  checksum_inputs=()
+checksum_inputs=()
 
-  if [[ -f "${PKG}" ]]; then
-    checksum_inputs+=("${PKG}")
-  fi
-
-  checksum_inputs+=("${ARCHIVE}")
-  shasum -a 256 "${checksum_inputs[@]}" > "${CHECKSUMS}"
+if [[ -f "${PKG}" ]]; then
+  checksum_inputs+=("${PKG}")
 fi
+
+checksum_inputs+=("${ARCHIVE}")
+shasum -a 256 "${checksum_inputs[@]}" > "${CHECKSUMS}"
 
 if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
   echo "Release ${TAG} already exists in ${REPO}. Refusing to overwrite it." >&2
