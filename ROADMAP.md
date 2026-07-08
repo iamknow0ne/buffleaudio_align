@@ -98,8 +98,8 @@ Exit criteria:
 
 Goal: make Align feel like a practical DAW tool rather than a meter.
 
-- Make the workflow rail stateful: Route, Listen, Preview, Tame, Print.
-- Add phrase health cards and error states.
+- Make the workflow rail stateful: Route, Listen, Preview, Tame, Print. **Initial intent-aware workflow state helper and rail integration implemented.**
+- Add phrase health cards and error states. **Initial classifier, central strip, report advice, and next-action guidance implemented; richer captured phrase cards remain future work.**
 - Add tester-facing session guidance in the app. **Initial session-flow rail details and `Next Best Move` card implemented.**
 - Add A/B controls: Original, Aligned, Difference/Removed. **Initial Original / Aligned / All Diff / Tamer controls implemented.**
 - Add stack role presets. **Initial Stack Role selector implemented.**

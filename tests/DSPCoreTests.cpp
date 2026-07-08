@@ -13,6 +13,7 @@
 #include "DSP/StackRolePreset.h"
 #include "DSP/TimingOffsetEstimator.h"
 #include "DSP/TrustDiagnostics.h"
+#include "DSP/WorkflowState.h"
 
 #include <cassert>
 #include <cmath>
@@ -629,6 +630,30 @@ void testPhraseHealthClassifiesTrustAndCleanupStates()
     assert (std::string (buffle::align::getPhraseHealthLabel (PhraseHealth::clean)) == "Print ready");
 }
 
+void testWorkflowStateFollowsTrustPhraseAndUserIntent()
+{
+    using buffle::align::PhraseHealth;
+    using buffle::align::TrustState;
+    using buffle::align::WorkflowIntent;
+    using buffle::align::WorkflowStep;
+
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::followSignal, TrustState::routeGuide, PhraseHealth::route, false, 0.0f })
+            == WorkflowStep::route);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::followSignal, TrustState::listening, PhraseHealth::listen, false, 0.0f })
+            == WorkflowStep::listen);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::followSignal, TrustState::delayDub, PhraseHealth::safeNudge, true, 12.0f })
+            == WorkflowStep::preview);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::previewing, TrustState::locked, PhraseHealth::clean, true, 0.0f })
+            == WorkflowStep::preview);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::followSignal, TrustState::locked, PhraseHealth::watchArticulation, true, 0.0f })
+            == WorkflowStep::tame);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::followSignal, TrustState::locked, PhraseHealth::clean, true, 0.0f })
+            == WorkflowStep::print);
+    assert (buffle::align::assessWorkflowStep ({ WorkflowIntent::printing, TrustState::locked, PhraseHealth::changedMaterial, true, 0.0f })
+            == WorkflowStep::print);
+    assert (std::string (buffle::align::getWorkflowStepLabel (WorkflowStep::tame)) == "Tame");
+}
+
 void testStackRolePresetProfilesAreDistinct()
 {
     const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
@@ -808,6 +833,7 @@ int main()
     testTrustDiagnosticsThresholdsAndDirections();
     testTrustDiagnosticsLabelsAndAdviceAreStable();
     testPhraseHealthClassifiesTrustAndCleanupStates();
+    testWorkflowStateFollowsTrustPhraseAndUserIntent();
     testStackRolePresetProfilesAreDistinct();
     testStackSpreadGovernorLeavesMonoUnchanged();
     testStackSpreadGovernorNarrowsHighFocusStereo();

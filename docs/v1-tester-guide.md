@@ -7,7 +7,7 @@ Use this guide when testing the current macOS preview and sending feedback towar
 | Lane | What it means |
 | --- | --- |
 | Public preview | `v0.3.0` GitHub release artifacts for Standalone, AU, VST3, and testable `.pkg`. |
-| Current development build | Post-`v0.3.0` V1 polish, including Trust Diagnostics, Tamer audition, Breath Preservation Mask v0, and saveable reports. |
+| Current source preview | Post-`v0.3.0` product polish, including Phrase Health, Trust Diagnostics, Stack Role presets, Stack Spread Governor v0, Tamer audition, Breath Preservation Mask v0, and saveable reports. |
 | Next packaged preview | Zip-first artifacts after local build, DSP tests, release hygiene, and host-validation evidence are refreshed. |
 
 ## Preferred Download

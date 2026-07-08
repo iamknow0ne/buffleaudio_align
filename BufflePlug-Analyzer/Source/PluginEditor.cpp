@@ -281,9 +281,10 @@ void drawPhraseHealthStrip (juce::Graphics& g,
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (describePhraseHealth (snapshot) + " - " + describePhraseHealthAdviceCompact (snapshot),
-                text,
-                juce::Justification::centredLeft);
+    g.drawFittedText (describePhraseHealth (snapshot) + " - " + describePhraseHealthAdviceCompact (snapshot),
+                      text,
+                      juce::Justification::centredLeft,
+                      1);
 }
 
 void drawChangedMaterialStrip (juce::Graphics& g,
@@ -416,7 +417,7 @@ public:
 
         g.setColour (brandAccent);
         g.setFont (juce::FontOptions (12.5f, juce::Font::bold));
-        g.drawText ("v0.3.0 development build", area.removeFromTop (19), juce::Justification::centred);
+        g.drawText ("v0.3.0 macOS preview", area.removeFromTop (19), juce::Justification::centred);
 
         g.setColour (muted.withAlpha (0.9f));
         g.setFont (juce::FontOptions (12.0f));
@@ -486,15 +487,15 @@ public:
                          warningColour);
 
         content.removeFromTop (8);
-        drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
-        content.removeFromTop (8);
-        drawNaturalnessRiskStrip (g, content.removeFromTop (28), snapshot);
-        content.removeFromTop (8);
-        drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
+        drawPhraseHealthStrip (g, content.removeFromTop (34), snapshot);
         content.removeFromTop (8);
         drawNextActionCard (g, content.removeFromTop (58), snapshot);
         content.removeFromTop (8);
 
+        drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
+        content.removeFromTop (8);
+        drawNaturalnessRiskStrip (g, content.removeFromTop (28), snapshot);
+        content.removeFromTop (8);
         drawArticulationRiskStrip (g, content.removeFromTop (26), snapshot);
         content.removeFromTop (8);
 
@@ -675,9 +676,12 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     differenceModeButton.setTooltip ("Monitor all timing and tamer material changed by the preview path.");
     tamerModeButton.setTooltip ("Solo only the consonant material reduced by Consonant Tamer.");
     applySuggestedButton.setEnabled (false);
-    captureButton.onClick = [this] { showTransientStatus ("Capture pass armed - route Guide sidechain, then play the phrase."); };
-    analyzeButton.onClick = [this] { showTransientStatus ("Analyzing monitor window - watching Guide/Dub timing confidence."); };
-    alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
+    captureButton.onClick = [this] { setWorkflowIntent (buffle::align::WorkflowIntent::armedListen,
+                                                         "Listen armed - route Guide sidechain, then play the phrase."); };
+    analyzeButton.onClick = [this] { setWorkflowIntent (buffle::align::WorkflowIntent::checkingTiming,
+                                                        "Checking timing - watching Guide/Dub confidence."); };
+    alignButton.onClick = [this] { setWorkflowIntent (buffle::align::WorkflowIntent::previewing,
+                                                      "Previewing alignment - A/B Aligned, Diff, and Tamer."); };
     applySuggestedButton.onClick = [this] { applySuggestedNudge(); };
     reportButton.onClick = [this] { copyAlignmentReport(); };
     saveReportButton.onClick = [this] { saveAlignmentReport(); };
@@ -905,30 +909,37 @@ void BufflePlugAnalyzerAudioProcessorEditor::drawWorkflowRail (juce::Graphics& g
 
     const char* steps[] = { "Route", "Listen", "Preview", "Tame", "Print" };
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
-    const auto currentStep = ! snapshot.guideFromSidechain ? 0
-                           : ! snapshot.hasReliableOffset ? 1
-                           : std::abs (snapshot.suggestedNudgeMs) > 0.05f ? 2
-                           : 3;
+    const auto currentWorkflowStep = buffle::align::assessWorkflowStep ({ workflowIntent,
+                                                                          snapshot.trustState,
+                                                                          snapshot.phraseHealth,
+                                                                          snapshot.hasReliableOffset,
+                                                                          snapshot.suggestedNudgeMs });
+    const auto currentStep = static_cast<int> (currentWorkflowStep);
     const juce::String stepDetails[] =
     {
-        snapshot.trustState == buffle::align::TrustState::routeGuide ? "guide missing" : "sidechain ok",
+        snapshot.trustState == buffle::align::TrustState::routeGuide ? "Missing" : "Sidechain OK",
         snapshot.hasReliableOffset ? "confidence " + asPercent (snapshot.offsetConfidence)
-                                   : juce::String (buffle::align::getTrustStateCode (snapshot.trustState)),
+                                   : snapshot.trustState == buffle::align::TrustState::guideQuiet ? "Guide quiet"
+                                   : snapshot.trustState == buffle::align::TrustState::dubQuiet ? "Dub quiet"
+                                   : "Locking",
         snapshot.trustState == buffle::align::TrustState::delayDub
             || snapshot.trustState == buffle::align::TrustState::advanceDub ? describeNudgeMove (snapshot.suggestedNudgeMs)
-                                                                            : "compare A/B",
-        snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe
-            ? juce::String (buffle::align::getNaturalnessRiskLabel (snapshot.naturalnessRisk))
-            : snapshot.removedMaterial > 0.04f ? "changed " + asPercent (snapshot.removedMaterial)
-                                               : "Tune tamer",
-        "Copy report"
+                                                                            : "A/B Diff",
+        snapshot.phraseHealth == buffle::align::PhraseHealth::watchArticulation ? "Loosen"
+            : snapshot.phraseHealth == buffle::align::PhraseHealth::watchNaturalness ? "A/B Tamer"
+            : snapshot.phraseHealth == buffle::align::PhraseHealth::changedMaterial ? "Check Diff"
+            : snapshot.phraseHealth == buffle::align::PhraseHealth::tooMuch ? "Review"
+            : "Tune Tamer",
+        snapshot.phraseHealth == buffle::align::PhraseHealth::clean ? "Ready" : "Save Report"
     };
 
     auto row = area.reduced (14, 16);
     auto railTitle = row.removeFromTop (24);
     g.setColour (muted.withAlpha (0.78f));
     g.setFont (juce::FontOptions (10.5f, juce::Font::bold));
-    g.drawText ("SESSION FLOW", railTitle, juce::Justification::centredLeft);
+    g.drawText ("SESSION FLOW / " + juce::String (buffle::align::getWorkflowIntentLabel (workflowIntent)),
+                railTitle,
+                juce::Justification::centredLeft);
     row.removeFromTop (6);
 
     for (int i = 0; i < 5; ++i)
@@ -1047,6 +1058,12 @@ void BufflePlugAnalyzerAudioProcessorEditor::showTransientStatus (const juce::St
     statusLabel.setText (transientStatus, juce::dontSendNotification);
 }
 
+void BufflePlugAnalyzerAudioProcessorEditor::setWorkflowIntent (buffle::align::WorkflowIntent intent, const juce::String& message)
+{
+    workflowIntent = intent;
+    showTransientStatus (message);
+}
+
 void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
 {
     const auto snapshot = audioProcessor.getAlignmentSnapshot();
@@ -1068,18 +1085,21 @@ void BufflePlugAnalyzerAudioProcessorEditor::applySuggestedNudge()
         parameter->beginChangeGesture();
         parameter->setValueNotifyingHost (parameter->convertTo0to1 (snapshot.suggestedNudgeMs));
         parameter->endChangeGesture();
-        showTransientStatus ("Applied suggested timing correction: " + asSignedMs (snapshot.suggestedNudgeMs) + ".");
+        setWorkflowIntent (buffle::align::WorkflowIntent::previewing,
+                           "Applied suggested timing correction: " + asSignedMs (snapshot.suggestedNudgeMs) + ".");
     }
 }
 
 void BufflePlugAnalyzerAudioProcessorEditor::copyAlignmentReport()
 {
     juce::SystemClipboard::copyTextToClipboard (audioProcessor.getAlignmentReportText());
-    showTransientStatus ("Alignment report copied to clipboard.");
+    setWorkflowIntent (buffle::align::WorkflowIntent::printing, "Alignment report copied to clipboard.");
 }
 
 void BufflePlugAnalyzerAudioProcessorEditor::saveAlignmentReport()
 {
+    workflowIntent = buffle::align::WorkflowIntent::printing;
+
     const auto defaultFile = juce::File::getSpecialLocation (juce::File::userDocumentsDirectory)
         .getChildFile ("Buffle-Audio-Align-Report-"
                        + juce::String (juce::Time::currentTimeMillis())
@@ -1110,7 +1130,8 @@ void BufflePlugAnalyzerAudioProcessorEditor::saveAlignmentReport()
                                             file = file.withFileExtension ("txt");
 
                                         if (file.replaceWithText (safeThis->audioProcessor.getAlignmentReportText()))
-                                            safeThis->showTransientStatus ("Alignment report saved: " + file.getFileName());
+                                            safeThis->setWorkflowIntent (buffle::align::WorkflowIntent::printing,
+                                                                         "Alignment report saved: " + file.getFileName());
                                         else
                                             safeThis->showTransientStatus ("Could not save report - choose another folder.");
                                     });
@@ -1125,7 +1146,10 @@ void BufflePlugAnalyzerAudioProcessorEditor::setPreviewMode (int modeIndex)
         parameter->endChangeGesture();
 
         const char* labels[] = { "Original", "Aligned", "Difference", "Tamer Removed" };
-        showTransientStatus ("Preview mode: " + juce::String (labels[juce::jlimit (0, 3, modeIndex)]) + ".");
+        const auto clampedMode = juce::jlimit (0, 3, modeIndex);
+        const auto intent = clampedMode == 0 ? buffle::align::WorkflowIntent::checkingTiming
+                                             : buffle::align::WorkflowIntent::previewing;
+        setWorkflowIntent (intent, "Preview mode: " + juce::String (labels[clampedMode]) + ".");
     }
 }
 

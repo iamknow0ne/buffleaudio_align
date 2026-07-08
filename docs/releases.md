@@ -8,6 +8,8 @@ For signed nudge and host plugin delay compensation proof, use the [host latency
 
 The project version lives in [`../VERSION`](../VERSION). Release scripts read that file by default, and still allow `VERSION=x.y.z` for one-off previews.
 
+Before publishing post-`v0.3.0` work, bump [`../VERSION`](../VERSION), rebuild packages, and tag the new version. The publish script refuses existing release tags, so do not reuse `v0.3.0` for a new artifact set.
+
 ## Published Releases
 
 | Version | Status | GitHub release | Assets |
@@ -33,14 +35,14 @@ cmake --build build/cmake-debug --config Debug --parallel
 ctest --test-dir build/cmake-debug --output-on-failure
 scripts/build_and_package_macos.sh
 find dist/stage dist/pkgroot \( -name '._*' -o -name '.DS_Store' \) -print
-pkgutil --payload-files dist/BuffleAudioAlign-0.3.0-macOS.pkg | rg '(^|/)\._|\.DS_Store'
-unzip -l dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip | rg '(^|/)\._|\.DS_Store'
+pkgutil --payload-files "dist/BuffleAudioAlign-$(cat VERSION)-macOS.pkg" | rg '(^|/)\._|\.DS_Store'
+unzip -l "dist/BuffleAudioAlign-$(cat VERSION)-macOS-bundles.zip" | rg '(^|/)\._|\.DS_Store'
 codesign --verify --deep --strict --verbose=2 "dist/stage/Buffle Audio Align.app"
 codesign --verify --deep --strict --verbose=2 "dist/stage/Buffle Audio Align.vst3"
 codesign --verify --deep --strict --verbose=2 "dist/stage/Buffle Audio Align.component"
-pkgutil --check-signature dist/BuffleAudioAlign-0.3.0-macOS.pkg
-spctl -a -vv -t install dist/BuffleAudioAlign-0.3.0-macOS.pkg
-shasum -a 256 dist/BuffleAudioAlign-0.3.0-macOS.pkg dist/BuffleAudioAlign-0.3.0-macOS-bundles.zip
+pkgutil --check-signature "dist/BuffleAudioAlign-$(cat VERSION)-macOS.pkg"
+spctl -a -vv -t install "dist/BuffleAudioAlign-$(cat VERSION)-macOS.pkg"
+shasum -a 256 "dist/BuffleAudioAlign-$(cat VERSION)-macOS.pkg" "dist/BuffleAudioAlign-$(cat VERSION)-macOS-bundles.zip"
 ```
 
 V1 also needs at least one clean-account install smoke and the DAW latency matrix. Local AU validation passed on July 7, 2026, and strict VST3 `pluginval` passed on July 8, 2026; see [healthcheck-2026-07-07-au-validation.md](healthcheck-2026-07-07-au-validation.md) and [healthcheck-2026-07-08-vst3-pluginval.md](healthcheck-2026-07-08-vst3-pluginval.md).

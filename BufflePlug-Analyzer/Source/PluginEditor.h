@@ -4,6 +4,7 @@
 
 #include <juce_gui_extra/juce_gui_extra.h>
 #include "PluginProcessor.h"
+#include "DSP/WorkflowState.h"
 
 //==============================================================================
 /**
@@ -37,6 +38,7 @@ private:
     void loadBrandAssets();
     void showAboutBox();
     void showTransientStatus (const juce::String& message);
+    void setWorkflowIntent (buffle::align::WorkflowIntent intent, const juce::String& message);
     void applySuggestedNudge();
     void copyAlignmentReport();
     void saveAlignmentReport();
@@ -92,6 +94,7 @@ private:
     juce::Image buffleAudioLogo;
     juce::Rectangle<int> brandLogoBounds;
     std::unique_ptr<juce::FileChooser> reportFileChooser;
+    buffle::align::WorkflowIntent workflowIntent = buffle::align::WorkflowIntent::followSignal;
     juce::String transientStatus;
     int transientStatusFrames = 0;
     bool applyingStackRolePreset = false;

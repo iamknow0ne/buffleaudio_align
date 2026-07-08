@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment tool for Guide/Dub timing, confidence-aware nudge decisions, Consonant Tamer Lite, Articulation Risk, Stack Role presets, A/B audition, and copyable session reports.">
+    <meta name="description" content="Buffle Audio Align is a macOS vocal-stack alignment tool for Guide/Dub timing, safe nudge decisions, Stack Role presets, A/B audition, Consonant Tamer Lite, Phrase Health, and session reports.">
     <meta property="og:title" content="Buffle Audio Align">
-    <meta property="og:description" content="Align doubles, backing vocals, rap stacks, and ADR lines while keeping the human feel.">
+    <meta property="og:description" content="Line up doubles, backing vocals, rap stacks, and ADR lines against a Guide while keeping the human feel.">
     <meta property="og:image" content="/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png">
     <meta property="og:type" content="website">
     <meta name="twitter:card" content="summary_large_image">
@@ -31,7 +31,7 @@
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="#workflow">Workflow</a>
-        <a href="#engine">Engine</a>
+        <a href="#features">Features</a>
         <a href="#download">Download</a>
         <a href="#support">Support</a>
       </nav>
@@ -45,32 +45,32 @@
         <div class="hero-vignette" aria-hidden="true"></div>
 
         <div class="hero-content">
-          <p class="eyebrow">Buffle Audio / vocal alignment</p>
+          <p class="eyebrow">Vocal stack alignment for macOS</p>
           <h1 id="hero-title">
             <span>Buffle Audio</span>
             <span>Align</span>
           </h1>
-          <p class="hero-copy">Line up vocal doubles, ADR lines, rap stacks, and backing parts against a Guide without flattening the take. Align shows the timing relationship, gates risky moves, lets you hear exactly what changed, and keeps consonants under control.</p>
+          <p class="hero-copy">Put Align on the Dub, feed the lead as the Guide, and make timing decisions you can trust. It reads the Guide/Dub relationship, suggests safe early or late moves, lets you A/B the changed material, and keeps consonant cleanup under control.</p>
           <div class="hero-actions" aria-label="Primary actions">
             <a class="button primary" href="#download">Download for macOS</a>
-            <a class="button" href="#workflow">See workflow</a>
+            <a class="button" href="#workflow">See the workflow</a>
             <a class="button support" href="https://buymeacoffee.com/hostin.tech">Buy me a coffee</a>
           </div>
-          <p class="release-note">Standalone app, AU, and VST3 for macOS. Built for careful vocal-stack timing decisions, not automatic over-correction.</p>
+          <p class="release-note">Standalone app, AU, and VST3 for macOS. Best for doubles, backing vocals, rap stacks, harmony layers, and ADR timing checks.</p>
         </div>
 
         <aside class="hero-console" aria-label="Alignment decision preview">
           <div class="console-top">
-            <span>Trust Meter</span>
-            <b>safe delay</b>
+            <span>Phrase Health</span>
+            <b>safe nudge</b>
           </div>
           <div class="offset">
-            <span>Guide / Dub offset</span>
+            <span>Guide / Dub timing</span>
             <strong>+12.5 ms</strong>
           </div>
           <div class="confidence" aria-hidden="true">
             <i></i>
-            <span>Dub early / confidence 87%</span>
+            <span>Dub early / Trust 87%</span>
           </div>
           <div class="console-wave" aria-hidden="true">
             <svg viewBox="0 0 420 116">
@@ -83,91 +83,92 @@
 
       <section class="marquee" aria-label="Buffle Audio Align capability loop">
         <div>
-          <span>guide / dub timing</span>
-          <span>confidence-gated nudge</span>
-          <span>sidechain guide awareness</span>
-          <span>trust reason codes</span>
-          <span>naturalness guardrail</span>
-          <span>articulation risk</span>
-          <span>tamer-only audition</span>
-          <span>a/b difference</span>
-          <span>stack role presets</span>
-          <span>copy session report</span>
+          <span>Guide / Dub timing</span>
+          <span>safe nudge</span>
+          <span>sidechain Guide</span>
+          <span>Phrase Health</span>
+          <span>Naturalness Guardrail</span>
+          <span>Articulation Risk</span>
+          <span>Tamer audition</span>
+          <span>All Diff preview</span>
+          <span>Stack Role presets</span>
+          <span>save session report</span>
         </div>
         <div aria-hidden="true">
-          <span>guide / dub timing</span>
-          <span>confidence-gated nudge</span>
-          <span>sidechain guide awareness</span>
-          <span>trust reason codes</span>
-          <span>naturalness guardrail</span>
-          <span>articulation risk</span>
-          <span>tamer-only audition</span>
-          <span>a/b difference</span>
-          <span>stack role presets</span>
-          <span>copy session report</span>
+          <span>Guide / Dub timing</span>
+          <span>safe nudge</span>
+          <span>sidechain Guide</span>
+          <span>Phrase Health</span>
+          <span>Naturalness Guardrail</span>
+          <span>Articulation Risk</span>
+          <span>Tamer audition</span>
+          <span>All Diff preview</span>
+          <span>Stack Role presets</span>
+          <span>save session report</span>
         </div>
       </section>
 
       <section class="product-section" aria-labelledby="product-title">
         <div class="section-copy">
-          <p class="eyebrow">the product</p>
-          <h2 id="product-title">Line up the stack while keeping the performance alive.</h2>
-          <p>Put Align on a Dub, double, harmony, rap layer, or ADR take. Feed the lead as the Guide when your host supports sidechain input, then use the signed offset, Trust Meter, nudge controls, and audition modes to decide whether the layer should move.</p>
+          <p class="eyebrow">The product</p>
+          <h2 id="product-title">A decision surface for vocal timing, not a black-box warp button.</h2>
+          <p>Align is built for the moment where a stack sounds close but not locked. It makes the offset visible, explains whether the read is trustworthy, and gives you audition modes before you commit a nudge or tamer move.</p>
         </div>
         <figure class="app-frame">
           <img src="assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png" alt="Buffle Audio Align standalone app showing Guide and Dub monitoring, Trust Meter, Articulation Risk, Naturalness Risk, A/B preview modes, Stack Role presets, and Consonant Tamer controls.">
-          <figcaption>The Align surface: Guide/Dub timing, Trust Meter, Articulation Risk, Stack Role presets, A/B audition, Naturalness Guardrail, and Consonant Tamer Lite.</figcaption>
+          <figcaption>Current Align surface: Guide/Dub timing, Phrase Health, Trust Meter, Stack Role presets, A/B preview, Naturalness Guardrail, Articulation Risk, and Consonant Tamer Lite.</figcaption>
         </figure>
       </section>
 
       <section id="workflow" class="workflow-section" aria-labelledby="workflow-title">
         <div class="section-copy">
-          <p class="eyebrow">studio workflow</p>
-          <h2 id="workflow-title">Four moves that match how vocal sessions actually run.</h2>
+          <p class="eyebrow">Studio workflow</p>
+          <h2 id="workflow-title">Route, listen, preview, then print only when the phrase earns it.</h2>
         </div>
         <div class="workflow-grid">
           <article style="--accent: var(--teal)">
             <span>01</span>
-            <h3>Pick the role</h3>
-            <p>Choose Double Tight, Choir Natural, Rap Stack, or ADR Loose to start from a musical alignment profile instead of a blank technical control set.</p>
+            <h3>Choose the layer</h3>
+            <p>Start from Manual, Double Tight, Choir Natural, Rap Stack, or ADR Loose so the timing, tamer, naturalness, and stereo-focus feel match the part.</p>
           </article>
           <article style="--accent: var(--amber)">
             <span>02</span>
-            <h3>Trust the read</h3>
-            <p>The Trust Meter explains whether the Guide and Dub are usable, whether the offset is stable, and whether an early or late correction is worth considering.</p>
+            <h3>Read the phrase</h3>
+            <p>Guide and Dub meters, signed offset, confidence, Trust reasons, and Phrase Health tell you when the material is ready and when routing or levels need attention.</p>
           </article>
           <article style="--accent: var(--coral)">
             <span>03</span>
-            <h3>A/B the change</h3>
-            <p>Switch between Original, Aligned, All Diff, and Tamer so you can hear the dry take, the processed move, the total change, or only the consonant cleanup.</p>
+            <h3>Audition the move</h3>
+            <p>Use Original, Aligned, All Diff, and Tamer modes to hear the dry take, the processed move, the full changed material, or only consonant material reduced by the tamer.</p>
           </article>
           <article style="--accent: var(--green)">
             <span>04</span>
-            <h3>Keep it human</h3>
-            <p>Naturalness Guardrail and Articulation Risk flag when a move may be too sterile or when unmatched consonant attacks need a closer listen.</p>
+            <h3>Keep the take alive</h3>
+            <p>Naturalness Guardrail, Articulation Risk, Breath Preservation Mask v0, and Stack Spread Governor help avoid over-tight, over-clean, or collapsed stack decisions.</p>
           </article>
         </div>
       </section>
 
-      <section id="engine" class="engine-section" aria-labelledby="engine-title">
+      <section id="features" class="engine-section" aria-labelledby="engine-title">
         <div class="section-copy">
-          <p class="eyebrow">what it does</p>
-          <h2 id="engine-title">A transparent timing surface, not a black-box warper.</h2>
-          <p>Align is focused on one practical job: make the timing relationship obvious, help you move a Dub safely, and show exactly what changed before it lands in the mix.</p>
+          <p class="eyebrow">Current features</p>
+          <h2 id="engine-title">Everything on the page maps to a real Align control or readout.</h2>
+          <p>The landing page now follows the shipped product surface: Guide/Dub monitoring, safe nudge, preview modes, stack roles, tamer behavior, phrase verdicts, and session handoff.</p>
         </div>
         <div class="engine-list">
-          <div><span>timing</span><strong>Signed Guide/Dub offset, confidence-gated suggested correction, and manual early/late nudge in DAWs that support plugin delay compensation.</strong></div>
-          <div><span>articulation</span><strong>Consonant Tamer Lite, Breath Preservation Mask v0, Articulation Risk, Naturalness Guardrail, All Diff audition, and Tamer-only audition.</strong></div>
-          <div><span>stack feel</span><strong>Stack Role presets plus Stereo Focus mid/side width control for tighter doubles or wider choir, ADR, and harmony layers.</strong></div>
-          <div><span>handoff</span><strong>Phrase Health and Phrase Advice states, Next Best Move guidance, and copyable or saveable reports for the current session read.</strong></div>
+          <div><span>Timing</span><strong>Signed Guide/Dub offset, confidence-gated suggested correction, manual early/late nudge, and host latency compensation up to the nudge window.</strong></div>
+          <div><span>Audition</span><strong>Original, Aligned, All Diff, and Tamer modes reveal the dry Dub, the aligned result, total changed material, or consonant-only removed material.</strong></div>
+          <div><span>Vocal cleanup</span><strong>Consonant Tamer Lite, Breath Preservation Mask v0, Naturalness Guardrail, and Articulation Risk support cleanup without flattening the vocal.</strong></div>
+          <div><span>Stack control</span><strong>Stack Role presets and Stereo Focus tune doubles, choir layers, rap stacks, and ADR with a lightweight Stack Spread Governor.</strong></div>
+          <div><span>Session handoff</span><strong>Phrase Health, Phrase Advice, Next Best Move, Trust reasons, changed-material stats, current controls, Copy Report, and Save Report.</strong></div>
         </div>
       </section>
 
       <section id="download" class="release-section" aria-labelledby="download-title">
         <div>
-          <p class="eyebrow">download</p>
+          <p class="eyebrow">Download</p>
           <h2 id="download-title">Get Align for macOS.</h2>
-          <p>The public macOS build includes the Standalone app plus AU and VST3 plugin formats. Use the bundle zip for the cleanest manual install path, or try the package installer when you want a guided setup.</p>
+          <p>The public macOS preview includes the Standalone app plus AU and VST3 plugin formats. Use the bundle zip for the cleanest manual install path, or try the package installer when you want a guided setup.</p>
         </div>
         <div class="release-actions">
           <a class="release-link" href="https://github.com/iamknow0ne/buffleaudio_align/releases/download/v0.3.0/BuffleAudioAlign-0.3.0-macOS-bundles.zip">
@@ -187,7 +188,7 @@
 
       <section id="support" class="support-section" aria-labelledby="support-title">
         <div>
-          <p class="eyebrow">support</p>
+          <p class="eyebrow">Support</p>
           <h2 id="support-title">Help keep Buffle Audio tools independent.</h2>
           <p>If Align fits your vocal workflow or you want more focused Buffle Audio tools for vocal editing, you can support the work directly.</p>
         </div>

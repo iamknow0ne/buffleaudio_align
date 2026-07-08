@@ -6,7 +6,7 @@ Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articula
 
 Latest macOS preview: `v0.3.0` for Standalone, VST3, and AU.
 
-Current `main` adds post-`v0.3.0` polish that has not been repackaged yet, including a clearer app surface, Articulation Risk, Breath Preservation Mask v0, and saveable alignment reports. AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
+Current `main` continues the macOS preview with the current product surface: Phrase Health, Trust Meter reasons, Stack Role presets, Stack Spread Governor v0, Articulation Risk, Breath Preservation Mask v0, A/B preview modes, and copyable or saveable alignment reports. AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
 
 ## Links
 
@@ -24,13 +24,15 @@ Current `main` adds post-`v0.3.0` polish that has not been repackaged yet, inclu
 
 ## Product Preview
 
-![Buffle Audio Align landing preview](landing/assets/screenshots/landing-hero-v0.3.0.jpg)
+![Buffle Audio Align standalone app](landing/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png)
 
-For the current standalone app UI with Trust Meter, Articulation Risk, Naturalness Guardrail, Stack Role presets, and A/B audition, see [standalone-app-articulation-risk-post-v0.3.0.png](landing/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png).
+The current app surface centers on Guide/Dub timing, Phrase Health, Trust Meter, Articulation Risk, Naturalness Guardrail, Stack Role presets, A/B audition, Consonant Tamer Lite, and report handoff.
+
+Current landing capture: [landing-product-2026-07-08.jpg](landing/assets/screenshots/landing-product-2026-07-08.jpg).
 
 ## Try Align
 
-The public download is `v0.3.0`. Some capabilities below are already in `main` and will ship in the next packaged preview.
+The public download is `v0.3.0`. The source preview on `main` contains the newest product UI and DSP polish described below.
 
 1. Install or unzip the latest macOS preview from the GitHub release.
 2. Open the Standalone app, or insert the VST3/AU on a Dub/double/backing-vocal track.
