@@ -26,7 +26,7 @@ Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artif
 
 ![Buffle Audio Align landing preview](landing/assets/screenshots/landing-hero-v0.3.0.jpg)
 
-For the full standalone app UI, see [standalone-app-stack-roles-v0.3.0.png](landing/assets/screenshots/standalone-app-stack-roles-v0.3.0.png).
+For the current standalone app UI with Trust Meter, Articulation Risk, Naturalness Guardrail, Stack Role presets, and A/B audition, see [standalone-app-articulation-risk-post-v0.3.0.png](landing/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png).
 
 ## Test The Preview Lane
 

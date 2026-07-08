@@ -31,6 +31,14 @@ cmake --build build/cmake-debug --target BuffleAlignDSPTests --config Debug --pa
 ctest --test-dir build/cmake-debug --output-on-failure
 ```
 
+## Screenshot Evidence
+
+Fresh standalone UI capture:
+
+- `landing/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png`
+
+This image was captured from the local standalone app after the Articulation Risk strip landed. Older `v0.3.0` screenshots remain in the repository as historical preview assets, but the landing page and README should use the current product screenshot above.
+
 ## Still Open For V1
 
 - A true phoneme-aware consonant collision detector.

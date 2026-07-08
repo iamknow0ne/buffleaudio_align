@@ -167,6 +167,18 @@ juce::String describeHeaderTrust (const BufflePlugAnalyzerAudioProcessor::Alignm
     }
 }
 
+juce::String describeArticulationRiskCompact (buffle::align::ArticulationRisk risk)
+{
+    switch (risk)
+    {
+        case buffle::align::ArticulationRisk::clean: return "Clean";
+        case buffle::align::ArticulationRisk::watch: return "Watch - A/B Tamer";
+        case buffle::align::ArticulationRisk::collision: return "Collision - loosen role";
+        case buffle::align::ArticulationRisk::listening:
+        default: return "Listening";
+    }
+}
+
 void drawReadoutPill (juce::Graphics& g,
                       juce::Rectangle<int> area,
                       const juce::String& label,
@@ -275,17 +287,20 @@ void drawArticulationRiskStrip (juce::Graphics& g,
     auto text = area.reduced (12, 0);
     g.setColour (colour);
     g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
-    g.drawText ("ARTICULATION", text.removeFromLeft (112), juce::Justification::centredLeft);
+    const auto labelWidth = area.getWidth() < 440 ? 86 : 112;
+    g.drawText (area.getWidth() < 440 ? "ARTIC." : "ARTICULATION",
+                text.removeFromLeft (labelWidth),
+                juce::Justification::centredLeft);
 
-    auto meterArea = text.removeFromRight (124).withSizeKeepingCentre (108, 8);
-    drawHorizontalMeter (g, meterArea, snapshot.articulationRiskScore, colour);
+    if (area.getWidth() >= 440)
+    {
+        auto meterArea = text.removeFromRight (124).withSizeKeepingCentre (108, 8);
+        drawHorizontalMeter (g, meterArea, snapshot.articulationRiskScore, colour);
+    }
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (juce::String (buffle::align::getArticulationRiskLabel (risk)) + " - "
-                    + juce::String (buffle::align::getArticulationRiskAdvice (risk)),
-                text,
-                juce::Justification::centredLeft);
+    g.drawText (describeArticulationRiskCompact (risk), text, juce::Justification::centredLeft);
 }
 
 void drawNextActionCard (juce::Graphics& g,
