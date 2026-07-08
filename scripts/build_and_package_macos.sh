@@ -16,6 +16,17 @@ if [[ -z "${VERSION}" ]]; then
   exit 1
 fi
 
+require_tool() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "$1 is required to build and package Buffle Audio Align." >&2
+    exit 1
+  fi
+}
+
+for tool in cmake find ditto codesign pkgbuild pkgutil gunzip cpio mkbom gzip xar shasum unzip xattr; do
+  require_tool "${tool}"
+done
+
 if [[ "${CLEAN_DIST:-0}" == "1" ]]; then
   find "${DIST_DIR}" -maxdepth 1 -type f -name "BuffleAudioAlign-*-macOS*" -delete 2>/dev/null || true
 fi
@@ -43,14 +54,8 @@ repair_package_payload_hygiene() {
   local pkg="$1"
   local temp_dir expanded_dir payload_root repaired_pkg
 
-  for tool in pkgutil gunzip cpio mkbom gzip xar; do
-    if ! command -v "${tool}" >/dev/null 2>&1; then
-      echo "${tool} is required to repair package payload hygiene." >&2
-      return 1
-    fi
-  done
-
   temp_dir="$(mktemp -d "${TMPDIR:-/tmp}/buffle-pkg-repair.XXXXXX")"
+  trap 'rm -rf "${temp_dir}"' RETURN
   expanded_dir="${temp_dir}/expanded"
   payload_root="${temp_dir}/payload-root"
   repaired_pkg="${temp_dir}/repaired.pkg"
@@ -73,6 +78,7 @@ repair_package_payload_hygiene() {
 
   mv "${repaired_pkg}" "${pkg}"
   rm -rf "${temp_dir}"
+  trap - RETURN
 }
 
 clean_macos_metadata() {
@@ -117,10 +123,18 @@ if [[ -d "${STAGE_DIR}/Buffle Audio Align.component" ]]; then
   ditto --noextattr --noqtn "${STAGE_DIR}/Buffle Audio Align.component" "${PKGROOT_DIR}/Library/Audio/Plug-Ins/Components/Buffle Audio Align.component"
 fi
 
-if [[ -z "$(find "${STAGE_DIR}" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
-  echo "No build artifacts were found to package." >&2
-  exit 1
-fi
+required_stage_artifacts=(
+  "${STAGE_DIR}/Buffle Audio Align.app"
+  "${STAGE_DIR}/Buffle Audio Align.vst3"
+  "${STAGE_DIR}/Buffle Audio Align.component"
+)
+
+for artifact in "${required_stage_artifacts[@]}"; do
+  if [[ ! -d "${artifact}" ]]; then
+    echo "Required build artifact missing: ${artifact}" >&2
+    exit 1
+  fi
+done
 
 clean_macos_metadata "${STAGE_DIR}" "${PKGROOT_DIR}"
 
@@ -153,11 +167,31 @@ pkgbuild \
 repair_package_payload_hygiene "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 verify_package_payload_hygiene "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 
+required_pkgroot_artifacts=(
+  "${PKGROOT_DIR}/Applications/Buffle Audio Align.app"
+  "${PKGROOT_DIR}/Library/Audio/Plug-Ins/VST3/Buffle Audio Align.vst3"
+  "${PKGROOT_DIR}/Library/Audio/Plug-Ins/Components/Buffle Audio Align.component"
+)
+
+for artifact in "${required_pkgroot_artifacts[@]}"; do
+  if [[ ! -d "${artifact}" ]]; then
+    echo "Required package payload artifact missing: ${artifact}" >&2
+    exit 1
+  fi
+done
+
 ditto -c -k --norsrc --noextattr --noqtn \
   "${STAGE_DIR}" \
   "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"
+
+shasum -a 256 \
+  "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg" \
+  "${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS-bundles.zip" \
+  > "${DIST_DIR}/BuffleAudioAlign-${VERSION}-SHA256SUMS.txt"
 
 echo "Built artifacts:"
 find "${STAGE_DIR}" -mindepth 1 -maxdepth 1 -print
 echo "Installer: ${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS.pkg"
 echo "Bundle archive: ${DIST_DIR}/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"
+echo "Checksums: ${DIST_DIR}/BuffleAudioAlign-${VERSION}-SHA256SUMS.txt"
+echo "Signing: ad-hoc bundle signatures; installer unsigned; notarization skipped for preview."

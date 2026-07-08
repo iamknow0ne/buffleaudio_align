@@ -4,7 +4,7 @@ V1 should not chase a full VocAlign/Revoice/Melodyne clone. The sharper wedge is
 
 ## Current State
 
-Status: `v0.3.0` macOS preview, with additional V1 polish on `main`.
+Status: `v0.4.0` macOS preview, with V1 signing, clean-account install, DAW latency matrix, and richer captured phrase evidence still open.
 
 Done:
 
@@ -35,7 +35,7 @@ Not V1-ready yet:
 - A first Articulation Risk strip is implemented for suspected consonant clutter, but it is still a lightweight visual aid over transient/tamer evidence, not a full phoneme-aware detector or detailed collision timeline.
 - Capture/analyze/preview buttons are now framed as a session checklist, but they are not a complete captured phrase state machine.
 - Difference mode now has broad changed-material metering and Tamer mode solos Consonant Tamer reductions; richer per-feature timelines remain open.
-- Stack role presets apply role-owned controls, and `Stereo Focus` now drives Stack Spread Governor v0. `Guide Blend` remains a monitoring/preview control until deeper guide-aware DSP lands.
+- Stack role presets apply role-owned controls, and `Stereo Focus` now drives Stack Spread Governor v0. `Guide Blend` now adds Guide sidechain monitor blend, while deeper guide-aware DSP remains future work.
 - Alignment Report now supports clipboard copy and text-file save; richer per-feature removed-material metering remains open.
 - Installer is not Developer ID signed or notarized.
 - Host validation matrix exists, and local AU plus strict VST3 `pluginval` validation have current evidence, but DAW timing results, audio demo corpus, and golden WAV regression lane remain open.

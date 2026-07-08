@@ -1,8 +1,8 @@
 # Buffle Audio Align Release Notes
 
-## Since v0.3.0
+## v0.4.0 Preview
 
-These changes are in the current source tree after the public `v0.3.0` GitHub release. They should be included in the next preview release after fresh builds and verification.
+Post-`v0.3.0` macOS preview for Standalone, VST3, and AU. This is still a preview release: the installer is not Developer ID signed or notarized, and final V1 still needs clean-account install smoke plus DAW latency matrix evidence.
 
 - Product-first landing page refresh centered on the actual Align workflow and current standalone UI.
 - Breath Preservation Mask v0 inside Consonant Tamer to better protect soft sustained breath-like material while reducing sharper unmatched Dub attacks.
@@ -23,7 +23,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.
 - Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Stereo Focus now drives the initial Stack Spread Governor; Guide Blend remains preview/monitoring-focused.
+- Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Stereo Focus now drives the initial Stack Spread Governor; Guide Blend now adds Guide sidechain monitor blend for timing checks.
 - Original / Aligned / Difference preview modes with persistent APVTS state.
 - Difference audition path for hearing the processed-minus-original material. Initial changed-material metering is in place; per-feature removed-material solo remains V1 work.
 - Updated standalone screenshots showing the current product surface and A/B preview controls.
@@ -33,8 +33,14 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Confidence-gated offset and suggested nudge display.
 - `Apply Nudge` workflow action for reliable suggestions.
 - Visible `Guide Blend` and `Stereo Focus` controls.
-- V1 roadmap reframed around trust-meter alignment, delay-safe nudge, and consonant cleanup.
-- Landing, README, host-latency validation, and V1 tester guide updated with the producer workflow and current V1 focus.
+- Roadmap reframed around trust-meter alignment, delay-safe nudge, and consonant cleanup.
+- Landing, README, host-latency validation, and tester guide updated with the producer workflow and current preview focus.
+
+## Artifacts
+
+- `BuffleAudioAlign-0.4.0-macOS.pkg`
+- `BuffleAudioAlign-0.4.0-macOS-bundles.zip`
+- `BuffleAudioAlign-0.4.0-SHA256SUMS.txt`
 
 ## v0.3.0
 
@@ -50,7 +56,7 @@ MacOS preview for Standalone, VST3, and AU.
 - macOS Standalone, VST3, AU, local `.pkg` installer, and zipped staged bundles.
 - Polished static landing page under `landing/`, designed to be exposed without serving the full repository.
 
-## Artifacts
+## v0.3.0 Artifacts
 
 - `BuffleAudioAlign-0.3.0-macOS.pkg`
 - `BuffleAudioAlign-0.3.0-macOS-bundles.zip`

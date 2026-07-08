@@ -71,6 +71,7 @@ dist/stage/Buffle Audio Align.vst3
 dist/stage/Buffle Audio Align.component
 dist/BuffleAudioAlign-${VERSION}-macOS.pkg
 dist/BuffleAudioAlign-${VERSION}-macOS-bundles.zip
+dist/BuffleAudioAlign-${VERSION}-SHA256SUMS.txt
 ```
 
 The bundles are ad-hoc signed for local verification. The package build repairs and verifies payload hygiene, but the package is not Developer ID Installer signed or notarized.

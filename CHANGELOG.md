@@ -2,12 +2,19 @@
 
 ## Unreleased
 
+- Continue toward V1 signing, clean-account install smoke, DAW latency matrix evidence, and richer captured phrase testing.
+
+## v0.4.0
+
 - Added Breath Preservation Mask v0 inside Consonant Tamer, with DSP tests for soft sustained material protection and sharp unmatched burst behavior.
 - Added Stack Spread Governor v0 so `Stereo Focus` now performs lightweight mid/side width control, with DSP tests for mono safety and wide/tight role behavior.
 - Added Phrase Health classifier and Phrase advice so reports distinguish the producer verdict from the Trust Meter reason code.
 - Added saveable text reports beside clipboard copy for alignment handoff.
 - Polished the central app guidance copy and strip sizing so Naturalness, Articulation, and Next Best Move read cleanly at compact editor sizes.
 - Reframed the landing page and README toward product workflow instead of development status.
+- Added intent-aware workflow state for the Route / Listen / Preview / Tame / Print rail.
+- Added actual Guide Blend monitor output when a Guide sidechain is present.
+- Hardened package generation with required-artifact gates and SHA256SUMS output.
 
 ## Post-v0.3.0 source
 

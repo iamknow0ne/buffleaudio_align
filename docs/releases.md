@@ -14,13 +14,15 @@ Before publishing post-`v0.3.0` work, bump [`../VERSION`](../VERSION), rebuild p
 
 | Version | Status | GitHub release | Assets |
 | --- | --- | --- | --- |
-| `v0.3.0` | Latest macOS preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0 | `BuffleAudioAlign-0.3.0-macOS.pkg`, `BuffleAudioAlign-0.3.0-macOS-bundles.zip` |
+| `v0.4.0` | Latest macOS preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.4.0 | `BuffleAudioAlign-0.4.0-macOS.pkg`, `BuffleAudioAlign-0.4.0-macOS-bundles.zip`, `BuffleAudioAlign-0.4.0-SHA256SUMS.txt` |
+| `v0.3.0` | Historical macOS preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0 | `BuffleAudioAlign-0.3.0-macOS.pkg`, `BuffleAudioAlign-0.3.0-macOS-bundles.zip` |
 | `v0.2.0` | Historical preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.2.0 | `BuffleAudioAlign-0.2.0-macOS.pkg`, `BuffleAudioAlign-0.2.0-macOS-bundles.zip` |
 
 ## Verification Commands
 
 ```bash
 gh release list --repo iamknow0ne/buffleaudio_align --limit 20
+gh release view v0.4.0 --repo iamknow0ne/buffleaudio_align --json url,tagName,name,assets
 gh release view v0.3.0 --repo iamknow0ne/buffleaudio_align --json url,tagName,name,assets
 gh release view v0.2.0 --repo iamknow0ne/buffleaudio_align --json url,tagName,name,assets
 ```
@@ -63,7 +65,7 @@ RELEASE_MODE=full GITHUB_REPO=iamknow0ne/buffleaudio_align scripts/publish_githu
 
 `RELEASE_MODE=zip` uploads only `BuffleAudioAlign-X.Y.Z-macOS-bundles.zip`.
 `RELEASE_MODE=pkg` uploads only the installer and requires clean package payload hygiene.
-`RELEASE_MODE=full` uploads both artifacts and requires the package hygiene gate to pass.
+`RELEASE_MODE=full` uploads both artifacts plus `BuffleAudioAlign-X.Y.Z-SHA256SUMS.txt` and requires the package hygiene gate to pass.
 
 The publish script refuses a dirty working tree unless `ALLOW_DIRTY=1` is set, refuses existing release tags, verifies bundle archive metadata, and creates draft prereleases by default. Use `DRAFT_RELEASE=0 PRERELEASE=0` only for a fully validated V1.
 
@@ -88,6 +90,13 @@ Do not call a build V1 until these gates have current evidence:
 - VST3/pluginval or host scan passes.
 - DAW host matrix in [validation-host-latency.md](validation-host-latency.md) passes for at least Logic/GarageBand AU, Reaper AU/VST3, Ableton VST3, and Standalone sanity.
 - Landing, README, release notes, screenshots, checksums, and tester guide match the shipped behavior.
+
+## Published v0.4.0 Checksums
+
+```text
+f58dbdf937cee63680d04cd3b807783b5c8a204416e7f7da51f36b7a33afdc92  BuffleAudioAlign-0.4.0-macOS.pkg
+088c0e5076b4131364eba6bf127c4996aa945620130e4a44368309768168ff90  BuffleAudioAlign-0.4.0-macOS-bundles.zip
+```
 
 ## Published v0.3.0 Checksums
 

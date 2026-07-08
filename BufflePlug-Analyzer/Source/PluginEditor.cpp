@@ -417,7 +417,9 @@ public:
 
         g.setColour (brandAccent);
         g.setFont (juce::FontOptions (12.5f, juce::Font::bold));
-        g.drawText ("v0.3.0 macOS preview", area.removeFromTop (19), juce::Justification::centred);
+        g.drawText ("v" + juce::String (JucePlugin_VersionString) + " macOS preview",
+                    area.removeFromTop (19),
+                    juce::Justification::centred);
 
         g.setColour (muted.withAlpha (0.9f));
         g.setFont (juce::FontOptions (12.0f));
@@ -619,8 +621,8 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
 
     configureSlider (tightnessSlider,
                      tightnessLabel,
-                     "Tightness",
-                     "How closely the Dub should follow the Guide timing.",
+                     "Tightness Target",
+                     "How strict the current role should be when judging timing, naturalness, and cleanup risk.",
                      true);
     configureSlider (naturalnessSlider,
                      naturalnessLabel,
@@ -645,7 +647,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     configureSlider (guideBlendSlider,
                      guideBlendLabel,
                      "Guide Blend",
-                     "Monitor a little Guide against the Dub while checking the timing relationship.",
+                     "Blend a little Guide sidechain into the monitor output while checking the timing relationship.",
                      true);
     configureSlider (stereoFocusSlider,
                      stereoFocusLabel,

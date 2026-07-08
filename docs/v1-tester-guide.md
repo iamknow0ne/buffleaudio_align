@@ -6,8 +6,8 @@ Use this guide when testing the current macOS preview and sending feedback towar
 
 | Lane | What it means |
 | --- | --- |
-| Public preview | `v0.3.0` GitHub release artifacts for Standalone, AU, VST3, and testable `.pkg`. |
-| Current source preview | Post-`v0.3.0` product polish, including Phrase Health, Trust Diagnostics, Stack Role presets, Stack Spread Governor v0, Tamer audition, Breath Preservation Mask v0, and saveable reports. |
+| Public preview | `v0.4.0` GitHub release artifacts for Standalone, AU, VST3, and testable `.pkg`. |
+| Current source preview | `v0.4.0` product polish, including Phrase Health, Trust Diagnostics, Stack Role presets, Stack Spread Governor v0, Tamer audition, Breath Preservation Mask v0, and saveable reports. |
 | Next packaged preview | Zip-first artifacts after local build, DSP tests, release hygiene, and host-validation evidence are refreshed. |
 
 ## Preferred Download
@@ -15,7 +15,7 @@ Use this guide when testing the current macOS preview and sending feedback towar
 Use the bundle archive first:
 
 ```text
-BuffleAudioAlign-0.3.0-macOS-bundles.zip
+BuffleAudioAlign-0.4.0-macOS-bundles.zip
 ```
 
 The `.pkg` exists for local preview testing, but it is not Developer ID signed or notarized yet. Treat the package as a testable convenience path, not the preferred tester install path.
@@ -99,7 +99,7 @@ Send:
 - `Arm Listen`, `Check Timing`, and `Preview Align` are still workflow/checklist controls, not a complete captured phrase editor.
 - Bidirectional nudge uses fixed host latency compensation and still needs DAW host validation.
 - `Stereo Focus` drives a lightweight mid/side Stack Spread Governor v0; it is not a full harmony-aware spatial engine yet.
-- `Guide Blend` remains a preview/monitoring shape control until deeper guide-aware DSP lands.
+- `Guide Blend` is a Guide sidechain monitor blend for timing checks; deeper guide-aware DSP remains future work.
 - `All Diff` is the overall processed-vs-original preview delta; `Tamer` isolates the current Consonant Tamer reduction only.
 - The `Articulation` strip is a first visual aid for suspected consonant clutter, not a full phoneme detector or detailed timeline.
 - Breath Preservation Mask v0 protects soft sustained breath-like material, but it is not a full phoneme or lyric-aware breath detector.

@@ -272,6 +272,9 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
     const auto nudgeMs = nudgeParam != nullptr ? nudgeParam->load() : 0.0f;
     const auto consonantAmount = consonantLevelParam != nullptr ? consonantLevelParam->load() : 0.0f;
     const auto naturalness = naturalnessParam != nullptr ? naturalnessParam->load() : 0.5f;
+    const auto guideBlend = parameters.getRawParameterValue (guideBlendId) != nullptr
+        ? parameters.getRawParameterValue (guideBlendId)->load()
+        : 0.0f;
     const auto stereoFocus = parameters.getRawParameterValue (stereoFocusId) != nullptr
         ? parameters.getRawParameterValue (stereoFocusId)->load()
         : 0.35f;
@@ -320,6 +323,23 @@ void BufflePlugAnalyzerAudioProcessor::processBlock (juce::AudioBuffer<float>& b
                                       previewMode == buffle::align::PreviewMode::consonantRemoved ? preConsonantBuffer : originalDubBuffer,
                                       previewMode,
                                       dubBuffer.getNumChannels());
+
+    if (hasGuideSidechain && guideBlend > 0.0f)
+    {
+        const auto guideMonitorGain = guideBlend * 0.35f;
+
+        for (int channel = 0; channel < dubBuffer.getNumChannels(); ++channel)
+        {
+            const auto guideChannel = juce::jmin (channel, guideBuffer.getNumChannels() - 1);
+            dubBuffer.addFrom (channel,
+                               0,
+                               guideBuffer,
+                               guideChannel,
+                               0,
+                               juce::jmin (dubBuffer.getNumSamples(), guideBuffer.getNumSamples()),
+                               guideMonitorGain);
+        }
+    }
 
     buffer.applyGain (auditionGain);
 }

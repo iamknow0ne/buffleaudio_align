@@ -8,6 +8,7 @@ TITLE="${TITLE:-Buffle Audio Align ${VERSION}}"
 PKG="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-macOS.pkg"
 STAGE="${ROOT_DIR}/dist/stage"
 ARCHIVE="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-macOS-bundles.zip"
+CHECKSUMS="${ROOT_DIR}/dist/BuffleAudioAlign-${VERSION}-SHA256SUMS.txt"
 RELEASE_MODE="${RELEASE_MODE:-zip}"
 DRAFT_RELEASE="${DRAFT_RELEASE:-1}"
 PRERELEASE="${PRERELEASE:-1}"
@@ -114,6 +115,17 @@ fi
 COPYFILE_DISABLE=1 ditto -c -k --norsrc --noextattr --keepParent "${STAGE}" "${ARCHIVE}"
 verify_archive_payload_hygiene "${ARCHIVE}"
 
+if [[ ! -f "${CHECKSUMS}" ]]; then
+  checksum_inputs=()
+
+  if [[ -f "${PKG}" ]]; then
+    checksum_inputs+=("${PKG}")
+  fi
+
+  checksum_inputs+=("${ARCHIVE}")
+  shasum -a 256 "${checksum_inputs[@]}" > "${CHECKSUMS}"
+fi
+
 if gh release view "${TAG}" --repo "${REPO}" >/dev/null 2>&1; then
   echo "Release ${TAG} already exists in ${REPO}. Refusing to overwrite it." >&2
   exit 1
@@ -126,6 +138,7 @@ fi
 if [[ "${RELEASE_MODE}" == "zip" || "${RELEASE_MODE}" == "full" ]]; then
   assets+=("${ARCHIVE}")
 fi
+assets+=("${CHECKSUMS}")
 
 release_flags=()
 if [[ "${DRAFT_RELEASE}" == "1" ]]; then

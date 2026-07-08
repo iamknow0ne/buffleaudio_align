@@ -4,14 +4,14 @@
 
 Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articulation cleanup. Put it on a Dub or backing-vocal track, feed or monitor a Guide vocal, estimate the timing relationship, then tighten the Dub while preserving the small performance details that make stacked vocals feel alive.
 
-Latest macOS preview: `v0.3.0` for Standalone, VST3, and AU.
+Latest macOS preview: `v0.4.0` for Standalone, VST3, and AU.
 
-Current `main` continues the macOS preview with the current product surface: Phrase Health, Trust Meter reasons, Stack Role presets, Stack Spread Governor v0, Articulation Risk, Breath Preservation Mask v0, A/B preview modes, and copyable or saveable alignment reports. AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
+Current `main` continues the macOS preview with the current product surface: Phrase Health, Trust Meter reasons, Stack Role presets, Stack Spread Governor v0, Articulation Risk, Breath Preservation Mask v0, A/B preview modes, and copyable or saveable alignment reports. AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md); the V1 release still needs clean-account install smoke, DAW latency matrix results, and Developer ID signing/notarization.
 
 ## Links
 
 - Landing page: https://buffleaudio-align.pages.dev/
-- Latest preview release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0
+- Latest preview release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.4.0
 - All releases: https://github.com/iamknow0ne/buffleaudio_align/releases
 - Support Buffle Audio: https://buymeacoffee.com/hostin.tech
 - Build notes: [docs/build.md](docs/build.md)
@@ -19,7 +19,7 @@ Current `main` continues the macOS preview with the current product surface: Phr
 - Release inventory: [docs/releases.md](docs/releases.md)
 - V1 tester guide: [docs/v1-tester-guide.md](docs/v1-tester-guide.md)
 - Host latency validation: [docs/validation-host-latency.md](docs/validation-host-latency.md)
-- Healthcheck: [docs/healthcheck-2026-07-07-package-hygiene.md](docs/healthcheck-2026-07-07-package-hygiene.md)
+- Healthcheck: [docs/healthcheck-2026-07-08-v0.4.0-preview-package.md](docs/healthcheck-2026-07-08-v0.4.0-preview-package.md)
 - Roadmap: [ROADMAP.md](ROADMAP.md)
 
 ## Product Preview
@@ -32,7 +32,7 @@ Current landing capture: [landing-product-2026-07-08.jpg](landing/assets/screens
 
 ## Try Align
 
-The public download is `v0.3.0`. The source preview on `main` contains the newest product UI and DSP polish described below.
+The public download is `v0.4.0`. It is a macOS preview, not the final V1 release.
 
 1. Install or unzip the latest macOS preview from the GitHub release.
 2. Open the Standalone app, or insert the VST3/AU on a Dub/double/backing-vocal track.
@@ -46,7 +46,7 @@ The public download is `v0.3.0`. The source preview on `main` contains the newes
 10. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
 11. Use `Copy` or `Save` Report to hand off phrase health, confidence, offset, suggested timing correction, changed-material stats, articulation risk, preview mode, role, and current controls.
 
-Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a macOS preview, not a broad public installer.
+Preview build note: v0.4.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a macOS preview, not a broad public installer.
 
 For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) and paste the app's `Copy Report` output into feedback.
 
@@ -214,7 +214,8 @@ npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --bran
 
 Both public preview releases are published on GitHub:
 
-- `v0.3.0`: macOS bundle archive plus testable `.pkg` preview.
+- `v0.4.0`: latest macOS bundle archive plus testable `.pkg` preview.
+- `v0.3.0`: historical macOS bundle archive plus testable `.pkg` preview.
 - `v0.2.0`: macOS bundle archive plus testable `.pkg` preview.
 
 For current testers, prefer the bundle archive. The `.pkg` is available for testing, but it is not Developer ID signed or notarized yet.
