@@ -19,8 +19,8 @@ Done:
 - Original / Aligned / All Diff / Tamer preview modes with test coverage for preview rendering.
 - Changed-material meters for the overall processed-vs-original preview change and tamer-only consonant reduction, with CTest coverage for silence, identity, transient reduction, channel-aware peak delta, and real Consonant Tamer output.
 - User-facing Stack Role presets for Double Tight, Choir Natural, Rap Stack, and ADR Loose.
-- `Copy` and `Save` Report handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
-- Phrase-health strip, Trust Meter reason codes, stateful workflow rail, and `Next Best Move` card in the editor.
+- `Copy` and `Save` Report handoff summary for Phrase Health, Phrase advice, Trust Meter reason/advice, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
+- Phrase Health classifier, Trust Meter reason codes, stateful workflow rail, and `Next Best Move` card in the editor.
 - Naturalness Risk Guardrail v0 for `Natural`, `Check Diff`, and `Too Much` states in UI and Copy Report.
 - V1 tester guide with zip-first install guidance, DAW smoke flow, feedback checklist, and known preview limits.
 - Host latency validation matrix for AU/VST3 DAW proof.
@@ -51,7 +51,7 @@ These are the target features that make Align meaningfully different from generi
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Broad All Diff and consonant-only Tamer audition implemented.**
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals. **Initial policy layer implemented.**
 7. **Guide Fallback Intelligence**: explain missing, weak, or ambiguous Guide states with stable Trust Meter reason codes instead of producing misleading numbers. **Initial route/listen/locked/safe-nudge states implemented.**
-8. **Phrase Health Report**: classify each phrase as usable, weak guide, quiet dub, ambiguous, clipped, or unsafe nudge.
+8. **Phrase Health Report**: classify each phrase as route/listen, safe nudge, print-ready, changed material, watch naturalness, watch articulation, or too much cleanup. **Initial classifier and report advice are implemented.**
 9. **Stack Spread Governor**: preserve a musical millisecond spread for harmonies and gang vocals. **Initial `Stereo Focus` mid/side governor is implemented.**
 10. **Breath Preservation Mask**: protect breaths, plosives, and expressive attacks from cleanup. **Initial soft sustained material protection is implemented inside Consonant Tamer.**
 11. **Vowel-Only Micro-Warp Preview**: future constrained warping that stretches vowels while locking consonants.

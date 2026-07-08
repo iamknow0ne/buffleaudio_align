@@ -78,18 +78,44 @@ juce::String describeApplyMove (float value)
 
 juce::String describePhraseHealth (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    return juce::String (buffle::align::getTrustStateLabel (snapshot.trustState));
+    return juce::String (buffle::align::getPhraseHealthLabel (snapshot.phraseHealth));
 }
 
 juce::Colour phraseHealthColour (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
 {
-    if (snapshot.hasReliableOffset && std::abs (snapshot.suggestedNudgeMs) > 0.05f)
-        return brandAccent;
+    switch (snapshot.phraseHealth)
+    {
+        case buffle::align::PhraseHealth::safeNudge:
+            return brandAccent;
+        case buffle::align::PhraseHealth::clean:
+            return alignedColour;
+        case buffle::align::PhraseHealth::watchNaturalness:
+        case buffle::align::PhraseHealth::changedMaterial:
+            return warningColour;
+        case buffle::align::PhraseHealth::watchArticulation:
+        case buffle::align::PhraseHealth::tooMuch:
+            return dubColour;
+        case buffle::align::PhraseHealth::route:
+        case buffle::align::PhraseHealth::listen:
+        default:
+            return warningColour;
+    }
+}
 
-    if (snapshot.hasReliableOffset)
-        return alignedColour;
-
-    return warningColour;
+juce::String describePhraseHealthAdviceCompact (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    switch (snapshot.phraseHealth)
+    {
+        case buffle::align::PhraseHealth::route: return "Route Guide";
+        case buffle::align::PhraseHealth::listen: return "Keep Listening";
+        case buffle::align::PhraseHealth::safeNudge: return "Apply Then A/B";
+        case buffle::align::PhraseHealth::clean: return "Ready To Print";
+        case buffle::align::PhraseHealth::watchNaturalness: return "Check Diff";
+        case buffle::align::PhraseHealth::watchArticulation: return "A/B Tamer";
+        case buffle::align::PhraseHealth::changedMaterial: return "Review Diff";
+        case buffle::align::PhraseHealth::tooMuch: return "Loosen Move";
+        default: return "Keep Listening";
+    }
 }
 
 juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
@@ -106,7 +132,10 @@ juce::String describeNextActionTitle (const BufflePlugAnalyzerAudioProcessor::Al
      || snapshot.trustState == buffle::align::TrustState::advanceDub)
         return "Apply";
 
-    if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
+    if (snapshot.phraseHealth == buffle::align::PhraseHealth::tooMuch
+     || snapshot.phraseHealth == buffle::align::PhraseHealth::watchNaturalness
+     || snapshot.phraseHealth == buffle::align::PhraseHealth::watchArticulation
+     || snapshot.phraseHealth == buffle::align::PhraseHealth::changedMaterial)
         return "A/B";
 
     if (snapshot.removedMaterial > 0.04f)
@@ -139,10 +168,16 @@ juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::Ali
      || snapshot.trustState == buffle::align::TrustState::advanceDub)
         return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then A/B Aligned vs Diff.";
 
-    if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
+    if (snapshot.phraseHealth == buffle::align::PhraseHealth::tooMuch)
+        return "Loosen role, lower Tamer, or reduce nudge.";
+
+    if (snapshot.phraseHealth == buffle::align::PhraseHealth::watchArticulation)
+        return "A/B Tamer before printing consonants.";
+
+    if (snapshot.phraseHealth == buffle::align::PhraseHealth::watchNaturalness)
         return "Check Diff before printing this move.";
 
-    if (snapshot.removedMaterial > 0.04f)
+    if (snapshot.phraseHealth == buffle::align::PhraseHealth::changedMaterial)
         return "Timing locked. Check Diff before print.";
 
     return "Save Report for notes, or adjust Stack Role.";
@@ -246,7 +281,9 @@ void drawPhraseHealthStrip (juce::Graphics& g,
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (describePhraseHealth (snapshot), text, juce::Justification::centredLeft);
+    g.drawText (describePhraseHealth (snapshot) + " - " + describePhraseHealthAdviceCompact (snapshot),
+                text,
+                juce::Justification::centredLeft);
 }
 
 void drawChangedMaterialStrip (juce::Graphics& g,

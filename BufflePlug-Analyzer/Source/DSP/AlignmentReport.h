@@ -4,6 +4,7 @@
 
 #include "ArticulationRisk.h"
 #include "NaturalnessGuardrail.h"
+#include "PhraseHealth.h"
 #include "TrustDiagnostics.h"
 
 namespace buffle::align
@@ -33,6 +34,7 @@ struct AlignmentReportInput
     float guideBlend = 0.0f;
     float stereoFocus = 0.0f;
     NaturalnessRisk naturalnessRisk = NaturalnessRisk::safe;
+    PhraseHealth phraseHealth = PhraseHealth::route;
     TrustState trustState = TrustState::routeGuide;
 };
 

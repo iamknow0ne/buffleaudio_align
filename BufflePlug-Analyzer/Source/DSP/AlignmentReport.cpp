@@ -34,7 +34,11 @@ const char* getAlignmentReportPhraseHealth (const AlignmentReportInput& input) n
                               input.suggestedNudgeMs })
         : input.trustState;
 
-    return getTrustStateLabel (state);
+    return getPhraseHealthLabel (assessPhraseHealth ({ state,
+                                                       input.naturalnessRisk,
+                                                       input.articulationRisk,
+                                                       input.removedMaterial,
+                                                       input.consonantRemovedMaterial }));
 }
 
 std::string buildAlignmentReport (const AlignmentReportInput& input)
@@ -52,7 +56,14 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
                               input.suggestedNudgeMs })
         : input.trustState;
 
-    report << "Phrase health: " << getTrustStateLabel (trustState) << "\n";
+    const auto phraseHealth = assessPhraseHealth ({ trustState,
+                                                    input.naturalnessRisk,
+                                                    input.articulationRisk,
+                                                    input.removedMaterial,
+                                                    input.consonantRemovedMaterial });
+
+    report << "Phrase health: " << getPhraseHealthLabel (phraseHealth) << "\n";
+    report << "Phrase advice: " << getPhraseHealthAdvice (phraseHealth) << "\n";
     report << "Trust reason: " << getTrustStateCode (trustState) << "\n";
     report << "Trust advice: " << getTrustStateAdvice (trustState) << "\n";
     report << "Guide source: " << (input.guideFromSidechain ? "Sidechain" : "Missing / fallback") << "\n";

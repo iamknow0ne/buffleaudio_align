@@ -4,6 +4,7 @@
 
 - Added Breath Preservation Mask v0 inside Consonant Tamer, with DSP tests for soft sustained material protection and sharp unmatched burst behavior.
 - Added Stack Spread Governor v0 so `Stereo Focus` now performs lightweight mid/side width control, with DSP tests for mono safety and wide/tight role behavior.
+- Added Phrase Health classifier and Phrase advice so reports distinguish the producer verdict from the Trust Meter reason code.
 - Added saveable text reports beside clipboard copy for alignment handoff.
 - Polished the central app guidance copy and strip sizing so Naturalness, Articulation, and Next Best Move read cleanly at compact editor sizes.
 - Reframed the landing page and README toward product workflow instead of development status.

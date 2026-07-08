@@ -428,6 +428,13 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
     });
     snapshot.articulationRisk = articulationRisk.risk;
     snapshot.articulationRiskScore = articulationRisk.score;
+    snapshot.phraseHealth = buffle::align::assessPhraseHealth ({
+        snapshot.trustState,
+        snapshot.naturalnessRisk,
+        snapshot.articulationRisk,
+        snapshot.removedMaterial,
+        snapshot.consonantRemovedMaterial
+    });
 
     return snapshot;
 }
@@ -479,6 +486,7 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.consonantRemovedPeakDelta = snapshot.consonantRemovedPeakDelta;
     input.articulationRisk = snapshot.articulationRisk;
     input.articulationRiskScore = snapshot.articulationRiskScore;
+    input.phraseHealth = snapshot.phraseHealth;
     input.previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
     input.stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;

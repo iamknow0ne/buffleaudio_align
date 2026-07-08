@@ -6,6 +6,7 @@
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/NaturalnessGuardrail.h"
+#include "DSP/PhraseHealth.h"
 #include "DSP/PreviewModeMixer.h"
 #include "DSP/RemovedMaterialMeter.h"
 #include "DSP/StackSpreadGovernor.h"
@@ -604,6 +605,30 @@ void testTrustDiagnosticsLabelsAndAdviceAreStable()
     assert (std::string (buffle::align::getTrustStateAdvice (TrustState::advanceDub)).find ("host latency") != std::string::npos);
 }
 
+void testPhraseHealthClassifiesTrustAndCleanupStates()
+{
+    using buffle::align::ArticulationRisk;
+    using buffle::align::NaturalnessRisk;
+    using buffle::align::PhraseHealth;
+    using buffle::align::TrustState;
+
+    assert (buffle::align::assessPhraseHealth ({ TrustState::routeGuide, NaturalnessRisk::safe, ArticulationRisk::clean, 0.0f, 0.0f })
+            == PhraseHealth::route);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::listening, NaturalnessRisk::safe, ArticulationRisk::clean, 0.0f, 0.0f })
+            == PhraseHealth::listen);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::delayDub, NaturalnessRisk::tooMuch, ArticulationRisk::collision, 0.5f, 0.5f })
+            == PhraseHealth::safeNudge);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::locked, NaturalnessRisk::tooMuch, ArticulationRisk::clean, 0.0f, 0.0f })
+            == PhraseHealth::tooMuch);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::locked, NaturalnessRisk::safe, ArticulationRisk::collision, 0.02f, 0.02f })
+            == PhraseHealth::watchArticulation);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::locked, NaturalnessRisk::checkDifference, ArticulationRisk::clean, 0.02f, 0.02f })
+            == PhraseHealth::watchNaturalness);
+    assert (buffle::align::assessPhraseHealth ({ TrustState::locked, NaturalnessRisk::safe, ArticulationRisk::clean, 0.12f, 0.0f })
+            == PhraseHealth::changedMaterial);
+    assert (std::string (buffle::align::getPhraseHealthLabel (PhraseHealth::clean)) == "Print ready");
+}
+
 void testStackRolePresetProfilesAreDistinct()
 {
     const auto manual = buffle::align::getStackRoleSettings (buffle::align::StackRole::manual);
@@ -672,7 +697,8 @@ void testAlignmentReportHidesUnreliableOffset()
     input.suggestedNudgeMs = -42.0f;
 
     const auto report = buffle::align::buildAlignmentReport (input);
-    assert (report.find ("Phrase health: Listening for confidence") != std::string::npos);
+    assert (report.find ("Phrase health: Listening") != std::string::npos);
+    assert (report.find ("Phrase advice: Keep playback rolling") != std::string::npos);
     assert (report.find ("Trust reason: LISTENING_FOR_CONFIDENCE") != std::string::npos);
     assert (report.find ("Trust advice: Keep playback rolling") != std::string::npos);
     assert (report.find ("Estimated offset: unavailable") != std::string::npos);
@@ -705,7 +731,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.naturalnessRisk = buffle::align::NaturalnessRisk::tooMuch;
 
     const auto report = buffle::align::buildAlignmentReport (input);
-    assert (report.find ("Phrase health: Dub early - safe delay") != std::string::npos);
+    assert (report.find ("Phrase health: Safe nudge ready") != std::string::npos);
+    assert (report.find ("Phrase advice: Apply the suggested nudge") != std::string::npos);
     assert (report.find ("Trust reason: DUB_EARLY_SAFE_DELAY") != std::string::npos);
     assert (report.find ("Estimated offset: -18.4 ms") != std::string::npos);
     assert (report.find ("Suggested timing correction: 18.4 ms") != std::string::npos);
@@ -780,6 +807,7 @@ int main()
     testTrustDiagnosticsPriority();
     testTrustDiagnosticsThresholdsAndDirections();
     testTrustDiagnosticsLabelsAndAdviceAreStable();
+    testPhraseHealthClassifiesTrustAndCleanupStates();
     testStackRolePresetProfilesAreDistinct();
     testStackSpreadGovernorLeavesMonoUnchanged();
     testStackSpreadGovernorNarrowsHighFocusStereo();

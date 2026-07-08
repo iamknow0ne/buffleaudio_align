@@ -9,6 +9,7 @@
 #include "DSP/ArticulationRisk.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/NaturalnessGuardrail.h"
+#include "DSP/PhraseHealth.h"
 #include "DSP/PreviewModeMixer.h"
 #include "DSP/TrustDiagnostics.h"
 
@@ -78,6 +79,7 @@ public:
         float articulationRiskScore = 0.0f;
         buffle::align::ArticulationRisk articulationRisk = buffle::align::ArticulationRisk::listening;
         buffle::align::NaturalnessRisk naturalnessRisk = buffle::align::NaturalnessRisk::safe;
+        buffle::align::PhraseHealth phraseHealth = buffle::align::PhraseHealth::route;
         buffle::align::TrustState trustState = buffle::align::TrustState::routeGuide;
         int latencyMs = 0;
         bool guideFromSidechain = false;

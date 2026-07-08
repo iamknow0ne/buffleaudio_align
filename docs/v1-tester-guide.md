@@ -82,7 +82,7 @@ Send:
 - Install path used: bundle zip or `.pkg`.
 - Vocal case: double, harmony, rap stack, ADR, backing vocal, or other.
 - Whether the Guide sidechain was detected.
-- `Phrase health`, `Trust reason`, and `Trust advice` lines from `Copy Report`.
+- `Phrase health`, `Phrase advice`, `Trust reason`, and `Trust advice` lines from `Copy` or `Save` Report.
 - Confidence value, signed offset, and suggested nudge direction.
 - Whether Apply Nudge moved the Dub in the expected direction.
 - Whether `Diff` sounded useful, too subtle, or misleading.

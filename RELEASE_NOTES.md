@@ -7,6 +7,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Product-first landing page refresh centered on the actual Align workflow and current standalone UI.
 - Breath Preservation Mask v0 inside Consonant Tamer to better protect soft sustained breath-like material while reducing sharper unmatched Dub attacks.
 - Stack Spread Governor v0: `Stereo Focus` now drives a lightweight mid/side width stage for tighter doubles or wider choir/ADR-style layers.
+- Phrase Health classifier separates the producer verdict from the Trust Meter reason, adding Phrase advice to reports and the central status strip.
 - Saveable alignment reports for session notes and tester feedback, alongside clipboard copy.
 - Compact central UI guidance for Naturalness, Articulation, and Next Best Move so the decision surface is easier to scan at smaller editor sizes.
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
@@ -17,7 +18,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
 - Additional deterministic DSP regression coverage for nudge edge clamps, Consonant Tamer block-size invariance, changed-material calibration, and guardrail policy.
 - Release tooling now reads `VERSION` and supports zip/pkg/full publish modes with draft prerelease defaults.
-- Clipboard and text-file report handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
+- Clipboard and text-file report handoff summaries for Phrase Health, Phrase advice, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.

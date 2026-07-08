@@ -58,11 +58,11 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 - Original / Aligned / All Diff / Tamer preview modes for A/B trust checks and consonant-only removed-material audition.
 - Stack Role presets tune the feel for doubles, choirs, rap stacks, and ADR, including Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus targets.
 - Stack Spread Governor v0 uses `Stereo Focus` to narrow tight doubles/rap stacks or preserve wider choir/ADR layers with a lightweight mid/side width stage.
-- Phrase-health UI strip for route/listen/locked/safe-nudge states, backed by stable Trust Meter reason codes.
+- Phrase Health classifier for route/listen/safe-nudge/print-ready/check-naturalness/check-articulation/changed-material/too-much states, backed by stable Trust Meter reason codes.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Changed-material meter now separates broad processed-vs-original preview change from tamer-only consonant removal.
 - Naturalness Risk Guardrail v0: a UI/report policy layer that flags `Natural`, `Check Diff`, or `Too Much` based on changed material, nudge, tamer, tightness, naturalness, and stack role.
-- `Copy` and `Save` Report handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, articulation risk, preview mode, stack role, and current controls.
+- `Copy` and `Save` Report handoff summary for Phrase Health, Phrase advice, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, articulation risk, preview mode, stack role, and current controls.
 
 ## Build And Release Capabilities
 
@@ -116,7 +116,7 @@ Differentiating V1 feature candidates:
 - Removed Material Audition: use All Diff for the full preview delta and Tamer for consonant-only material reduced by Consonant Tamer.
 - Naturalness Guardrail: warn when timing correction risks sterile doubles. Initial `Natural` / `Check Diff` / `Too Much` policy layer is implemented.
 - Guide Fallback Intelligence: make routing problems visible and actionable. Initial Trust Meter reason codes are implemented.
-- Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
+- Phrase Health Report: classify routing/listening, safe nudge, print-ready, changed material, naturalness, articulation, and too-much-cleanup states. Initial classifier is implemented.
 - Stack Spread Governor: preserve controlled width across doubles/harmonies. Initial `Stereo Focus` mid/side governor is implemented.
 - Breath Preservation Mask: protect breaths and expressive attacks. Initial soft sustained material protection is implemented inside Consonant Tamer.
 - Vowel-Only Warp Preview: future micro-warping that avoids consonant smearing.
