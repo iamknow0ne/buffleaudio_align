@@ -69,7 +69,7 @@ auval -v aufx BfAl BfAu
 
 Result: `AU VALIDATION SUCCEEDED.` The run confirmed manufacturer `Buffle Audio`, AudioUnit name `Buffle Audio Align`, version `0.3.0`, published parameters, custom UI, format tests, and render tests. See [healthcheck-2026-07-07-au-validation.md](healthcheck-2026-07-07-au-validation.md).
 
-`pluginval` is not available on this machine's `PATH`, so VST3 validation remains open until pluginval is installed or an equivalent VST3 host scan/load record is captured.
+On July 8, 2026, `/Applications/pluginval.app/Contents/MacOS/pluginval` validated the freshly built Debug VST3 with `--strictness-level 10` and exited with `SUCCESS`. The run printed JUCE debug assertions during open/parameter thread safety checks, but `pluginval` completed successfully. See [healthcheck-2026-07-08-vst3-pluginval.md](healthcheck-2026-07-08-vst3-pluginval.md).
 
 ## AU Validation
 
@@ -102,6 +102,12 @@ PLUGINVAL="/path/to/pluginval"
 "$PLUGINVAL" \
   --validate "$HOME/Library/Audio/Plug-Ins/VST3/Buffle Audio Align.vst3" \
   --strictness-level 10
+```
+
+On this machine, `pluginval` is available at:
+
+```bash
+/Applications/pluginval.app/Contents/MacOS/pluginval
 ```
 
 Pass criteria:

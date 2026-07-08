@@ -76,6 +76,9 @@ std::string buildAlignmentReport (const AlignmentReportInput& input)
     report << "Peak changed material: " << asPercent (input.removedPeakDelta) << "%\n";
     report << "Consonant removed: " << asPercent (input.consonantRemovedMaterial) << "%\n";
     report << "Peak consonant removed: " << asPercent (input.consonantRemovedPeakDelta) << "%\n";
+    report << "Articulation risk: " << getArticulationRiskLabel (input.articulationRisk)
+           << " (" << asPercent (input.articulationRiskScore) << "%) - "
+           << getArticulationRiskAdvice (input.articulationRisk) << "\n";
     report << "Naturalness risk: " << getNaturalnessRiskLabel (input.naturalnessRisk)
            << " - " << getNaturalnessRiskAdvice (input.naturalnessRisk) << "\n";
     report << "Preview mode: " << previewModeName (input.previewMode) << "\n";

@@ -32,6 +32,7 @@ juce_add_binary_data(BuffleAlignAssets
 
 add_library(BuffleAlignDSP STATIC
     BufflePlug-Analyzer/Source/DSP/AlignmentReport.cpp
+    BufflePlug-Analyzer/Source/DSP/ArticulationRisk.cpp
     BufflePlug-Analyzer/Source/DSP/BidirectionalNudge.cpp
     BufflePlug-Analyzer/Source/DSP/ConsonantTamer.cpp
     BufflePlug-Analyzer/Source/DSP/EnvelopeFeatureExtractor.cpp

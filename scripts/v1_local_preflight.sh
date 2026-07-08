@@ -168,8 +168,16 @@ else
   skip "auval not available"
 fi
 
-if command -v pluginval >/dev/null 2>&1; then
-  skip "pluginval available but not run by default; run strict VST3 validation manually"
+PLUGINVAL_BIN="${PLUGINVAL:-}"
+if [[ -z "${PLUGINVAL_BIN}" ]] && command -v pluginval >/dev/null 2>&1; then
+  PLUGINVAL_BIN="$(command -v pluginval)"
+fi
+if [[ -z "${PLUGINVAL_BIN}" && -x "/Applications/pluginval.app/Contents/MacOS/pluginval" ]]; then
+  PLUGINVAL_BIN="/Applications/pluginval.app/Contents/MacOS/pluginval"
+fi
+
+if [[ -n "${PLUGINVAL_BIN}" ]]; then
+  skip "pluginval available at ${PLUGINVAL_BIN}; run strict VST3 validation manually"
 else
   skip "pluginval not available on PATH"
 fi

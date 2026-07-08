@@ -95,6 +95,15 @@ Capture these from the app UI and `Copy Report`.
 | Dub early | Dub early - safe delay | `DUB_EARLY_SAFE_DELAY` | | |
 | Dub late | Dub late - safe advance | `DUB_LATE_SAFE_ADVANCE` | | |
 
+## Articulation Strip Acceptance
+
+| Scenario | Expected visual result | Result | Notes |
+| --- | --- | --- | --- |
+| Tight double, modest tamer | `Clean` or low `Watch consonants` | Pending | Confirm with Tamer audition. |
+| Rap stack with unmatched attacks | `Watch consonants` or `Collision risk` | Pending | Should correlate with audible clutter, not claim exact phonemes. |
+| Missing Guide or unreliable confidence | `Listening` | Pending | Should avoid fake certainty. |
+| High tamer / high consonant removal | Elevated strip score | Pending | Check Naturalness Guardrail and All Diff too. |
+
 ## Clean Account Install
 
 - Account:

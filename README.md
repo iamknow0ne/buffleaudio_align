@@ -6,7 +6,7 @@ Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articula
 
 Latest packaged preview: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
 
-Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artifacts, VST3/pluginval or equivalent host validation, signing, and notarization. Local AU validation has current evidence in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md).
+Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artifacts, DAW host matrix, signing, and notarization. Local AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
 
 ## Links
 
@@ -39,9 +39,10 @@ The public `v0.3.0` release is the packaged preview lane. The feature list below
 5. Read the signed offset and confidence-gated suggested nudge, including whether the Dub should move earlier or later.
 6. Use manual `Nudge`, or the confidence-gated Apply Nudge workflow in the app UI.
 7. Raise `Consonant Tamer` carefully to soften unmatched Dub attacks without crushing sustained vowels.
-8. Switch `Original`, `Aligned`, `All Diff`, and `Tamer` to hear the dry Dub, processed preview, total changed material, or consonant-only material before trusting the move.
-9. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
-10. Use `Copy Report` to place a clipboard handoff summary of phrase health, confidence, offset, suggested timing correction, all-change amount, tamer-only removed amount, preview mode, role, and current controls.
+8. Watch the `Articulation` strip for suspected consonant clutter, then use `Tamer` mode to hear what the tamer is removing.
+9. Switch `Original`, `Aligned`, `All Diff`, and `Tamer` to hear the dry Dub, processed preview, total changed material, or consonant-only material before trusting the move.
+10. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
+11. Use `Copy Report` to place a clipboard handoff summary of phrase health, confidence, offset, suggested timing correction, all-change amount, tamer-only removed amount, articulation risk, preview mode, role, and current controls.
 
 Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
 
@@ -55,14 +56,14 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 - Optional `Guide` sidechain input bus, with the main input treated as `Dub`.
 - Live Guide/Dub monitoring, signed offset estimate, offset confidence, and bidirectional suggested nudge.
 - Realtime-safe manual nudge delay through a fixed-latency, testable DSP path. The current preview uses up to 120 ms host latency compensation so negative nudge can advance the Dub relative to the Guide in DAWs with latency compensation.
-- Experimental Consonant Tamer Lite DSP for reducing unmatched Dub consonant bursts while preserving Guide-matched attacks.
+- Experimental Consonant Tamer Lite DSP plus a first Articulation Risk strip for suspected unmatched Dub attacks. This is a visual aid over current transient/tamer evidence, not full phoneme detection.
 - Original / Aligned / All Diff / Tamer preview modes for A/B trust checks and consonant-only removed-material audition.
 - Stack Role presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` apply role-aware Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus settings. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP is still V1 work.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states, backed by stable Trust Meter reason codes.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Changed-material meter now separates broad processed-vs-original preview change from tamer-only consonant removal.
 - Naturalness Risk Guardrail v0: a UI/report policy layer that flags `Natural`, `Check Diff`, or `Too Much` based on changed material, nudge, tamer, tightness, naturalness, and stack role.
-- Clipboard `Copy Report` handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, preview mode, stack role, and current controls.
+- Clipboard `Copy Report` handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, articulation risk, preview mode, stack role, and current controls.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, changed-material metering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
@@ -80,9 +81,10 @@ Buffle Audio Align is positioned as a timing decision surface for vocal doubles,
 6. Add vocal-stack-specific consonant cleanup through an experimental transient tamer.
 7. A/B Original, Aligned, All Diff, and Tamer preview before trusting or printing the move in the host.
 8. Read changed-material meters for broad processed-vs-original change and consonant-only tamer removal.
-9. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
-10. Copy a clipboard alignment report for tester/session handoff.
-11. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+9. Use the Articulation Risk strip as a warning for likely Dub consonant clutter, then confirm with Tamer audition.
+10. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
+11. Copy a clipboard alignment report for tester/session handoff.
+12. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
 
 ### Guide Fallback Intelligence
 
@@ -106,6 +108,7 @@ Differentiating V1 feature candidates:
 
 - Trust Meter Alignment: explain Guide source, Guide/Dub levels, offset direction, confidence, and the reason a nudge is available or blocked.
 - One-Click Safe Nudge: apply only confidence-gated early/late corrections, with clear unavailable states for weak, ambiguous, or unsafe material.
+- Consonant Collision Detector: highlight likely doubled consonant flams against the guide. Initial Articulation Risk strip is implemented; full phoneme-aware detection remains future work.
 - Consonant Tamer Lite: reduce unmatched Dub consonant bursts without flattening sustained vowels.
 - Removed Material Audition: use All Diff for the full preview delta and Tamer for consonant-only material reduced by Consonant Tamer.
 - Naturalness Guardrail: warn when timing correction risks sterile doubles. Initial `Natural` / `Check Diff` / `Too Much` policy layer is implemented.

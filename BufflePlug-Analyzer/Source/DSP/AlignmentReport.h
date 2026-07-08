@@ -2,6 +2,7 @@
 
 #include <string>
 
+#include "ArticulationRisk.h"
 #include "NaturalnessGuardrail.h"
 #include "TrustDiagnostics.h"
 
@@ -22,6 +23,8 @@ struct AlignmentReportInput
     float removedPeakDelta = 0.0f;
     float consonantRemovedMaterial = 0.0f;
     float consonantRemovedPeakDelta = 0.0f;
+    float articulationRiskScore = 0.0f;
+    ArticulationRisk articulationRisk = ArticulationRisk::listening;
     int previewMode = 1;
     int stackRole = 0;
     float tightness = 0.0f;

@@ -414,6 +414,16 @@ BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot BufflePlugAnalyzerAudioProce
         stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0
     });
 
+    const auto articulationRisk = buffle::align::assessArticulationRisk ({
+        snapshot.hasReliableOffset,
+        snapshot.suggestedNudgeMs,
+        snapshot.offsetConfidence,
+        snapshot.consonantRemovedMaterial,
+        snapshot.consonantRemovedPeakDelta
+    });
+    snapshot.articulationRisk = articulationRisk.risk;
+    snapshot.articulationRiskScore = articulationRisk.score;
+
     return snapshot;
 }
 
@@ -462,6 +472,8 @@ juce::String BufflePlugAnalyzerAudioProcessor::getAlignmentReportText() const
     input.removedPeakDelta = snapshot.removedPeakDelta;
     input.consonantRemovedMaterial = snapshot.consonantRemovedMaterial;
     input.consonantRemovedPeakDelta = snapshot.consonantRemovedPeakDelta;
+    input.articulationRisk = snapshot.articulationRisk;
+    input.articulationRiskScore = snapshot.articulationRiskScore;
     input.previewMode = previewModeParam != nullptr ? juce::roundToInt (previewModeParam->load()) : 1;
     input.stackRole = stackRoleParam != nullptr ? juce::roundToInt (stackRoleParam->load()) : 0;
     input.tightness = tightnessParam != nullptr ? tightnessParam->load() : 0.0f;

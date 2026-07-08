@@ -6,6 +6,7 @@
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <juce_audio_utils/juce_audio_utils.h>
 #include "DSP/ConsonantTamer.h"
+#include "DSP/ArticulationRisk.h"
 #include "DSP/ManualNudgeDelay.h"
 #include "DSP/NaturalnessGuardrail.h"
 #include "DSP/PreviewModeMixer.h"
@@ -74,6 +75,8 @@ public:
         float removedPeakDelta = 0.0f;
         float consonantRemovedMaterial = 0.0f;
         float consonantRemovedPeakDelta = 0.0f;
+        float articulationRiskScore = 0.0f;
+        buffle::align::ArticulationRisk articulationRisk = buffle::align::ArticulationRisk::listening;
         buffle::align::NaturalnessRisk naturalnessRisk = buffle::align::NaturalnessRisk::safe;
         buffle::align::TrustState trustState = buffle::align::TrustState::routeGuide;
         int latencyMs = 0;

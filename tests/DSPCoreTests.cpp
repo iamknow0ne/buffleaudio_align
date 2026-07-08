@@ -1,4 +1,5 @@
 #include "DSP/AlignmentReport.h"
+#include "DSP/ArticulationRisk.h"
 #include "DSP/BidirectionalNudge.h"
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
@@ -491,6 +492,36 @@ void testNaturalnessGuardrailFlagsOverCleanedLooseRole()
     assert (std::string (buffle::align::getNaturalnessRiskLabel (risk)) == "Too Much");
 }
 
+void testArticulationRiskWaitsForReliableOffset()
+{
+    const auto risk = buffle::align::assessArticulationRisk ({
+        false, 60.0f, 0.9f, 0.8f, 0.9f
+    });
+
+    assert (risk.risk == buffle::align::ArticulationRisk::listening);
+    assert (risk.score == 0.0f);
+}
+
+void testArticulationRiskSeparatesCleanWatchAndCollision()
+{
+    const auto clean = buffle::align::assessArticulationRisk ({
+        true, 4.0f, 0.82f, 0.02f, 0.02f
+    });
+    const auto watch = buffle::align::assessArticulationRisk ({
+        true, 38.0f, 0.72f, 0.12f, 0.26f
+    });
+    const auto collision = buffle::align::assessArticulationRisk ({
+        true, 70.0f, 0.88f, 0.24f, 0.62f
+    });
+
+    assert (clean.risk == buffle::align::ArticulationRisk::clean);
+    assert (watch.risk == buffle::align::ArticulationRisk::watch);
+    assert (collision.risk == buffle::align::ArticulationRisk::collision);
+    assert (clean.score < watch.score);
+    assert (watch.score < collision.score);
+    assert (std::string (buffle::align::getArticulationRiskLabel (collision.risk)) == "Collision risk");
+}
+
 void testTrustDiagnosticsPriority()
 {
     using buffle::align::TrustState;
@@ -579,6 +610,8 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     input.removedPeakDelta = 0.78f;
     input.consonantRemovedMaterial = 0.12f;
     input.consonantRemovedPeakDelta = 0.38f;
+    input.articulationRisk = buffle::align::ArticulationRisk::collision;
+    input.articulationRiskScore = 0.74f;
     input.naturalnessRisk = buffle::align::NaturalnessRisk::tooMuch;
 
     const auto report = buffle::align::buildAlignmentReport (input);
@@ -593,6 +626,7 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     assert (report.find ("Peak changed material: 78%") != std::string::npos);
     assert (report.find ("Consonant removed: 12%") != std::string::npos);
     assert (report.find ("Peak consonant removed: 38%") != std::string::npos);
+    assert (report.find ("Articulation risk: Collision risk") != std::string::npos);
     assert (report.find ("Naturalness risk: Too Much") != std::string::npos);
 }
 }
@@ -630,6 +664,8 @@ int main()
     testNaturalnessGuardrailKeepsGentleCleanupSafe();
     testNaturalnessGuardrailAsksForDifferenceCheck();
     testNaturalnessGuardrailFlagsOverCleanedLooseRole();
+    testArticulationRiskWaitsForReliableOffset();
+    testArticulationRiskSeparatesCleanWatchAndCollision();
     testTrustDiagnosticsPriority();
     testTrustDiagnosticsThresholdsAndDirections();
     testTrustDiagnosticsLabelsAndAdviceAreStable();

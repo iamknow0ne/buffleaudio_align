@@ -260,6 +260,34 @@ void drawNaturalnessRiskStrip (juce::Graphics& g,
                 juce::Justification::centredLeft);
 }
 
+void drawArticulationRiskStrip (juce::Graphics& g,
+                                juce::Rectangle<int> area,
+                                const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
+{
+    const auto risk = snapshot.articulationRisk;
+    const auto colour = risk == buffle::align::ArticulationRisk::clean ? alignedColour
+                      : risk == buffle::align::ArticulationRisk::watch ? warningColour
+                      : risk == buffle::align::ArticulationRisk::collision ? dubColour
+                      : muted;
+
+    drawRoundRect (g, area.toFloat(), juce::Colour (0xff14171d), colour.withAlpha (0.28f));
+
+    auto text = area.reduced (12, 0);
+    g.setColour (colour);
+    g.setFont (juce::FontOptions (12.0f, juce::Font::bold));
+    g.drawText ("ARTICULATION", text.removeFromLeft (112), juce::Justification::centredLeft);
+
+    auto meterArea = text.removeFromRight (124).withSizeKeepingCentre (108, 8);
+    drawHorizontalMeter (g, meterArea, snapshot.articulationRiskScore, colour);
+
+    g.setColour (ink);
+    g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
+    g.drawText (juce::String (buffle::align::getArticulationRiskLabel (risk)) + " - "
+                    + juce::String (buffle::align::getArticulationRiskAdvice (risk)),
+                text,
+                juce::Justification::centredLeft);
+}
+
 void drawNextActionCard (juce::Graphics& g,
                          juce::Rectangle<int> area,
                          const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
@@ -395,17 +423,7 @@ public:
         drawNextActionCard (g, content.removeFromTop (46), snapshot);
         content.removeFromTop (8);
 
-        auto nudgeLine = content.removeFromTop (18);
-        g.setColour (muted.withAlpha (0.86f));
-        g.setFont (juce::FontOptions (11.5f, juce::Font::bold));
-        g.drawText ("Manual " + juce::String (snapshot.nudgeMs, 1) + " ms - "
-                        + (snapshot.hasReliableOffset
-                            ? "suggest " + describeNudgeMove (snapshot.suggestedNudgeMs)
-                                + ", all " + asPercent (snapshot.removedMaterial)
-                                + ", tamer " + asPercent (snapshot.consonantRemovedMaterial)
-                            : "waiting for reliable Guide/Dub confidence"),
-                    nudgeLine,
-                    juce::Justification::centredLeft);
+        drawArticulationRiskStrip (g, content.removeFromTop (22), snapshot);
         content.removeFromTop (8);
 
         drawConfidence (g, content.removeFromTop (34), snapshot.offsetConfidence);

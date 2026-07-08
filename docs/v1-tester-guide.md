@@ -42,9 +42,10 @@ Because this is an unsigned developer preview, macOS Gatekeeper may ask you to e
 8. A/B `Original`, `Aligned`, `All Diff`, and `Tamer` before committing the move.
 9. Try one `Stack Role`: Double Tight, Choir Natural, Rap Stack, or ADR Loose.
 10. Raise `Consonant Tamer` gradually and watch Naturalness Risk move between `Natural`, `Check Diff`, and `Too Much`.
-11. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
-12. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
-13. Use `Copy Report` and include that text in feedback.
+11. Check whether the `Articulation` strip matches the consonant clutter you hear.
+12. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
+13. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
+14. Use `Copy Report` and include that text in feedback.
 
 ## Trust Diagnostics
 
@@ -85,6 +86,7 @@ Send:
 - Whether Apply Nudge moved the Dub in the expected direction.
 - Whether `Diff` sounded useful, too subtle, or misleading.
 - Whether `Tamer` isolated consonant cleanup clearly from the full timing/difference path.
+- Whether the `Articulation` strip matched the consonant clutter you heard.
 - Stack Role used and whether it helped.
 - Naturalness Risk state and whether it matched what you heard.
 - Consonant Tamer setting and any artifacts heard.
@@ -97,4 +99,5 @@ Send:
 - Bidirectional nudge uses fixed host latency compensation and still needs DAW host validation.
 - `Guide Blend` and `Stereo Focus` are preview/monitoring shape controls until deeper stereo DSP lands.
 - `All Diff` is the overall processed-vs-original preview delta; `Tamer` isolates the current Consonant Tamer reduction only.
+- The `Articulation` strip is a first visual aid for suspected consonant clutter, not a full phoneme detector or detailed timeline.
 - The installer is not Developer ID signed or notarized.

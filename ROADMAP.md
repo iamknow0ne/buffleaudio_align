@@ -31,13 +31,13 @@ Done:
 Not V1-ready yet:
 
 - Bidirectional nudge is implemented as fixed-latency preview compensation, but still needs DAW host validation and clearer clean-session latency testing.
-- Consonant Tamer is implemented as a first realtime transient tamer with tamer-only audition, but it is not yet a full consonant collision detector or visual collision timeline.
+- A first Articulation Risk strip is implemented for suspected consonant clutter, but it is still a lightweight visual aid over transient/tamer evidence, not a full phoneme-aware detector or detailed collision timeline.
 - Capture/analyze/preview buttons are now framed as a session checklist, but they are not a complete captured phrase state machine.
 - Difference mode now has broad changed-material metering and Tamer mode solos Consonant Tamer reductions; richer per-feature timelines remain open.
 - Stack role presets apply role-owned controls, but guide blend and stereo focus are still mostly monitoring/shape controls until deeper stereo DSP lands.
 - Copy Report is clipboard-only and includes broad changed-material stats, but does not yet include per-feature removed-material metering or file export.
 - Installer is not Developer ID signed or notarized.
-- Host validation matrix exists, and local AU validation has current evidence, but DAW timing results, VST3/pluginval validation, audio demo corpus, and golden WAV regression lane remain open.
+- Host validation matrix exists, and local AU plus strict VST3 `pluginval` validation have current evidence, but DAW timing results, audio demo corpus, and golden WAV regression lane remain open.
 
 ## V1 Differentiators
 
@@ -45,7 +45,7 @@ These are the target features that make Align meaningfully different from generi
 
 1. **Trust Meter Alignment**: show source state, Guide/Dub levels, offset direction, confidence, and why the recommendation is safe or unavailable.
 2. **One-Click Safe Nudge**: apply suggested early/late timing nudge only when confidence and signal floors are credible. **Initial bidirectional latency-compensated path implemented.**
-3. **Consonant Collision Detector**: highlight doubled consonants that flam against the guide.
+3. **Consonant Collision Detector**: highlight likely doubled consonant flams against the guide. **Initial Articulation Risk strip implemented; full phoneme-aware detection remains future work.**
 4. **Consonant Tamer Lite**: fade-safe attenuation of consonant clutter without flattening vowels.
 5. **Removed Material Audition**: solo the timing/consonant material being reduced through Difference preview, then add richer metering. **Broad All Diff and consonant-only Tamer audition implemented.**
 6. **Naturalness Guardrail**: warn when a move risks over-tight, phasey, or sterile stacked vocals. **Initial policy layer implemented.**
@@ -81,6 +81,7 @@ Goal: deliver the first vocal-stack-specific differentiator.
 
 - Add transient/high-frequency consonant feature extraction.
 - Add fade-safe Dub attenuation controlled by `Consonant Tamer`. **Initial realtime slice implemented.**
+- Add first consonant-collision visual aid from the current transient/tamer evidence. **Initial Articulation Risk strip implemented.**
 - Add removed-material audition and meter foundations. **Initial Difference preview and changed-material meter implemented.**
 - Add consonant-only removed-material audition. **Initial Tamer preview implemented.**
 - Add naturalness risk guardrail for over-cleaning. **Initial UI/report policy layer implemented.**
@@ -119,7 +120,7 @@ Goal: ship a clean, supportable macOS V1.
 - Add Developer ID Application and Installer signing.
 - Notarize and staple installer.
 - Run install smoke on a clean macOS account.
-- Run AU validation and at least one VST3 host load test. **Local AU `auval -v aufx BfAl BfAu` passed for current source artifacts on July 7, 2026; VST3/pluginval remains open.**
+- Run AU validation and at least one VST3 host load test. **Local AU `auval -v aufx BfAl BfAu` passed on July 7, 2026; VST3 `pluginval --strictness-level 10` passed on July 8, 2026. DAW host matrix remains open.**
 - Execute the host latency validation matrix in [docs/validation-host-latency.md](docs/validation-host-latency.md).
 - Publish GitHub release with SHA256 checksums.
 - Attach a completed release evidence record using [docs/release-evidence-template.md](docs/release-evidence-template.md).
