@@ -1,8 +1,8 @@
 # Release Inventory
 
-This repo publishes macOS developer preview builds through GitHub Releases.
+This repo publishes macOS preview builds through GitHub Releases.
 
-For hands-on feedback, use the [V1 tester guide](v1-tester-guide.md). The bundle zip is the preferred preview lane today; the `.pkg` remains a rough local preview artifact until signing, notarization, and clean-account install smoke pass.
+For hands-on feedback, use the [V1 tester guide](v1-tester-guide.md). The bundle zip is the preferred preview download today; the `.pkg` is available for testing, but is not yet Developer ID signed or notarized.
 
 For signed nudge and host plugin delay compensation proof, use the [host latency validation matrix](validation-host-latency.md).
 
@@ -12,7 +12,7 @@ The project version lives in [`../VERSION`](../VERSION). Release scripts read th
 
 | Version | Status | GitHub release | Assets |
 | --- | --- | --- | --- |
-| `v0.3.0` | Latest developer preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0 | `BuffleAudioAlign-0.3.0-macOS.pkg`, `BuffleAudioAlign-0.3.0-macOS-bundles.zip` |
+| `v0.3.0` | Latest macOS preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0 | `BuffleAudioAlign-0.3.0-macOS.pkg`, `BuffleAudioAlign-0.3.0-macOS-bundles.zip` |
 | `v0.2.0` | Historical preview | https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.2.0 | `BuffleAudioAlign-0.2.0-macOS.pkg`, `BuffleAudioAlign-0.2.0-macOS-bundles.zip` |
 
 ## Verification Commands
@@ -108,7 +108,7 @@ Current release blockers before a broad V1 installer:
 
 - Developer ID Application and Developer ID Installer identities are not available in this local keychain.
 - Fresh package and archive hygiene evidence is required for each installer candidate.
-- The bundle `.zip` remains the preferred preview lane until signing, notarization, and clean-account install smoke pass.
+- The bundle `.zip` remains the preferred preview download until signing, notarization, and clean-account install smoke pass.
 - AU validation and strict VST3 `pluginval` have current local evidence; DAW timing checks and a clean-account install smoke still need to be run.
 
 Preview releases should be treated as GitHub prereleases until those gates pass.

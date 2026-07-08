@@ -1,14 +1,14 @@
 # Buffle Audio Align V1 Tester Guide
 
-Use this guide when testing the current macOS developer preview and sending feedback toward V1.
+Use this guide when testing the current macOS preview and sending feedback toward V1.
 
 ## Version Status
 
 | Lane | What it means |
 | --- | --- |
-| `v0.3.0` packaged preview | Current public GitHub release artifacts for Standalone, AU, VST3, and rough `.pkg` preview. |
-| Current `main` source | Post-`v0.3.0` V1-preview polish, including Trust Diagnostics and Tamer audition work, pending fresh release artifacts. |
-| Next preview target | Fresh zip-first artifacts after local build, DSP tests, release hygiene, and host-validation evidence are refreshed. |
+| Public preview | `v0.3.0` GitHub release artifacts for Standalone, AU, VST3, and testable `.pkg`. |
+| Current development build | Post-`v0.3.0` V1 polish, including Trust Diagnostics, Tamer audition, Breath Preservation Mask v0, and saveable reports. |
+| Next packaged preview | Zip-first artifacts after local build, DSP tests, release hygiene, and host-validation evidence are refreshed. |
 
 ## Preferred Download
 
@@ -18,7 +18,7 @@ Use the bundle archive first:
 BuffleAudioAlign-0.3.0-macOS-bundles.zip
 ```
 
-The `.pkg` exists for local preview testing, but it is not Developer ID signed or notarized yet. Treat the package as rough release-lane evidence, not the preferred tester install path.
+The `.pkg` exists for local preview testing, but it is not Developer ID signed or notarized yet. Treat the package as a testable convenience path, not the preferred tester install path.
 
 ## Install Paths
 
@@ -28,7 +28,7 @@ After unzipping the bundle archive:
 - VST3: copy `Buffle Audio Align.vst3` to `~/Library/Audio/Plug-Ins/VST3/`.
 - AU: copy `Buffle Audio Align.component` to `~/Library/Audio/Plug-Ins/Components/`.
 
-Because this is an unsigned developer preview, macOS Gatekeeper may ask you to explicitly allow the app or plugin. For broad distribution, V1 still needs Developer ID signing, notarization, and a clean-account install smoke.
+Because this is an unsigned macOS preview, Gatekeeper may ask you to explicitly allow the app or plugin. For broad distribution, V1 still needs Developer ID signing, notarization, and a clean-account install smoke.
 
 ## Smoke Test
 
@@ -45,7 +45,7 @@ Because this is an unsigned developer preview, macOS Gatekeeper may ask you to e
 11. Check whether the `Articulation` strip matches the consonant clutter you hear.
 12. Use `Diff` before printing whenever the guardrail says `Check Diff` or `Too Much`.
 13. Use `Tamer` when judging whether Consonant Tamer is removing useful consonant clutter or audible performance detail.
-14. Use `Copy Report` and include that text in feedback.
+14. Use `Copy` or `Save` Report and include that text in feedback.
 
 ## Trust Diagnostics
 
@@ -89,8 +89,8 @@ Send:
 - Whether the `Articulation` strip matched the consonant clutter you heard.
 - Stack Role used and whether it helped.
 - Naturalness Risk state and whether it matched what you heard.
-- Consonant Tamer setting and any artifacts heard.
-- Paste the `Copy Report` output.
+- Consonant Tamer setting and any unwanted side effects heard.
+- Paste the `Copy` or `Save` Report output.
 - Attach a screenshot or short audio before/after if possible.
 
 ## Known Preview Limits
@@ -100,4 +100,5 @@ Send:
 - `Guide Blend` and `Stereo Focus` are preview/monitoring shape controls until deeper stereo DSP lands.
 - `All Diff` is the overall processed-vs-original preview delta; `Tamer` isolates the current Consonant Tamer reduction only.
 - The `Articulation` strip is a first visual aid for suspected consonant clutter, not a full phoneme detector or detailed timeline.
+- Breath Preservation Mask v0 protects soft sustained breath-like material, but it is not a full phoneme or lyric-aware breath detector.
 - The installer is not Developer ID signed or notarized.

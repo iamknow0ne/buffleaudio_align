@@ -1,5 +1,7 @@
 #include "ConsonantTamer.h"
 
+#include "BreathPreservationMask.h"
+
 #include <cmath>
 
 namespace buffle::align
@@ -68,8 +70,19 @@ void ConsonantTamer::process (juce::AudioBuffer<float>& dubBuffer,
             const auto dubAbs = std::abs (samples[sample]);
             const auto dubTransient = juce::jmax (updateEnvelope (state, dubAbs, fastCoeff, slowCoeff),
                                                   dubAbs - state.slow * 1.6f);
+            const auto breath = assessBreathProtection ({ dubAbs,
+                                                          guideBuffer != nullptr && guideBuffer->getNumSamples() > sample
+                                                              ? getMonoAbsAt (*guideBuffer, sample)
+                                                              : 0.0f,
+                                                          state.fast,
+                                                          state.slow,
+                                                          guideState.fast,
+                                                          guideState.slow,
+                                                          boundedNaturalness });
             const auto unmaskedTransient = juce::jmax (0.0f, dubTransient - guideTransient * 0.9f - floor);
-            const auto reduction = maxReduction * juce::jlimit (0.0f, 1.0f, unmaskedTransient * sensitivity);
+            const auto reduction = maxReduction
+                * juce::jlimit (0.0f, 1.0f, unmaskedTransient * sensitivity)
+                * (1.0f - breath.protection);
             const auto targetGain = 1.0f - reduction;
 
             state.gain = targetGain < state.gain

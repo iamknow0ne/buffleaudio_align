@@ -2,7 +2,10 @@
 
 ## Unreleased
 
-- No additional changes beyond the current post-v0.3.0 source polish listed below.
+- Added Breath Preservation Mask v0 inside Consonant Tamer, with DSP tests for soft sustained material protection and sharp unmatched burst behavior.
+- Added saveable text reports beside clipboard copy for alignment handoff.
+- Polished the central app guidance copy and strip sizing so Naturalness, Articulation, and Next Best Move read cleanly at compact editor sizes.
+- Reframed the landing page and README toward product workflow instead of development status.
 
 ## Post-v0.3.0 source
 

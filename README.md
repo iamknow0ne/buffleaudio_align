@@ -4,16 +4,16 @@
 
 Buffle Audio Align is a JUCE audio plugin for vocal-stack alignment and articulation cleanup. Put it on a Dub or backing-vocal track, feed or monitor a Guide vocal, estimate the timing relationship, then tighten the Dub while preserving the small performance details that make stacked vocals feel alive.
 
-Latest packaged preview: `v0.3.0` developer preview for macOS Standalone, VST3, and AU.
+Latest macOS preview: `v0.3.0` for Standalone, VST3, and AU.
 
-Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artifacts, DAW host matrix, signing, and notarization. Local AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
+Current `main` adds post-`v0.3.0` polish that has not been repackaged yet, including a clearer app surface, Articulation Risk, Breath Preservation Mask v0, and saveable alignment reports. AU validation and strict VST3 `pluginval` evidence are recorded in [docs/healthcheck-2026-07-07-au-validation.md](docs/healthcheck-2026-07-07-au-validation.md) and [docs/healthcheck-2026-07-08-vst3-pluginval.md](docs/healthcheck-2026-07-08-vst3-pluginval.md).
 
 ## Links
 
 - Landing page: https://buffleaudio-align.pages.dev/
 - Latest preview release: https://github.com/iamknow0ne/buffleaudio_align/releases/tag/v0.3.0
 - All releases: https://github.com/iamknow0ne/buffleaudio_align/releases
-- Support development: https://buymeacoffee.com/hostin.tech
+- Support Buffle Audio: https://buymeacoffee.com/hostin.tech
 - Build notes: [docs/build.md](docs/build.md)
 - Deployment notes: [docs/deployment.md](docs/deployment.md)
 - Release inventory: [docs/releases.md](docs/releases.md)
@@ -28,9 +28,9 @@ Current source lane: post-`v0.3.0` V1-preview polish, pending fresh public artif
 
 For the current standalone app UI with Trust Meter, Articulation Risk, Naturalness Guardrail, Stack Role presets, and A/B audition, see [standalone-app-articulation-risk-post-v0.3.0.png](landing/assets/screenshots/standalone-app-articulation-risk-post-v0.3.0.png).
 
-## Test The Preview Lane
+## Try Align
 
-The public `v0.3.0` release is the packaged preview lane. The feature list below also includes current `main` behavior that may require a fresh local build until the next public artifact is published.
+The public download is `v0.3.0`. Some capabilities below are already in `main` and will ship in the next packaged preview.
 
 1. Install or unzip the latest macOS preview from the GitHub release.
 2. Open the Standalone app, or insert the VST3/AU on a Dub/double/backing-vocal track.
@@ -42,28 +42,32 @@ The public `v0.3.0` release is the packaged preview lane. The feature list below
 8. Watch the `Articulation` strip for suspected consonant clutter, then use `Tamer` mode to hear what the tamer is removing.
 9. Switch `Original`, `Aligned`, `All Diff`, and `Tamer` to hear the dry Dub, processed preview, total changed material, or consonant-only material before trusting the move.
 10. Try `Stack Role` presets when the layer is a tight double, natural choir, rap stack, or ADR-style dub.
-11. Use `Copy Report` to place a clipboard handoff summary of phrase health, confidence, offset, suggested timing correction, all-change amount, tamer-only removed amount, articulation risk, preview mode, role, and current controls.
+11. Use `Copy` or `Save` Report to hand off phrase health, confidence, offset, suggested timing correction, changed-material stats, articulation risk, preview mode, role, and current controls.
 
-Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a developer preview, not a broad public installer.
+Preview build note: v0.3.0 is useful for local testing, but it is not Developer ID notarized yet. Treat it as a macOS preview, not a broad public installer.
 
 For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) and paste the app's `Copy Report` output into feedback.
 
-## What Works In Current Source
+## Current Product Capabilities
 
-- Branded Buffle Audio editor with the shared logo, dark teal visual identity, and in-plugin About panel.
-- Persistent JUCE parameters through `AudioProcessorValueTreeState`.
-- Session state save/restore.
 - Optional `Guide` sidechain input bus, with the main input treated as `Dub`.
 - Live Guide/Dub monitoring, signed offset estimate, offset confidence, and bidirectional suggested nudge.
-- Realtime-safe manual nudge delay through a fixed-latency, testable DSP path. The current preview uses up to 120 ms host latency compensation so negative nudge can advance the Dub relative to the Guide in DAWs with latency compensation.
-- Experimental Consonant Tamer Lite DSP plus a first Articulation Risk strip for suspected unmatched Dub attacks. This is a visual aid over current transient/tamer evidence, not full phoneme detection.
+- Manual early/late nudge with host-latency compensation up to 120 ms in DAWs that support plugin delay compensation.
+- Consonant Tamer Lite DSP plus Breath Preservation Mask v0 for soft sustained breath-like material and Guide-matched attacks.
+- First Articulation Risk strip for suspected unmatched Dub attacks. This is a visual aid over current transient/tamer evidence, not full phoneme detection.
 - Original / Aligned / All Diff / Tamer preview modes for A/B trust checks and consonant-only removed-material audition.
-- Stack Role presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` apply role-aware Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus settings. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP is still V1 work.
+- Stack Role presets tune the feel for doubles, choirs, rap stacks, and ADR. Today, Naturalness and Consonant Tamer are the most audible role changes; Guide Blend and Stereo Focus are still preview controls.
 - Phrase-health UI strip for route/listen/locked/safe-nudge states, backed by stable Trust Meter reason codes.
 - Session-flow rail and `Next Best Move` card that tell testers what to do next instead of exposing fake capture/analyze certainty.
 - Changed-material meter now separates broad processed-vs-original preview change from tamer-only consonant removal.
 - Naturalness Risk Guardrail v0: a UI/report policy layer that flags `Natural`, `Check Diff`, or `Too Much` based on changed material, nudge, tamer, tightness, naturalness, and stack role.
-- Clipboard `Copy Report` handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, articulation risk, preview mode, stack role, and current controls.
+- `Copy` and `Save` Report handoff summary for phrase health, Trust Meter reason/advice, confidence, offset, suggested timing correction, all-change and tamer-only removed-material amounts, articulation risk, preview mode, stack role, and current controls.
+
+## Build And Release Capabilities
+
+- Branded Buffle Audio editor with the shared logo, dark teal visual identity, and in-plugin About panel.
+- Persistent JUCE parameters through `AudioProcessorValueTreeState`.
+- Session state save/restore.
 - Standalone DSP library with unit tests for envelope extraction, global offset estimation, manual nudge timing, preview-mode rendering, changed-material metering, stack-role profiles, and consonant-tamer behavior.
 - CMake build for Standalone, VST3, and AU.
 - Local macOS `.pkg` installer generation.
@@ -71,20 +75,17 @@ For structured testing, follow the [V1 tester guide](docs/v1-tester-guide.md) an
 
 ## Product Shape
 
-Buffle Audio Align is positioned as a timing decision surface for vocal doubles, not a black-box warper. The v0.3.x lane focuses on:
+Buffle Audio Align is positioned as a timing decision surface for vocal doubles, not a black-box warper. Align helps you:
 
 1. Monitor or capture Guide and Dub.
-2. Extract energy/onset envelopes.
-3. Estimate a global timing offset.
-4. Gate suggestions by confidence so weak signals do not produce fake certainty.
-5. Preview or apply a confidence-gated early/late timing nudge.
-6. Add vocal-stack-specific consonant cleanup through an experimental transient tamer.
-7. A/B Original, Aligned, All Diff, and Tamer preview before trusting or printing the move in the host.
-8. Read changed-material meters for broad processed-vs-original change and consonant-only tamer removal.
-9. Use the Articulation Risk strip as a warning for likely Dub consonant clutter, then confirm with Tamer audition.
-10. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
-11. Copy a clipboard alignment report for tester/session handoff.
-12. Defer full DTW, time-stretch rendering, ARA, ML phoneme detection, and MIDI groove mode until the capture/analyze/preview loop is trustworthy.
+2. Estimate the signed timing relationship without showing fake certainty on weak material.
+3. Preview or apply a confidence-gated early/late timing nudge.
+4. Add vocal-stack-specific consonant cleanup while protecting soft breath-like material.
+5. A/B Original, Aligned, All Diff, and Tamer preview before trusting or printing the move in the host.
+6. Read changed-material meters for broad processed-vs-original change and consonant-only tamer removal.
+7. Use the Articulation Risk strip as a warning for likely Dub consonant clutter, then confirm with Tamer audition.
+8. Apply role-aware stack presets for doubles, harmony stacks, rap layers, and ADR-style dubs.
+9. Copy or save an alignment report for tester/session handoff.
 
 ### Guide Fallback Intelligence
 
@@ -115,10 +116,10 @@ Differentiating V1 feature candidates:
 - Guide Fallback Intelligence: make routing problems visible and actionable. Initial Trust Meter reason codes are implemented.
 - Phrase Health Report: identify weak guide, quiet dub, ambiguity, or unsafe nudge.
 - Stack Spread Governor: preserve controlled width across doubles/harmonies.
-- Breath Preservation Mask: protect breaths and expressive attacks.
+- Breath Preservation Mask: protect breaths and expressive attacks. Initial soft sustained material protection is implemented inside Consonant Tamer.
 - Vowel-Only Warp Preview: future micro-warping that avoids consonant smearing.
 - Harmony-Aware Tightness Presets: `Double Tight`, `Choir Natural`, `Rap Stack`, and `ADR Loose` roles tune tightness, naturalness, consonant amount, guide blend, and stereo focus.
-- Exportable Alignment Report: clipboard handoff report includes changed-material stats; file export and richer correction amount metering remain V1 work.
+- Exportable Alignment Report: copy or save phrase offset, confidence, nudge, changed-material stats, articulation risk, and current controls for session handoff.
 
 See [ROADMAP.md](ROADMAP.md) for milestones, risks, and verification gates.
 
@@ -209,10 +210,10 @@ npx wrangler@latest pages deploy landing --project-name=buffleaudio-align --bran
 
 Both public preview releases are published on GitHub:
 
-- `v0.3.0`: macOS bundle archive plus rough local `.pkg` preview.
-- `v0.2.0`: macOS bundle archive plus rough local `.pkg` preview.
+- `v0.3.0`: macOS bundle archive plus testable `.pkg` preview.
+- `v0.2.0`: macOS bundle archive plus testable `.pkg` preview.
 
-For current testers, prefer the bundle archive. The `.pkg` is a rough local preview artifact until Developer ID signing, notarization, and clean-account install smoke pass.
+For current testers, prefer the bundle archive. The `.pkg` is available for testing, but it is not Developer ID signed or notarized yet.
 
 To publish a future release after building:
 

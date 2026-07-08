@@ -34,6 +34,7 @@ add_library(BuffleAlignDSP STATIC
     BufflePlug-Analyzer/Source/DSP/AlignmentReport.cpp
     BufflePlug-Analyzer/Source/DSP/ArticulationRisk.cpp
     BufflePlug-Analyzer/Source/DSP/BidirectionalNudge.cpp
+    BufflePlug-Analyzer/Source/DSP/BreathPreservationMask.cpp
     BufflePlug-Analyzer/Source/DSP/ConsonantTamer.cpp
     BufflePlug-Analyzer/Source/DSP/EnvelopeFeatureExtractor.cpp
     BufflePlug-Analyzer/Source/DSP/ManualNudgeDelay.cpp

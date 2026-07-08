@@ -1,6 +1,7 @@
 #include "DSP/AlignmentReport.h"
 #include "DSP/ArticulationRisk.h"
 #include "DSP/BidirectionalNudge.h"
+#include "DSP/BreathPreservationMask.h"
 #include "DSP/ConsonantTamer.h"
 #include "DSP/EnvelopeFeatureExtractor.h"
 #include "DSP/ManualNudgeDelay.h"
@@ -259,6 +260,54 @@ void testConsonantTamerPreservesGuideMatchedAttack()
     matchedTamer.process (matchedDub, &guide, 1.0f, 0.2f);
 
     assert (matchedDub.getSample (0, 48) > dubOnly.getSample (0, 48));
+}
+
+void testBreathMaskProtectsSoftSustainedMaterial()
+{
+    const auto result = buffle::align::assessBreathProtection ({ 0.035f,
+                                                                 0.0f,
+                                                                 0.037f,
+                                                                 0.033f,
+                                                                 0.0f,
+                                                                 0.0f,
+                                                                 0.88f });
+
+    assert (result.likelyBreath);
+    assert (result.protection > 0.38f);
+}
+
+void testBreathMaskDoesNotProtectSharpUnmatchedBurst()
+{
+    const auto result = buffle::align::assessBreathProtection ({ 0.92f,
+                                                                 0.0f,
+                                                                 0.86f,
+                                                                 0.08f,
+                                                                 0.0f,
+                                                                 0.0f,
+                                                                 0.2f });
+
+    assert (! result.likelyBreath);
+    assert (result.protection < 0.12f);
+}
+
+void testConsonantTamerPreservesBreathBed()
+{
+    juce::AudioBuffer<float> buffer (1, 4096);
+    for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
+    {
+        const auto value = 0.032f * std::sin (static_cast<float> (sample) * 0.021f)
+                         + 0.014f * std::sin (static_cast<float> (sample) * 0.071f);
+        buffer.setSample (0, sample, value);
+    }
+
+    const auto before = buffer.getRMSLevel (0, 512, 3000);
+
+    buffle::align::ConsonantTamer tamer;
+    tamer.prepare (44100.0, 1);
+    tamer.process (buffer, nullptr, 1.0f, 0.9f);
+
+    const auto after = buffer.getRMSLevel (0, 512, 3000);
+    assert (after / before > 0.96f);
 }
 
 void testConsonantTamerMatchesSingleBlockAndChunkedProcessing()
@@ -629,6 +678,24 @@ void testAlignmentReportCapturesSafeNudgeAndRole()
     assert (report.find ("Articulation risk: Collision risk") != std::string::npos);
     assert (report.find ("Naturalness risk: Too Much") != std::string::npos);
 }
+
+void testAlignmentReportClampsMalformedSessionValues()
+{
+    buffle::align::AlignmentReportInput input;
+    input.guideFromSidechain = true;
+    input.hasReliableOffset = true;
+    input.guideRms = 0.7f;
+    input.dubRms = 0.7f;
+    input.offsetConfidence = 0.9f;
+    input.previewMode = 99;
+    input.stackRole = 99;
+
+    const auto report = buffle::align::buildAlignmentReport (input);
+    assert (report.find ("Buffle Audio Align Report") == 0);
+    assert (report.find ("Preview mode: Aligned") != std::string::npos);
+    assert (report.find ("Stack role: ADR Loose") != std::string::npos);
+    assert (report.find ("Articulation risk: Listening") != std::string::npos);
+}
 }
 
 int main()
@@ -650,6 +717,9 @@ int main()
     testConsonantTamerReducesDubOnlyBurst();
     testConsonantTamerPreservesSustainedVowel();
     testConsonantTamerPreservesGuideMatchedAttack();
+    testBreathMaskProtectsSoftSustainedMaterial();
+    testBreathMaskDoesNotProtectSharpUnmatchedBurst();
+    testConsonantTamerPreservesBreathBed();
     testConsonantTamerMatchesSingleBlockAndChunkedProcessing();
     testPreviewModeOriginalRestoresInput();
     testPreviewModeAlignedKeepsProcessed();
@@ -672,6 +742,7 @@ int main()
     testStackRolePresetProfilesAreDistinct();
     testAlignmentReportHidesUnreliableOffset();
     testAlignmentReportCapturesSafeNudgeAndRole();
+    testAlignmentReportClampsMalformedSessionValues();
 
     std::cout << "Buffle Align DSP tests passed\n";
     return 0;

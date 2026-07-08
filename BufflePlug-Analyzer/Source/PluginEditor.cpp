@@ -121,19 +121,31 @@ juce::String describeNextActionBody (const BufflePlugAnalyzerAudioProcessor::Ali
      || snapshot.trustState == buffle::align::TrustState::guideQuiet
      || snapshot.trustState == buffle::align::TrustState::dubQuiet
      || snapshot.trustState == buffle::align::TrustState::listening)
-        return juce::String (buffle::align::getTrustStateAdvice (snapshot.trustState));
+    {
+        switch (snapshot.trustState)
+        {
+            case buffle::align::TrustState::routeGuide: return "Route Guide sidechain, then play the phrase.";
+            case buffle::align::TrustState::guideQuiet: return "Raise Guide level, then play the phrase.";
+            case buffle::align::TrustState::dubQuiet: return "Raise Dub level before nudge or tamer.";
+            case buffle::align::TrustState::listening: return "Keep playback rolling until timing locks.";
+            case buffle::align::TrustState::locked:
+            case buffle::align::TrustState::delayDub:
+            case buffle::align::TrustState::advanceDub:
+                break;
+        }
+    }
 
     if (snapshot.trustState == buffle::align::TrustState::delayDub
      || snapshot.trustState == buffle::align::TrustState::advanceDub)
-        return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then compare Aligned and Difference.";
+        return "Apply " + asSignedMs (snapshot.suggestedNudgeMs) + ", then A/B Aligned vs Diff.";
 
     if (snapshot.naturalnessRisk != buffle::align::NaturalnessRisk::safe)
-        return juce::String (buffle::align::getNaturalnessRiskAdvice (snapshot.naturalnessRisk));
+        return "Check Diff before printing this move.";
 
     if (snapshot.removedMaterial > 0.04f)
-        return "Timing is locked. Use Difference to judge whether cleanup is changing too much.";
+        return "Timing locked. Check Diff before print.";
 
-    return "Copy Report for the session notes, or adjust Stack Role for this layer.";
+    return "Save Report for notes, or adjust Stack Role.";
 }
 
 juce::String describeSuggestPill (const BufflePlugAnalyzerAudioProcessor::AlignmentSnapshot& snapshot)
@@ -176,6 +188,17 @@ juce::String describeArticulationRiskCompact (buffle::align::ArticulationRisk ri
         case buffle::align::ArticulationRisk::collision: return "Collision - loosen role";
         case buffle::align::ArticulationRisk::listening:
         default: return "Listening";
+    }
+}
+
+juce::String describeNaturalnessRiskCompact (buffle::align::NaturalnessRisk risk)
+{
+    switch (risk)
+    {
+        case buffle::align::NaturalnessRisk::checkDifference: return "Check Diff - A/B before print";
+        case buffle::align::NaturalnessRisk::tooMuch: return "Too Much - loosen role or Tamer";
+        case buffle::align::NaturalnessRisk::safe:
+        default: return "Natural - inside guardrail";
     }
 }
 
@@ -266,10 +289,7 @@ void drawNaturalnessRiskStrip (juce::Graphics& g,
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (juce::String (buffle::align::getNaturalnessRiskLabel (risk)) + " - "
-                    + juce::String (buffle::align::getNaturalnessRiskAdvice (risk)),
-                text,
-                juce::Justification::centredLeft);
+    g.drawText (describeNaturalnessRiskCompact (risk), text, juce::Justification::centredLeft);
 }
 
 void drawArticulationRiskStrip (juce::Graphics& g,
@@ -310,7 +330,7 @@ void drawNextActionCard (juce::Graphics& g,
     const auto accent = phraseHealthColour (snapshot);
     drawRoundRect (g, area.toFloat(), juce::Colour (0xff11161b), accent.withAlpha (0.28f));
 
-    auto text = area.reduced (12, 7);
+    auto text = area.reduced (12, 8);
     auto badge = text.removeFromRight (82).withSizeKeepingCentre (78, 24);
     drawRoundRect (g, badge.toFloat(), accent.withAlpha (0.14f), accent.withAlpha (0.42f));
     g.setColour (accent);
@@ -323,7 +343,7 @@ void drawNextActionCard (juce::Graphics& g,
 
     g.setColour (ink);
     g.setFont (juce::FontOptions (13.0f, juce::Font::bold));
-    g.drawText (describeNextActionBody (snapshot), text, juce::Justification::centredLeft);
+    g.drawFittedText (describeNextActionBody (snapshot), text, juce::Justification::centredLeft, 2, 1.0f);
 }
 
 class AboutComponent final : public juce::Component
@@ -431,14 +451,14 @@ public:
         content.removeFromTop (8);
         drawChangedMaterialStrip (g, content.removeFromTop (22), snapshot);
         content.removeFromTop (8);
-        drawNaturalnessRiskStrip (g, content.removeFromTop (24), snapshot);
+        drawNaturalnessRiskStrip (g, content.removeFromTop (28), snapshot);
         content.removeFromTop (8);
         drawPhraseHealthStrip (g, content.removeFromTop (30), snapshot);
         content.removeFromTop (8);
-        drawNextActionCard (g, content.removeFromTop (46), snapshot);
+        drawNextActionCard (g, content.removeFromTop (58), snapshot);
         content.removeFromTop (8);
 
-        drawArticulationRiskStrip (g, content.removeFromTop (22), snapshot);
+        drawArticulationRiskStrip (g, content.removeFromTop (26), snapshot);
         content.removeFromTop (8);
 
         drawConfidence (g, content.removeFromTop (34), snapshot.offsetConfidence);
@@ -596,7 +616,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
                      true);
 
     for (auto* button : { &captureButton, &analyzeButton, &alignButton, &applySuggestedButton,
-                          &reportButton,
+                          &reportButton, &saveReportButton,
                           &originalModeButton, &alignedModeButton, &differenceModeButton, &tamerModeButton })
     {
         addAndMakeVisible (*button);
@@ -612,6 +632,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     alignButton.setTooltip ("Preview the current manual or automatic alignment move.");
     applySuggestedButton.setTooltip ("Apply the current confidence-gated timing correction to the Nudge Dub control.");
     reportButton.setTooltip ("Copy a session handoff report with phrase health, offset, confidence, role, and current controls.");
+    saveReportButton.setTooltip ("Save the current alignment report as a text file for session notes or tester feedback.");
     originalModeButton.setTooltip ("Monitor the unprocessed Dub.");
     alignedModeButton.setTooltip ("Monitor the current nudge and Consonant Tamer path.");
     differenceModeButton.setTooltip ("Monitor all timing and tamer material changed by the preview path.");
@@ -622,6 +643,7 @@ BufflePlugAnalyzerAudioProcessorEditor::BufflePlugAnalyzerAudioProcessorEditor (
     alignButton.onClick = [this] { showTransientStatus ("Alignment preview active - adjust Nudge, Tightness, and Naturalness."); };
     applySuggestedButton.onClick = [this] { applySuggestedNudge(); };
     reportButton.onClick = [this] { copyAlignmentReport(); };
+    saveReportButton.onClick = [this] { saveAlignmentReport(); };
     originalModeButton.onClick = [this] { setPreviewMode (0); };
     alignedModeButton.onClick = [this] { setPreviewMode (1); };
     differenceModeButton.onClick = [this] { setPreviewMode (2); };
@@ -740,7 +762,10 @@ void BufflePlugAnalyzerAudioProcessorEditor::resized()
     railButton.removeFromTop (10);
     applySuggestedButton.setBounds (railButton.removeFromTop (32));
     railButton.removeFromTop (10);
-    reportButton.setBounds (railButton.removeFromTop (32));
+    auto reportRow = railButton.removeFromTop (32);
+    reportButton.setBounds (reportRow.removeFromLeft ((reportRow.getWidth() - 6) / 2));
+    reportRow.removeFromLeft (6);
+    saveReportButton.setBounds (reportRow);
 
     auto controls = bounds.removeFromRight (238).reduced (24, 62);
     auto controlHeader = controls.removeFromTop (42).reduced (0, 7);
@@ -1014,6 +1039,44 @@ void BufflePlugAnalyzerAudioProcessorEditor::copyAlignmentReport()
 {
     juce::SystemClipboard::copyTextToClipboard (audioProcessor.getAlignmentReportText());
     showTransientStatus ("Alignment report copied to clipboard.");
+}
+
+void BufflePlugAnalyzerAudioProcessorEditor::saveAlignmentReport()
+{
+    const auto defaultFile = juce::File::getSpecialLocation (juce::File::userDocumentsDirectory)
+        .getChildFile ("Buffle-Audio-Align-Report-"
+                       + juce::String (juce::Time::currentTimeMillis())
+                       + ".txt");
+
+    reportFileChooser = std::make_unique<juce::FileChooser> ("Save Buffle Audio Align report",
+                                                             defaultFile,
+                                                             "*.txt");
+
+    const juce::Component::SafePointer<BufflePlugAnalyzerAudioProcessorEditor> safeThis (this);
+
+    reportFileChooser->launchAsync (juce::FileBrowserComponent::saveMode
+                                        | juce::FileBrowserComponent::canSelectFiles
+                                        | juce::FileBrowserComponent::warnAboutOverwriting,
+                                    [safeThis] (const juce::FileChooser& chooser)
+                                    {
+                                        if (safeThis == nullptr)
+                                            return;
+
+                                        auto file = chooser.getResult();
+                                        if (file == juce::File())
+                                        {
+                                            safeThis->showTransientStatus ("Report save cancelled.");
+                                            return;
+                                        }
+
+                                        if (! file.hasFileExtension ("txt"))
+                                            file = file.withFileExtension ("txt");
+
+                                        if (file.replaceWithText (safeThis->audioProcessor.getAlignmentReportText()))
+                                            safeThis->showTransientStatus ("Alignment report saved: " + file.getFileName());
+                                        else
+                                            safeThis->showTransientStatus ("Could not save report - choose another folder.");
+                                    });
 }
 
 void BufflePlugAnalyzerAudioProcessorEditor::setPreviewMode (int modeIndex)

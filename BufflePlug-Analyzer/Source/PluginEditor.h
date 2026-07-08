@@ -39,6 +39,7 @@ private:
     void showTransientStatus (const juce::String& message);
     void applySuggestedNudge();
     void copyAlignmentReport();
+    void saveAlignmentReport();
     void setPreviewMode (int modeIndex);
     void updatePreviewModeButtons();
     void applyStackRolePreset (int roleIndex);
@@ -81,7 +82,8 @@ private:
     juce::TextButton analyzeButton { "Check Timing" };
     juce::TextButton alignButton { "Preview Align" };
     juce::TextButton applySuggestedButton { "Apply Nudge" };
-    juce::TextButton reportButton { "Copy Report" };
+    juce::TextButton reportButton { "Copy" };
+    juce::TextButton saveReportButton { "Save" };
     juce::TextButton originalModeButton { "Original" };
     juce::TextButton alignedModeButton { "Aligned" };
     juce::TextButton differenceModeButton { "All Diff" };
@@ -89,6 +91,7 @@ private:
 
     juce::Image buffleAudioLogo;
     juce::Rectangle<int> brandLogoBounds;
+    std::unique_ptr<juce::FileChooser> reportFileChooser;
     juce::String transientStatus;
     int transientStatusFrames = 0;
     bool applyingStackRolePreset = false;

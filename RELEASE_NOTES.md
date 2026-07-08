@@ -1,9 +1,13 @@
 # Buffle Audio Align Release Notes
 
-## Post-v0.3.0 Source Polish
+## Since v0.3.0
 
-These changes are in the current source tree after the public `v0.3.0` GitHub release. They should be included in the next preview release after fresh artifacts are built and verified.
+These changes are in the current source tree after the public `v0.3.0` GitHub release. They should be included in the next preview release after fresh builds and verification.
 
+- Product-first landing page refresh centered on the actual Align workflow and current standalone UI.
+- Breath Preservation Mask v0 inside Consonant Tamer to better protect soft sustained breath-like material while reducing sharper unmatched Dub attacks.
+- Saveable alignment reports for session notes and tester feedback, alongside clipboard copy.
+- Compact central UI guidance for Naturalness, Articulation, and Next Best Move so the decision surface is easier to scan at smaller editor sizes.
 - Latency-compensated bidirectional `Nudge Dub` support for early/late timing corrections.
 - Trust Diagnostics v1: shared Trust Meter reason codes and action advice for route, quiet-lane, listening, locked, delay, and advance states.
 - Consonant-only `Tamer` audition mode plus report fields for tamer-only removed material, separate from broad `All Diff` preview changes.
@@ -12,7 +16,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Signed Apply Nudge states and report text for reliable early/late Guide/Dub offsets.
 - Additional deterministic DSP regression coverage for nudge edge clamps, Consonant Tamer block-size invariance, changed-material calibration, and guardrail policy.
 - Release tooling now reads `VERSION` and supports zip/pkg/full publish modes with draft prerelease defaults.
-- Clipboard `Copy Report` handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
+- Clipboard and text-file report handoff summaries for phrase health, confidence, offset, suggested timing correction, changed-material amount, preview mode, stack role, and current controls.
 - Report formatter tests for unavailable and safe-nudge states.
 - Initial changed-material meter for overall processed-vs-original preview change, with DSP tests and editor/report surfacing.
 - Clearer first-run UI labels: Arm Listen, Check Timing, Preview Align, dynamic Apply Nudge text, and quiet-lane hints.
@@ -20,7 +24,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 - Role presets apply Tightness, Naturalness, Consonant Tamer, Guide Blend, and Stereo Focus without changing Nudge or Preview Mode. Naturalness and Consonant Tamer are the most audible pieces today; deeper Guide Blend and Stereo Focus DSP remains V1 work.
 - Original / Aligned / Difference preview modes with persistent APVTS state.
 - Difference audition path for hearing the processed-minus-original material. Initial changed-material metering is in place; per-feature removed-material solo remains V1 work.
-- Updated standalone screenshot showing the A/B preview controls.
+- Updated standalone screenshots showing the current product surface and A/B preview controls.
 - Experimental Consonant Tamer Lite DSP for unmatched Dub consonant bursts.
 - Phrase-health strip, stateful workflow rail, and disabled Apply Nudge state until a safe suggestion exists.
 - CTest coverage for the consonant-tamer preview slice.
@@ -32,7 +36,7 @@ These changes are in the current source tree after the public `v0.3.0` GitHub re
 
 ## v0.3.0
 
-Developer preview for macOS Standalone, VST3, and AU.
+MacOS preview for Standalone, VST3, and AU.
 
 ## Highlights
 
