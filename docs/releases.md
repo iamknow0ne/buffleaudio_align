@@ -95,7 +95,7 @@ Do not call a build V1 until these gates have current evidence:
 
 ```text
 f58dbdf937cee63680d04cd3b807783b5c8a204416e7f7da51f36b7a33afdc92  BuffleAudioAlign-0.4.0-macOS.pkg
-088c0e5076b4131364eba6bf127c4996aa945620130e4a44368309768168ff90  BuffleAudioAlign-0.4.0-macOS-bundles.zip
+2da4c6249c48c96bee8429463514157844255f96f0e27496f07f873691009c7d  BuffleAudioAlign-0.4.0-macOS-bundles.zip
 ```
 
 ## Published v0.3.0 Checksums

@@ -34,13 +34,13 @@ shasum -a 256 -c dist/BuffleAudioAlign-0.4.0-SHA256SUMS.txt
 - Standalone, VST3, and AU staged bundles passed `codesign --verify --deep --strict`.
 - All staged bundle `CFBundleShortVersionString` values report `0.4.0`.
 - `pkgutil --check-signature` reports `Status: no signature`, expected for the current preview installer.
-- SHA256 verification passed.
+- SHA256 verification passed. The publish script regenerated the bundle zip before upload, so the final published zip checksum is recorded below.
 
 ## Checksums
 
 ```text
 f58dbdf937cee63680d04cd3b807783b5c8a204416e7f7da51f36b7a33afdc92  BuffleAudioAlign-0.4.0-macOS.pkg
-088c0e5076b4131364eba6bf127c4996aa945620130e4a44368309768168ff90  BuffleAudioAlign-0.4.0-macOS-bundles.zip
+2da4c6249c48c96bee8429463514157844255f96f0e27496f07f873691009c7d  BuffleAudioAlign-0.4.0-macOS-bundles.zip
 ```
 
 ## Remaining V1 Gates
